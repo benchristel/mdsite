@@ -1,8 +1,8 @@
 # mdsite
 A modern generator for old-school static sites
 
-`mdsite` lets you take pretty much any directory structure of Markdown files and, with no modification to the files themselves,
-generate a browsable HTML website along the lines of http://catb.org/esr/writings/taoup/html/. That means:
+`mdsite` generates an HTML website from any tree of Markdown files.
+Customization is possible, but not required; you can customize things gradually.
 
 - You can define your own HTML templates into which the markdown gets rendered.
 - Templates can include automatically-generated portions, like a table of contents.
@@ -45,6 +45,9 @@ Template files are HTML that may contain references to mdsite *commands* between
 <html>
   <head>
     <title>{{title}}</title>
+    <link rel="stylesheet"
+          href="{{path "/assets/style.css"}}"
+          />
   </head>
   <body>
     <nav>{{toc .}}</nav>
@@ -64,3 +67,38 @@ Commands execute with knowledge of:
 - the path of the Markdown file being rendered, relative to `INPUTDIR`
 - the content of the Markdown file being rendered
 - the paths of the "previous" and "next" files according to `toc.txt` (see below), relative to `INPUTDIR`.
+
+### Tables of Contents
+
+Each directory may optionally contain a `toc.txt` file that establishes an order for the contents of that directory. Here is an example:
+
+```
+introduction.md
+terms.md
+history
+examples
+*
+bibliography.md
+```
+
+The entries in `toc.txt` may be Markdown files or directories.
+
+Files not listed in `toc.txt` are ordered lexicographically and grouped together at the location of the `*` line, or at the end of the table of contents if no `*` line is present.
+
+If a line in `toc.txt` refers to a nonexistent file, that line is ignored.
+
+### Frontmatter
+
+Markdown files may have YAML frontmatter, which can specify a template to use for that file. The path to the template file is assumed to be relative to `TEMPLATEDIR`.
+
+YAML frontmatter is delimited by triple dashes.
+
+```md
+---
+template: my-dir/special.html
+---
+
+# My Awesome Markdown File
+
+Lorem ipsum dolor sit amet...
+```
