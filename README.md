@@ -13,6 +13,8 @@ Customization is possible, but not required; you can customize things gradually.
 
 All generated internal links are *relative*, so you can deploy your site to a subdirectory of your domain, and it will just work.
 
+I guess having tables of contents that don't rely on frontmatter could be considered a killer feature too.
+
 ## Usage
 
 Run `mdsite build` passing the input and output directories as arguments.
