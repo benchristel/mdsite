@@ -1,4 +1,5 @@
 # mdsite
+
 A modern generator for old-school static sites
 
 `mdsite` generates an HTML website from any tree of Markdown files.
@@ -11,7 +12,7 @@ Customization is possible, but not required, and can be added gradually.
 
 ## Killer Feature
 
-All generated internal links are *relative*, so you can deploy your site to a subdirectory of your domain, and it will just work.
+All generated internal links are _relative_, so you can deploy your site to a subdirectory of your domain, and it will just work.
 
 I guess having tables of contents that don't rely on frontmatter could be considered a killer feature too.
 
@@ -40,16 +41,14 @@ These defaults can be overridden on a per-page basis (see the section on frontma
 
 ### Template Language
 
-Template files are HTML that may contain references to mdsite *commands* between double curly braces.
+Template files are HTML that may contain references to mdsite _commands_ between double curly braces.
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
     <title>{{title}}</title>
-    <link rel="stylesheet"
-          href="{{path "/assets/style.css"}}"
-          />
+    <link rel="stylesheet" href="{{path "/assets/style.css"}}" />
   </head>
   <body>
     <nav>{{toc .}}</nav>
