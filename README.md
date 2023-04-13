@@ -2,11 +2,11 @@
 A modern generator for old-school static sites
 
 `mdsite` generates an HTML website from any tree of Markdown files.
-Customization is possible, but not required; you can customize things gradually.
+Customization is possible, but not required, and can be added gradually.
 
 - You can define your own HTML templates into which the markdown gets rendered.
 - Templates can include automatically-generated portions, like a table of contents.
-- The contents of a directory are ordered: either they are ordered implicitly by filename, or explicitly via a config file. This allows tables of contents to work sensibly.
+- The contents of a directory are ordered: either implicitly by filename, or explicitly via a config file. This allows tables of contents to work sensibly.
 - Every page can have "home", "up", "previous", and "next" links. These work as you'd expect.
 
 ## Killer Feature
