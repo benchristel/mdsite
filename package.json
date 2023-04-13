@@ -8,13 +8,15 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
+    "@types/marked": "^4.0.8",
     "@types/node": "^18.15.11",
     "husky": "^8.0.3",
     "prettier": "^2.8.7",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@benchristel/taste": "^0.4.0"
+    "@benchristel/taste": "^0.4.0",
+    "marked": "^4.3.0"
   },
   "scripts": {
     "format": "node_modules/.bin/prettier --write .",
