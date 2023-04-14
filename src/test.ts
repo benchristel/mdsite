@@ -1,4 +1,5 @@
 import "./lib/markdown";
+import "./lib/files";
 
 import {
   getAllTests,
