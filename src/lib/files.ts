@@ -65,4 +65,28 @@ test("writeTree", {
 
     expect(await tmpDir.ls(), equals, []);
   },
+
+  async "overwrites existing files"() {
+    const tmpDir = TmpDir();
+    const path = await tmpDir.path();
+
+    await writeTree(path, [file("foo.txt", "original foo")]);
+
+    await writeTree(path, [file("foo.txt", "changed foo")]);
+
+    expect(await tmpDir.read("foo.txt"), equals, "changed foo");
+  },
+
+  async "does not delete existing files"() {
+    const tmpDir = TmpDir();
+    const path = await tmpDir.path();
+
+    await writeTree(path, [file("foo.txt", "this is foo")]);
+
+    await writeTree(path, [file("bar.txt", "this is bar")]);
+
+    expect(await tmpDir.read("foo.txt"), equals, "this is foo");
+
+    expect(await tmpDir.read("bar.txt"), equals, "this is bar");
+  },
 });
