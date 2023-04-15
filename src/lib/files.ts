@@ -8,7 +8,7 @@ import { expect, test, equals } from "@benchristel/taste";
   mapTree satisfies (tree: Tree, fn: (f: File) => File) => Tree;
 }
 
-type Tree = {
+export type Tree = {
   path: string;
   entries: Array<Entry>;
 };

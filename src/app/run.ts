@@ -1,5 +1,5 @@
-import { readTree, writeTree, mapTree } from "../lib/files";
-import { htmlFromMarkdown } from "../lib/markdown";
+import { Project } from "../domain/project";
+import { readTree, writeTree } from "../lib/files";
 
 export function run() {
   build();
@@ -7,12 +7,6 @@ export function run() {
 
 async function build() {
   const input = await readTree("src");
-  const output = mapTree(input, (file) => {
-    return {
-      ...file,
-      name: file.name.replace(/\.md$/, ".html"),
-      contents: htmlFromMarkdown(file.contents),
-    };
-  });
+  const output = Project(input).build();
   await writeTree("docs", output);
 }

@@ -1,5 +1,4 @@
-import "./lib/markdown";
-import "./lib/files";
+import "./domain/project";
 
 import {
   getAllTests,
