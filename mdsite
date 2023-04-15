@@ -1,3 +1,5 @@
 #!/bin/sh
 
-bun src/main.ts
+HERE="$(cd "$(dirname "$0")" && pwd)"
+
+bun "$HERE/src/main.ts"

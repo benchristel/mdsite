@@ -1,1 +1,3 @@
-console.log("Hello, world!" as string);
+import { run } from "./app/run";
+
+run();

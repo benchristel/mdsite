@@ -2,7 +2,7 @@ import { marked } from "marked";
 
 import { test, expect, is } from "@benchristel/taste";
 
-function htmlFromMarkdown(md: string): string {
+export function htmlFromMarkdown(md: string): string {
   return marked.parse(md);
 }
 
