@@ -1,6 +1,7 @@
 import * as fs from "fs/promises";
 import path from "path";
 import { expect, test, equals } from "@benchristel/taste";
+import { TmpDir } from "../testing/tmp-dir";
 
 {
   readTree satisfies (path: string) => Promise<Tree>;
@@ -28,36 +29,41 @@ type File = {
 
 test("readTree", {
   async "reads a tree of files"() {
-    const tmpDir = await fs.mkdtemp("/tmp/readTree");
-    await fs.writeFile(path.join(tmpDir, "foo.txt"), "this is foo");
-    await fs.mkdir(path.join(tmpDir, "bar"));
-    await fs.writeFile(path.join(tmpDir, "bar", "baz.txt"), "this is baz");
-    expect(await readTree(tmpDir), equals, [
+    const tmpDir = TmpDir();
+    await tmpDir.write("foo.txt", "this is foo");
+    await tmpDir.write("bar/baz.txt", "this is baz");
+    expect(await tmpDir.path().then(readTree), equals, [
       directory("bar", file("baz.txt", "this is baz")),
       file("foo.txt", "this is foo"),
     ]);
+  },
+
+  async "reads an empty directory"() {
+    const tmpDir = TmpDir();
+    expect(await tmpDir.path().then(readTree), equals, []);
   },
 });
 
 test("writeTree", {
   async "writes a tree of files"() {
-    const tmpDir = await fs.mkdtemp("/tmp/writeTree");
+    const tmpDir = TmpDir();
 
-    await writeTree(tmpDir, [
+    await writeTree(await tmpDir.path(), [
       directory("bar", file("baz.txt", "this is baz")),
       file("foo.txt", "this is foo"),
     ]);
 
-    expect(
-      (await fs.readFile(path.join(tmpDir, "foo.txt"))).toString(),
-      equals,
-      "this is foo"
-    );
-    expect(
-      (await fs.readFile(path.join(tmpDir, "bar", "baz.txt"))).toString(),
-      equals,
-      "this is baz"
-    );
+    expect(await tmpDir.ls(), equals, ["bar", "foo.txt"]);
+    expect(await tmpDir.read("foo.txt"), equals, "this is foo");
+    expect(await tmpDir.read("bar/baz.txt"), equals, "this is baz");
+  },
+
+  async "writes an empty tree"() {
+    const tmpDir = TmpDir();
+
+    await writeTree(await tmpDir.path(), []);
+
+    expect(await tmpDir.ls(), equals, []);
   },
 });
 
