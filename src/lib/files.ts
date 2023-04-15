@@ -6,6 +6,8 @@ import { expect, test, equals } from "@benchristel/taste";
   readTree satisfies (path: string) => Promise<Tree>;
   writeTree satisfies (path: string, files: Tree) => Promise<void>;
   mapTree satisfies (tree: Tree, fn: (f: File) => File) => Tree;
+  file satisfies (name: string, contents: string) => File;
+  directory satisfies (name: string, ...entries: Array<Entry>) => Directory;
 }
 
 export type Tree = {
@@ -36,12 +38,8 @@ test("readTree", {
     expect(await readTree(tmpDir), equals, {
       path: tmpDir,
       entries: [
-        {
-          type: "directory",
-          name: "bar",
-          entries: [{ type: "file", name: "baz.txt", contents: "this is baz" }],
-        },
-        { type: "file", name: "foo.txt", contents: "this is foo" },
+        directory("bar", file("baz.txt", "this is baz")),
+        file("foo.txt", "this is foo"),
       ],
     });
   },
@@ -54,12 +52,8 @@ test("writeTree", {
     await writeTree(tmpDir, {
       path: "",
       entries: [
-        {
-          type: "directory",
-          name: "bar",
-          entries: [{ type: "file", name: "baz.txt", contents: "this is baz" }],
-        },
-        { type: "file", name: "foo.txt", contents: "this is foo" },
+        directory("bar", file("baz.txt", "this is baz")),
+        file("foo.txt", "this is foo"),
       ],
     });
 
@@ -88,6 +82,14 @@ export function mapTree(input: Tree, fn: (f: File) => File): Tree {
   return { ...input, entries: mapEntries(input.entries, fn) };
 }
 
+export function file(name: string, contents: string): File {
+  return { type: "file", name, contents };
+}
+
+export function directory(name: string, ...entries: Array<Entry>): Directory {
+  return { type: "directory", name, entries };
+}
+
 function readEntries(path: string): Promise<Array<Entry>> {
   return fs
     .readdir(path, { withFileTypes: true })
@@ -99,19 +101,15 @@ function readEntries(path: string): Promise<Array<Entry>> {
 }
 
 function readDir(parentDirPath: string, name: string): Promise<Directory> {
-  return readEntries(path.join(parentDirPath, name)).then((entries) => ({
-    type: "directory",
-    name,
-    entries,
-  }));
+  return readEntries(path.join(parentDirPath, name)).then((entries) =>
+    directory(name, ...entries)
+  );
 }
 
 function readFile(parentDirPath: string, name: string): Promise<File> {
-  return fs.readFile(path.join(parentDirPath, name)).then((contents) => ({
-    type: "file",
-    name,
-    contents: contents.toString(),
-  }));
+  return fs
+    .readFile(path.join(parentDirPath, name))
+    .then((contents) => file(name, contents.toString()));
 }
 
 function writeEntries(path: string, entries: Array<Entry>): Promise<void> {

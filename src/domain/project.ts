@@ -1,4 +1,4 @@
-import { Tree, mapTree } from "../lib/files";
+import { Tree, file, mapTree } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { test, expect, equals } from "@benchristel/taste";
 
@@ -26,18 +26,12 @@ test("Project", {
   "builds a file"() {
     const input: Tree = {
       path: "",
-      entries: [{ type: "file", name: "index.md", contents: "Hello, world!" }],
+      entries: [file("index.md", "Hello, world!")],
     };
 
     const expected: Tree = {
       path: "",
-      entries: [
-        {
-          type: "file",
-          name: "index.html",
-          contents: "<p>Hello, world!</p>\n",
-        },
-      ],
+      entries: [file("index.html", "<p>Hello, world!</p>\n")],
     };
 
     expect(Project(input).build(), equals, expected);
