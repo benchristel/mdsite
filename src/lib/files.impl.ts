@@ -24,12 +24,25 @@ export function writeTree(path: string, tree: Tree): Promise<void> {
     );
 }
 
-export function mapTree(entries: Tree, fn: (f: File) => File): Tree {
+export function mapFilesInTree(entries: Tree, fn: (f: File) => File): Tree {
   return entries.map((e) => {
     if (e.type === "directory") {
       return mapDirectory(e, fn);
     } else {
       return mapFile(e, fn);
+    }
+  });
+}
+
+export function mapDirectoriesInTree(
+  entries: Tree,
+  fn: (f: Directory) => Directory
+): Tree {
+  return entries.map((e) => {
+    if (e.type === "directory") {
+      return fn({ ...e, entries: mapDirectoriesInTree(e.entries, fn) });
+    } else {
+      return e;
     }
   });
 }
@@ -65,7 +78,7 @@ function writeFile(parentDirPath: string, file: File): Promise<void> {
 }
 
 function mapDirectory(directory: Directory, fn: (f: File) => File): Directory {
-  return { ...directory, entries: mapTree(directory.entries, fn) };
+  return { ...directory, entries: mapFilesInTree(directory.entries, fn) };
 }
 
 function mapFile(file: File, fn: (f: File) => File): File {
