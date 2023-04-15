@@ -24,15 +24,9 @@ export function Project(input: Tree): Project {
 
 test("Project", {
   "builds a file"() {
-    const input: Tree = {
-      path: "",
-      entries: [file("index.md", "Hello, world!")],
-    };
+    const input: Tree = [file("index.md", "Hello, world!")];
 
-    const expected: Tree = {
-      path: "",
-      entries: [file("index.html", "<p>Hello, world!</p>\n")],
-    };
+    const expected: Tree = [file("index.html", "<p>Hello, world!</p>\n")];
 
     expect(Project(input).build(), equals, expected);
   },
