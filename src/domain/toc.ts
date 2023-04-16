@@ -1,6 +1,7 @@
-import { test, expect, equals } from "@benchristel/taste";
+import { test, expect, is, equals } from "@benchristel/taste";
 import { FileSet } from "../lib/files";
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
+import { relative } from "path";
 
 export function toc(files: FileSet, root: string = "/"): TreeOfContents {
   return Object.keys(files)
@@ -21,6 +22,39 @@ export function toc(files: FileSet, root: string = "/"): TreeOfContents {
       }
       return { type: "leaf", path };
     });
+}
+
+export function htmlToc(files: FileSet, linkOrigin: string): string {
+  const theToc = toc(files);
+  if (theToc.length === 0) {
+    return "";
+  }
+
+  return htmlForToc(files, theToc, linkOrigin);
+}
+
+function htmlForToc(
+  files: FileSet,
+  toc: TreeOfContents,
+  linkOrigin: string
+): string {
+  return (
+    "<ul>" +
+    toc.map((node) => {
+      const subToc =
+        node.type === "leaf"
+          ? ""
+          : htmlForToc(files, node.contents, linkOrigin);
+      const relativePath = relative(linkOrigin, node.path);
+      const linkTitle = title(files, node.path, relativePath);
+      return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
+    }) +
+    "</ul>"
+  );
+}
+
+function title(files: FileSet, path: string, _default: string) {
+  return files[path]?.match(/<title>([^<]+)<\/title>/)?.[1] ?? _default;
 }
 
 export type TreeOfContents = Array<Node>;
@@ -113,5 +147,52 @@ test("toc", {
       },
     ];
     expect(toc(files), equals, expected);
+  },
+});
+
+test("htmlToc", {
+  "given an empty set of files"() {
+    expect(htmlToc({}, "/"), is, "");
+  },
+
+  "given a tree with one file"() {
+    const files = {
+      "/foo.html": "<title>This Is Foo</title>",
+    };
+
+    const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
+
+    expect(htmlToc(files, "/"), is, expected);
+  },
+
+  "defaults link titles to the path"() {
+    const files = {
+      "/foo.html": "no title here",
+    };
+
+    const expected = `<ul><li><a href="foo.html">foo.html</a></li></ul>`;
+
+    expect(htmlToc(files, "/"), is, expected);
+  },
+
+  "creates relative links, starting from the linkOrigin"() {
+    const files = {
+      "/foo.html": "no title here",
+    };
+
+    const expected = `<ul><li><a href="../../../foo.html">../../../foo.html</a></li></ul>`;
+
+    expect(htmlToc(files, "/one/two/three"), is, expected);
+  },
+
+  recurses() {
+    const files = {
+      "/bar/index.html": "<title>Bar</title>",
+      "/bar/baz.html": "<title>Baz</title>",
+    };
+
+    const expected = `<ul><li><a href="bar/index.html">Bar</a><ul><li><a href="bar/baz.html">Baz</a></li></ul></li></ul>`;
+
+    expect(htmlToc(files, "/"), is, expected);
   },
 });
