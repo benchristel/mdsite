@@ -15,17 +15,17 @@ export function Project(input: Tree): Project {
   };
 
   function build() {
-    let wip = toProjectTree(input);
+    let projectTree = toProjectTree(input);
 
-    wip = addIndexMdIfMissing(wip, "/");
-    wip = P.mapDirectoriesInTree(wip, (dir) => {
+    projectTree = addIndexMdIfMissing(projectTree, "/");
+    projectTree = P.mapDirectoriesInTree(projectTree, (dir) => {
       return {
         ...dir,
         entries: addIndexMdIfMissing(dir.entries, join(dir.dirname, dir.name)),
       };
     });
 
-    wip = P.mapFilesInTree(wip, (file) => {
+    projectTree = P.mapFilesInTree(projectTree, (file) => {
       const name = file.name.replace(/\.md$/, ".html");
       return {
         ...file,
@@ -36,7 +36,7 @@ export function Project(input: Tree): Project {
       };
     });
 
-    return wip;
+    return projectTree;
   }
 }
 
