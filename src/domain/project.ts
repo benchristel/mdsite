@@ -5,6 +5,7 @@ import { test, expect, equals, which } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
 import { basename, dirname, join, relative } from "path";
 import { isAnything } from "../testing/matchers";
+import "./toc";
 
 export function buildProject(files: FileSet): FileSet {
   files = addMissingIndexFiles(files);
