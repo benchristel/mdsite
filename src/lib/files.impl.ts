@@ -1,6 +1,7 @@
 import * as fs from "fs/promises";
 import path from "path";
 import { Tree, File, Directory, Entry } from "./files";
+import { Dir } from "fs";
 
 export function readTree(path: string): Promise<Tree> {
   return fs

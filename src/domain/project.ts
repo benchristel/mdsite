@@ -1,13 +1,9 @@
-import {
-  Tree,
-  file,
-  mapFilesInTree,
-  directory,
-  mapDirectoriesInTree,
-} from "../lib/files";
+import { join } from "path";
+import { Tree, file, directory } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { test, expect, equals, which, curry } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
+import { Project as P, toProjectTree } from "./project-tree";
 
 export interface Project {
   build(): Tree;
@@ -19,14 +15,17 @@ export function Project(input: Tree): Project {
   };
 
   function build() {
-    let wip = input;
+    let wip = toProjectTree(input);
 
-    wip = addIndexMdIfMissing(wip);
-    wip = mapDirectoriesInTree(wip, (dir) => {
-      return { ...dir, entries: addIndexMdIfMissing(dir.entries) };
+    wip = addIndexMdIfMissing(wip, "/");
+    wip = P.mapDirectoriesInTree(wip, (dir) => {
+      return {
+        ...dir,
+        entries: addIndexMdIfMissing(dir.entries, join(dir.dirname, dir.name)),
+      };
     });
 
-    wip = mapFilesInTree(wip, (file) => {
+    wip = P.mapFilesInTree(wip, (file) => {
       const name = file.name.replace(/\.md$/, ".html");
       return {
         ...file,
@@ -58,7 +57,8 @@ test("Project", {
     const input: Tree = [file("index.md", "Hello, world!")];
 
     const expected: Tree = [
-      file(
+      P.file(
+        "/",
         "index.html",
         trimMargin`
           <!DOCTYPE html>
@@ -81,12 +81,13 @@ test("Project", {
     const input: Tree = [file("foo.md", "Hello, world!")];
 
     const expected: Tree = [
-      file("foo.html", which(contains("Hello, world!"))),
-      file(
+      P.file("/", "foo.html", which(contains("Hello, world!"))),
+      P.file(
+        "/",
         "index.html",
         which(
           contains(trimMargin`
-          <h1 id="index">Index</h1>
+          <h1 id="index-of-">Index of /</h1>
         `)
         )
       ),
@@ -99,8 +100,16 @@ test("Project", {
     const input: Tree = [directory("a-directory"), file("index.md", "")];
 
     const expected: Tree = [
-      directory("a-directory", file("index.html", which(contains("Index")))),
-      file("index.html", which(contains(""))),
+      P.directory(
+        "/",
+        "a-directory",
+        P.file(
+          "/a-directory",
+          "index.html",
+          which(contains("Index of /a-directory"))
+        )
+      ),
+      P.file("/", "index.html", which(contains(""))),
     ];
 
     expect(Project(input).build(), equals, expected);
@@ -111,9 +120,9 @@ const contains = curry((needle: string, haystack: string): boolean => {
   return haystack.includes(needle);
 }, "contains");
 
-function addIndexMdIfMissing(entries: Tree): Tree {
+function addIndexMdIfMissing(entries: P.Tree, dirname: string): P.Tree {
   if (!entries.find((e) => e.type === "file" && e.name === "index.md")) {
-    return [...entries, file("index.md", "# Index")];
+    return [...entries, P.file(dirname, "index.md", "# Index of " + dirname)];
   }
   return entries;
 }
