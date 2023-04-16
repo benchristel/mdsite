@@ -1,4 +1,4 @@
-import "./domain/project";
+import "./app/run";
 
 import {
   getAllTests,

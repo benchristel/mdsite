@@ -1,12 +1,12 @@
-import { Project } from "../domain/project";
-import { readTree, writeTree } from "../lib/files";
+import { buildProject } from "../domain/project";
+import { listDeep, writeDeep } from "../lib/files";
 
 export function run() {
   build();
 }
 
 async function build() {
-  const input = await readTree("src");
-  const output = Project(input).build();
-  await writeTree("docs", output);
+  const input = await listDeep("src");
+  const output = buildProject(input);
+  await writeDeep("docs", output);
 }
