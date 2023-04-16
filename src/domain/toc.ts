@@ -12,16 +12,15 @@ export function toc(files: FileSet, root: string = "/"): TreeOfContents {
         path !== root + "index.html" &&
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
-    .map((path) => {
-      if (path.endsWith("/index.html")) {
-        return {
-          type: "branch",
-          path,
-          contents: toc(files, path.replace(/index\.html$/, "")),
-        };
-      }
-      return { type: "leaf", path };
-    });
+    .map((path) =>
+      path.endsWith("/index.html")
+        ? {
+            type: "branch",
+            path,
+            contents: toc(files, removeSuffix(path, "index.html")),
+          }
+        : { type: "leaf", path }
+    );
 }
 
 export function htmlToc(files: FileSet, linkOrigin: string): string {
