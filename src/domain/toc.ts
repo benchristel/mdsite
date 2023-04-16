@@ -1,5 +1,6 @@
 import { test, expect, equals } from "@benchristel/taste";
 import { FileSet } from "../lib/files";
+import { contains, removePrefix, removeSuffix } from "../lib/strings";
 
 export function toc(files: FileSet, root: string = "/"): TreeOfContents {
   return Object.keys(files)
@@ -8,7 +9,7 @@ export function toc(files: FileSet, root: string = "/"): TreeOfContents {
         path.startsWith(root) &&
         path.endsWith(".html") &&
         path !== root + "index.html" &&
-        removeSuffix(path.slice(root.length), "/index.html").indexOf("/") === -1
+        !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
     .map((path) => {
       if (path.endsWith("/index.html")) {
@@ -20,14 +21,6 @@ export function toc(files: FileSet, root: string = "/"): TreeOfContents {
       }
       return { type: "leaf", path };
     });
-}
-
-function removeSuffix(s: string, suffix: string): string {
-  if (s.endsWith(suffix)) {
-    return s.slice(0, s.length - suffix.length);
-  } else {
-    return s;
-  }
 }
 
 export type TreeOfContents = Array<Node>;
