@@ -1,26 +1,11 @@
-export {
-  readTree,
-  writeTree,
-  mapFilesInTree,
-  file,
-  directory,
-  mapDirectoriesInTree,
-} from "./files.impl";
-import {
-  readTree,
-  writeTree,
-  mapFilesInTree,
-  file,
-  directory,
-  mapDirectoriesInTree,
-} from "./files.impl";
+export { readTree, writeTree, file, directory } from "./files.impl";
+import { readTree, writeTree, file, directory } from "./files.impl";
 import { expect, test, equals } from "@benchristel/taste";
 import { TmpDir } from "../testing/tmp-dir";
 
 {
   readTree satisfies (path: string) => Promise<Tree>;
   writeTree satisfies (path: string, files: Tree) => Promise<void>;
-  mapFilesInTree satisfies (tree: Tree, fn: (f: File) => File) => Tree;
   file satisfies (name: string, contents: string) => File;
   directory satisfies (name: string, ...entries: Array<Entry>) => Directory;
 }
@@ -102,31 +87,5 @@ test("writeTree", {
     expect(await tmpDir.read("foo.txt"), equals, "this is foo");
 
     expect(await tmpDir.read("bar.txt"), equals, "this is bar");
-  },
-});
-
-test("mapDirectoriesInTree", {
-  "can be used to rename directories"() {
-    const input = [
-      file("foo.txt", "this is foo"),
-      directory("bar", directory("baz", file("kludge.txt", "this is kludge"))),
-      directory("qux", file("fneen.txt", "this is fneen")),
-    ];
-
-    const output = mapDirectoriesInTree(input, (dir) => ({
-      ...dir,
-      name: dir.name + ".renamed",
-    }));
-
-    const expected = [
-      file("foo.txt", "this is foo"),
-      directory(
-        "bar.renamed",
-        directory("baz.renamed", file("kludge.txt", "this is kludge"))
-      ),
-      directory("qux.renamed", file("fneen.txt", "this is fneen")),
-    ];
-
-    expect(output, equals, expected);
   },
 });
