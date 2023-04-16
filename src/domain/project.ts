@@ -1,11 +1,14 @@
 import { FileSet } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { intoObject } from "../lib/objects";
-import { test, expect, equals } from "@benchristel/taste";
+import { test, expect, equals, which } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
-import { basename } from "path";
+import { basename, dirname, join, relative } from "path";
+import { isAnything } from "../testing/matchers";
 
 export function buildProject(files: FileSet): FileSet {
+  files = addMissingIndexFiles(files);
+
   return Object.entries(files)
     .map(([srcPath, srcContents]) => {
       if (srcPath.endsWith(".md")) {
@@ -37,15 +40,15 @@ const defaultTemplate = trimMargin`
 test("buildProject", {
   "converts a markdown file to an HTML file"() {
     const input = {
-      "/foo.md": "# Hello",
+      "/index.md": "# Hello",
     };
 
     const expected = {
-      "/foo.html": trimMargin`
+      "/index.html": trimMargin`
         <!DOCTYPE html>
         <html>
           <head>
-            <title>foo.html</title>
+            <title>index.html</title>
           </head>
           <body>
             <h1 id="hello">Hello</h1>
@@ -64,8 +67,60 @@ test("buildProject", {
 
     const expected = {
       "/foo.txt": "# Hello",
+      "/index.html": which(isAnything),
     };
 
     expect(buildProject(input), equals, expected);
+  },
+});
+
+function addMissingIndexFiles(files: FileSet): FileSet {
+  files = { ...files };
+  if (!("/index.md" in files)) {
+    files["/index.md"] = "# Homepage";
+  }
+  const directories = [];
+  for (let path of Object.keys(files)) {
+    while (path.length > 1) {
+      path = dirname(path);
+      directories.push(path);
+    }
+  }
+  for (const dir of directories) {
+    const indexPath = join(dir, "index.md");
+    if (!(indexPath in files)) {
+      files[indexPath] = "# Index of " + relative("/", dir);
+    }
+  }
+  return files;
+}
+
+test("addMissingIndexFiles", {
+  "adds an index file to the root directory"() {
+    expect(addMissingIndexFiles({}), equals, { "/index.md": "# Homepage" });
+  },
+
+  "leaves an existing index file alone"() {
+    expect(addMissingIndexFiles({ "/index.md": "hi" }), equals, {
+      "/index.md": "hi",
+    });
+  },
+
+  "adds index files to subdirectories"() {
+    expect(
+      addMissingIndexFiles({
+        "/index.md": "hi",
+        "/foo/bar.md": "hi",
+        "/foo/bar/baz.md": "hi",
+      }),
+      equals,
+      {
+        "/index.md": "hi",
+        "/foo/bar.md": "hi",
+        "/foo/index.md": "# Index of foo",
+        "/foo/bar/baz.md": "hi",
+        "/foo/bar/index.md": "# Index of foo/bar",
+      }
+    );
   },
 });
