@@ -1,6 +1,7 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { relative } from "path";
 import { HtmlFile, ProjectFileSet, MarkdownFile } from "./project-file-set";
+import { by } from "../lib/sorting";
 
 export type TreeOfContents = Array<Node>;
 
@@ -9,6 +10,8 @@ export type Node = Branch | Leaf;
 export type Branch = { type: "branch"; path: string; contents: TreeOfContents };
 
 export type Leaf = { type: "leaf"; path: string };
+
+const path = (n: Node) => n.path;
 
 export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
   root = ensureTrailingSlash(root);
@@ -24,15 +27,17 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
         path !== root + "index.html" &&
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
-    .map(({ outputPath: path }) =>
-      path.endsWith("/index.html")
-        ? {
-            type: "branch",
-            path,
-            contents: toc(files, removeSuffix(path, "index.html")),
-          }
-        : { type: "leaf", path }
-    );
+    .map(
+      ({ outputPath: path }): Node =>
+        path.endsWith("/index.html")
+          ? {
+              type: "branch",
+              path,
+              contents: toc(files, removeSuffix(path, "index.html")),
+            }
+          : { type: "leaf", path }
+    )
+    .sort(by(path));
 }
 
 function ensureTrailingSlash(path: string): string {

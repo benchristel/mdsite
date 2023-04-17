@@ -45,12 +45,12 @@ test("toc", {
 
   "given several files"() {
     const files = parseProjectFiles({
-      "/foo.html": buffer(""),
-      "/bar.html": buffer(""),
+      "/aaa.html": buffer(""),
+      "/bbb.html": buffer(""),
     });
     const expected = [
-      { type: "leaf", path: "/foo.html" },
-      { type: "leaf", path: "/bar.html" },
+      { type: "leaf", path: "/aaa.html" },
+      { type: "leaf", path: "/bbb.html" },
     ];
     expect(toc(files), equals, expected);
   },
@@ -68,16 +68,16 @@ test("toc", {
   "given a subdirectory with several files"() {
     const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
-      "/sub/foo.html": buffer(""),
-      "/sub/bar.html": buffer(""),
+      "/sub/aaa.html": buffer(""),
+      "/sub/bbb.html": buffer(""),
     });
     const expected = [
       {
         type: "branch",
         path: "/sub/index.html",
         contents: [
-          { type: "leaf", path: "/sub/foo.html" },
-          { type: "leaf", path: "/sub/bar.html" },
+          { type: "leaf", path: "/sub/aaa.html" },
+          { type: "leaf", path: "/sub/bbb.html" },
         ],
       },
     ];
@@ -88,8 +88,9 @@ test("toc", {
     const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
       "/sub/marine/index.html": buffer(""),
-      "/sub/marine/foo.html": buffer(""),
-      "/sub/marine/bar.html": buffer(""),
+      "/sub/marine/aaa.html": buffer(""),
+      "/sub/marine/bbb.html": buffer(""),
+      "/sub/marine/ccc.html": buffer(""),
     });
     const expected = [
       {
@@ -100,8 +101,9 @@ test("toc", {
             type: "branch",
             path: "/sub/marine/index.html",
             contents: [
-              { type: "leaf", path: "/sub/marine/foo.html" },
-              { type: "leaf", path: "/sub/marine/bar.html" },
+              { type: "leaf", path: "/sub/marine/aaa.html" },
+              { type: "leaf", path: "/sub/marine/bbb.html" },
+              { type: "leaf", path: "/sub/marine/ccc.html" },
             ],
           },
         ],
@@ -132,7 +134,7 @@ test("htmlToc", {
       "/bar.html": buffer("<h1>Bar</h1>"),
     });
 
-    const expected = `<ul><li><a href="foo.html">Foo</a></li><li><a href="bar.html">Bar</a></li></ul>`;
+    const expected = `<ul><li><a href="bar.html">Bar</a></li><li><a href="foo.html">Foo</a></li></ul>`;
 
     expect(htmlToc(files, "/"), is, expected);
   },
