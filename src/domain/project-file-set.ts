@@ -84,6 +84,9 @@ function addMissingIndexFiles(files: FileSet): FileSet {
   }
   const directories = [];
   for (let path of Object.keys(files)) {
+    if (!(path.endsWith(".html") || path.endsWith(".md"))) {
+      continue;
+    }
     while (path.length > 1) {
       path = dirname(path);
       directories.push(path);
@@ -154,6 +157,23 @@ test("addMissingIndexFiles", {
         "/foo/index.md": "# foo\n\n{{toc}}",
         "/foo/bar/baz.md": "hi",
         "/foo/bar/index.md": "# bar\n\n{{toc}}",
+      }
+    );
+  },
+
+  "does not add index files to directories containing only non-htmlable files"() {
+    expect(
+      valuesToStrings(
+        addMissingIndexFiles({
+          "/foo/bar.png": buffer(""),
+          "/foo/baz/kludge.png": buffer(""),
+        })
+      ),
+      equals,
+      {
+        "/foo/bar.png": "",
+        "/foo/baz/kludge.png": "",
+        "/index.md": "# Homepage\n\n{{toc}}",
       }
     );
   },
