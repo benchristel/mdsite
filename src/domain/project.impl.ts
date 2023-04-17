@@ -1,48 +1,16 @@
 import { FileSet, buffer } from "../lib/files";
-import { htmlFromMarkdown } from "../lib/markdown";
 import { intoObject } from "../lib/objects";
 import { dirname, join, relative } from "path";
-import "./toc";
 import { htmlToc } from "./toc";
-import { title } from "./title";
 import { trimMargin } from "../testing/formatting";
-import {
-  ProjectFile,
-  ProjectFileSet,
-  parseProjectFiles,
-} from "./project-file-set";
+import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 
 export function buildProject(files: FileSet): FileSet {
   files = addMissingIndexFiles(files);
 
   const projectFiles: ProjectFileSet = parseProjectFiles(files);
-  // .map(([srcPath, srcContents]) => {
-  //   const projectFile = ProjectFile(srcPath, srcContents)
-  //   if (projectFile.fate === "preserve") {
-  //     return [srcPath, projectFile] as [string, ProjectFile]
-  //   } else {
-  //     return [projectFile.htmlPath, projectFile] as [string, ProjectFile]
-  //   }
 
-  //   // if (srcPath.endsWith(".md")) {
-  //   //   const htmlPath = srcPath.replace(/\.md$/, ".html");
-  //   //   let htmlContents = defaultTemplate.replace(
-  //   //     "{{markdown}}",
-  //   //     htmlFromMarkdown(srcContents.toString()).trim()
-  //   //   );
-  //   //   htmlContents = htmlContents.replace(
-  //   //     "{{title}}",
-  //   //     title(htmlPath, htmlContents)
-  //   //   );
-
-  //   //   return [htmlPath, buffer(htmlContents)] as [string, Buffer];
-  //   // } else {
-  //   //   return [srcPath, srcContents] as [string, Buffer];
-  //   // }
-  // })
-  // .reduce(intoObject, {});
-
-  files = Object.entries(projectFiles)
+  return Object.entries(projectFiles)
     .map(([path, projectFile]) => {
       if (projectFile.fate === "preserve") {
         return [path, projectFile.contents] as [string, Buffer];
@@ -60,21 +28,8 @@ export function buildProject(files: FileSet): FileSet {
           ),
         ] as [string, Buffer];
       }
-      // if (path.endsWith(".html")) {
-      //   return [
-      //     path,
-      //     buffer(
-      //       contents
-      //         .toString()
-      //         .replace("{{toc}}", htmlToc(files, dirname(path)))
-      //     ),
-      //   ] as [string, Buffer];
-      // } else {
-      //   return [path, contents] as [string, Buffer];
-      // }
     })
     .reduce(intoObject, {});
-  return files;
 }
 
 export function addMissingIndexFiles(files: FileSet): FileSet {

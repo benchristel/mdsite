@@ -1,5 +1,5 @@
 import { test, expect, is, equals, debug } from "@benchristel/taste";
-import { FileSet, buffer } from "../lib/files";
+import { buffer } from "../lib/files";
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { relative } from "path";
 import {
@@ -63,12 +63,6 @@ function htmlForToc(
       })
       .join("") +
     "</ul>"
-  );
-}
-
-function title(files: FileSet, path: string, _default: string) {
-  return (
-    files[path]?.toString().match(/<title>([^<]+)<\/title>/)?.[1] ?? _default
   );
 }
 

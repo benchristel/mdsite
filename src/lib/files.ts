@@ -2,7 +2,7 @@ import { TmpDir } from "../testing/tmp-dir";
 import { test, expect, equals, is } from "@benchristel/taste";
 import { join, relative, dirname } from "path";
 import * as fs from "fs/promises";
-import { intoObject, valuesToStrings } from "./objects";
+import { valuesToStrings } from "./objects";
 
 export type FileSet = {
   [path: string]: Buffer;
