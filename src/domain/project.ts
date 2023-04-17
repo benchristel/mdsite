@@ -5,11 +5,13 @@ import { trimMargin } from "../testing/formatting";
 import { isAnything } from "../testing/matchers";
 import "./toc";
 import { contains } from "../lib/strings";
+import { buffer } from "../lib/files";
+import { valuesToStrings } from "../lib/objects";
 
 test("buildProject", {
   "converts a markdown file to an HTML file"() {
     const input = {
-      "/index.md": "# Hello",
+      "/index.md": buffer("# Hello"),
     };
 
     const expected = {
@@ -26,16 +28,16 @@ test("buildProject", {
       `,
     };
 
-    expect(buildProject(input), equals, expected);
+    expect(valuesToStrings(buildProject(input)), equals, expected);
   },
 
   "does nothing to a .txt file"() {
     const input = {
-      "/foo.txt": "# Hello",
+      "/foo.txt": buffer("# Hello"),
     };
 
     const expected = {
-      "/foo.txt": "# Hello",
+      "/foo.txt": buffer("# Hello"),
       "/index.html": which(isAnything),
     };
 
@@ -44,7 +46,7 @@ test("buildProject", {
 
   "creates a default index.html file with a table of contents"() {
     const input = {
-      "/foo.md": "# This Is Foo",
+      "/foo.md": buffer("# This Is Foo"),
     };
 
     const expected = {
@@ -58,24 +60,30 @@ test("buildProject", {
 
 test("addMissingIndexFiles", {
   "adds an index file to the root directory"() {
-    expect(addMissingIndexFiles({}), equals, {
+    expect(valuesToStrings(addMissingIndexFiles({})), equals, {
       "/index.md": "# Homepage\n\n{{toc}}",
     });
   },
 
   "leaves an existing index file alone"() {
-    expect(addMissingIndexFiles({ "/index.md": "hi" }), equals, {
-      "/index.md": "hi",
-    });
+    expect(
+      valuesToStrings(addMissingIndexFiles({ "/index.md": buffer("hi") })),
+      equals,
+      {
+        "/index.md": "hi",
+      }
+    );
   },
 
   "adds index files to subdirectories"() {
     expect(
-      addMissingIndexFiles({
-        "/index.md": "hi",
-        "/foo/bar.md": "hi",
-        "/foo/bar/baz.md": "hi",
-      }),
+      valuesToStrings(
+        addMissingIndexFiles({
+          "/index.md": buffer("hi"),
+          "/foo/bar.md": buffer("hi"),
+          "/foo/bar/baz.md": buffer("hi"),
+        })
+      ),
       equals,
       {
         "/index.md": "hi",

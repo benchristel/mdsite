@@ -1,4 +1,4 @@
-import { FileSet } from "../lib/files";
+import { FileSet, buffer } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { intoObject } from "../lib/objects";
 import { dirname, join, relative } from "path";
@@ -16,26 +16,34 @@ export function buildProject(files: FileSet): FileSet {
         const htmlPath = srcPath.replace(/\.md$/, ".html");
         let htmlContents = defaultTemplate.replace(
           "{{markdown}}",
-          htmlFromMarkdown(srcContents).trim()
+          htmlFromMarkdown(srcContents.toString()).trim()
         );
         htmlContents = htmlContents.replace(
           "{{title}}",
           title(htmlPath, htmlContents)
         );
 
-        return [htmlPath, htmlContents] as [string, string];
+        return [htmlPath, buffer(htmlContents)] as [string, Buffer];
       } else {
-        return [srcPath, srcContents] as [string, string];
+        return [srcPath, srcContents] as [string, Buffer];
       }
     })
     .reduce(intoObject, {});
 
   files = Object.entries(files)
     .map(([path, contents]) => {
-      return [
-        path,
-        contents.replace("{{toc}}", htmlToc(files, dirname(path))),
-      ] as [string, string];
+      if (path.endsWith(".html")) {
+        return [
+          path,
+          buffer(
+            contents
+              .toString()
+              .replace("{{toc}}", htmlToc(files, dirname(path)))
+          ),
+        ] as [string, Buffer];
+      } else {
+        return [path, contents] as [string, Buffer];
+      }
     })
     .reduce(intoObject, {});
   return files;
@@ -44,7 +52,7 @@ export function buildProject(files: FileSet): FileSet {
 export function addMissingIndexFiles(files: FileSet): FileSet {
   files = { ...files };
   if (!("/index.md" in files)) {
-    files["/index.md"] = "# Homepage\n\n{{toc}}";
+    files["/index.md"] = buffer("# Homepage\n\n{{toc}}");
   }
   const directories = [];
   for (let path of Object.keys(files)) {
@@ -56,7 +64,9 @@ export function addMissingIndexFiles(files: FileSet): FileSet {
   for (const dir of directories) {
     const indexPath = join(dir, "index.md");
     if (!(indexPath in files)) {
-      files[indexPath] = "# Index of " + relative("/", dir) + "\n\n{{toc}}";
+      files[indexPath] = buffer(
+        "# Index of " + relative("/", dir) + "\n\n{{toc}}"
+      );
     }
   }
   return files;

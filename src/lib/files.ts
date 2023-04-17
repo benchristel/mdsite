@@ -2,9 +2,10 @@ import { TmpDir } from "../testing/tmp-dir";
 import { test, expect, equals, is } from "@benchristel/taste";
 import { join, relative, dirname } from "path";
 import * as fs from "fs/promises";
+import { intoObject, valuesToStrings } from "./objects";
 
 export type FileSet = {
-  [path: string]: string;
+  [path: string]: Buffer;
 };
 
 export async function listDeep(
@@ -19,7 +20,7 @@ export async function listDeep(
     const pathFromRoot = "/" + relative(root, path);
 
     if (entry.isFile()) {
-      return readFileString(path).then((contents) => {
+      return fs.readFile(path).then((contents) => {
         fileSet[pathFromRoot] = contents;
       });
     }
@@ -58,7 +59,7 @@ test("listDeep", {
     const tmpDir = TmpDir();
     await tmpDir.write("/foo.txt", "Hello");
 
-    const listing = await tmpDir.path().then(listDeep);
+    const listing = await tmpDir.path().then(listDeep).then(valuesToStrings);
     expect(listing, equals, {
       "/foo.txt": "Hello",
     });
@@ -70,7 +71,7 @@ test("listDeep", {
     await tmpDir.write("/bar.txt", "this is bar");
     await tmpDir.write("/baz.txt", "this is baz");
 
-    const listing = await tmpDir.path().then(listDeep);
+    const listing = await tmpDir.path().then(listDeep).then(valuesToStrings);
     expect(listing, equals, {
       "/foo.txt": "this is foo",
       "/bar.txt": "this is bar",
@@ -84,7 +85,7 @@ test("listDeep", {
     await tmpDir.write("/bar/baz/two.txt", "2");
     await tmpDir.write("/three.txt", "3");
 
-    const listing = await tmpDir.path().then(listDeep);
+    const listing = await tmpDir.path().then(listDeep).then(valuesToStrings);
     expect(listing, equals, {
       "/foo/one.txt": "1",
       "/bar/baz/two.txt": "2",
@@ -101,7 +102,7 @@ test("listDeep", {
     await tmpDir.write("/food/restaurants/da.txt", "da");
     await tmpDir.write("/index.txt", "top index");
 
-    const listing = await tmpDir.path().then(listDeep);
+    const listing = await tmpDir.path().then(listDeep).then(valuesToStrings);
     expect(listing, equals, {
       "/food/recipes/chili.txt": "chili",
       "/food/recipes/lentils.txt": "lentils",
@@ -116,10 +117,10 @@ test("listDeep", {
 test("writeDeep", {
   async "writes a fileset to disk"() {
     const fileSet = {
-      "/food/recipes/chili.txt": "chili",
-      "/food/recipes/lentils.txt": "lentils",
-      "/food/index.txt": "food index",
-      "/index.txt": "top index",
+      "/food/recipes/chili.txt": buffer("chili"),
+      "/food/recipes/lentils.txt": buffer("lentils"),
+      "/food/index.txt": buffer("food index"),
+      "/index.txt": buffer("top index"),
     };
     const tmpDir = TmpDir();
     const path = await tmpDir.path();
@@ -133,6 +134,6 @@ test("writeDeep", {
   },
 });
 
-function readFileString(path: string): Promise<string> {
-  return fs.readFile(path).then((buf) => buf.toString());
+export function buffer(s: string): Buffer {
+  return Buffer.from(s, "utf8");
 }

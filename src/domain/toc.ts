@@ -1,5 +1,5 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { FileSet } from "../lib/files";
+import { FileSet, buffer } from "../lib/files";
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { relative } from "path";
 
@@ -55,7 +55,9 @@ function htmlForToc(
 }
 
 function title(files: FileSet, path: string, _default: string) {
-  return files[path]?.match(/<title>([^<]+)<\/title>/)?.[1] ?? _default;
+  return (
+    files[path]?.toString().match(/<title>([^<]+)<\/title>/)?.[1] ?? _default
+  );
 }
 
 export type TreeOfContents = Array<Node>;
@@ -72,21 +74,21 @@ test("toc", {
   },
 
   "excludes the root index.html file"() {
-    const files = { "/index.html": "hi" };
+    const files = { "/index.html": buffer("hi") };
     const expected: Array<string> = [];
     expect(toc(files), equals, expected);
   },
 
   "excludes non-html files"() {
-    const files = { "/foo.png": "" };
+    const files = { "/foo.png": buffer("") };
     const expected: Array<string> = [];
     expect(toc(files), equals, expected);
   },
 
   "given several files"() {
     const files = {
-      "/foo.html": "yo",
-      "/bar.html": "sup",
+      "/foo.html": buffer(""),
+      "/bar.html": buffer(""),
     };
     const expected = [
       { type: "leaf", path: "/foo.html" },
@@ -97,7 +99,7 @@ test("toc", {
 
   "given an index.html file in a subdirectory"() {
     const files = {
-      "/sub/index.html": "hi",
+      "/sub/index.html": buffer(""),
     };
     const expected = [
       { type: "branch", path: "/sub/index.html", contents: [] },
@@ -107,9 +109,9 @@ test("toc", {
 
   "given a subdirectory with several files"() {
     const files = {
-      "/sub/index.html": "hi",
-      "/sub/foo.html": "yo",
-      "/sub/bar.html": "sup",
+      "/sub/index.html": buffer(""),
+      "/sub/foo.html": buffer(""),
+      "/sub/bar.html": buffer(""),
     };
     const expected = [
       {
@@ -126,10 +128,10 @@ test("toc", {
 
   "given a sub-subdirectory"() {
     const files = {
-      "/sub/index.html": "",
-      "/sub/marine/index.html": "",
-      "/sub/marine/foo.html": "",
-      "/sub/marine/bar.html": "",
+      "/sub/index.html": buffer(""),
+      "/sub/marine/index.html": buffer(""),
+      "/sub/marine/foo.html": buffer(""),
+      "/sub/marine/bar.html": buffer(""),
     };
     const expected = [
       {
@@ -158,7 +160,7 @@ test("htmlToc", {
 
   "given a tree with one file"() {
     const files = {
-      "/foo.html": "<title>This Is Foo</title>",
+      "/foo.html": buffer("<title>This Is Foo</title>"),
     };
 
     const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
@@ -168,8 +170,8 @@ test("htmlToc", {
 
   "generates a list of multiple links"() {
     const files = {
-      "/foo.html": "<title>Foo</title>",
-      "/bar.html": "<title>Bar</title>",
+      "/foo.html": buffer("<title>Foo</title>"),
+      "/bar.html": buffer("<title>Bar</title>"),
     };
 
     const expected = `<ul><li><a href="foo.html">Foo</a></li><li><a href="bar.html">Bar</a></li></ul>`;
@@ -179,7 +181,7 @@ test("htmlToc", {
 
   "defaults link titles to the path"() {
     const files = {
-      "/foo.html": "no title here",
+      "/foo.html": buffer("no title here"),
     };
 
     const expected = `<ul><li><a href="foo.html">foo.html</a></li></ul>`;
@@ -189,7 +191,7 @@ test("htmlToc", {
 
   "creates relative links, starting from the linkOrigin"() {
     const files = {
-      "/foo.html": "no title here",
+      "/foo.html": buffer("no title here"),
     };
 
     const expected = `<ul><li><a href="../../../foo.html">../../../foo.html</a></li></ul>`;
@@ -199,8 +201,8 @@ test("htmlToc", {
 
   recurses() {
     const files = {
-      "/bar/index.html": "<title>Bar</title>",
-      "/bar/baz.html": "<title>Baz</title>",
+      "/bar/index.html": buffer("<title>Bar</title>"),
+      "/bar/baz.html": buffer("<title>Baz</title>"),
     };
 
     const expected = `<ul><li><a href="bar/index.html">Bar</a><ul><li><a href="bar/baz.html">Baz</a></li></ul></li></ul>`;
