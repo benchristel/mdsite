@@ -1,13 +1,12 @@
 import { FileSet, buffer } from "../lib/files";
 import { intoObject } from "../lib/objects";
-import { dirname, join, relative } from "path";
+import { dirname } from "path";
 import { htmlToc } from "./toc";
 import { trimMargin } from "../testing/formatting";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 import { unreachable } from "../lib/unreachable";
 
 export function buildProject(files: FileSet): FileSet {
-  files = addMissingIndexFiles(files);
   const projectFiles: ProjectFileSet = parseProjectFiles(files);
 
   return Object.entries(projectFiles)
@@ -33,29 +32,6 @@ export function buildProject(files: FileSet): FileSet {
       }
     })
     .reduce(intoObject, {});
-}
-
-export function addMissingIndexFiles(files: FileSet): FileSet {
-  files = { ...files };
-  if (!("/index.md" in files)) {
-    files["/index.md"] = buffer("# Homepage\n\n{{toc}}");
-  }
-  const directories = [];
-  for (let path of Object.keys(files)) {
-    while (path.length > 1) {
-      path = dirname(path);
-      directories.push(path);
-    }
-  }
-  for (const dir of directories) {
-    const indexPath = join(dir, "index.md");
-    if (!(indexPath in files)) {
-      files[indexPath] = buffer(
-        "# Index of " + relative("/", dir) + "\n\n{{toc}}"
-      );
-    }
-  }
-  return files;
 }
 
 const defaultTemplate = trimMargin`

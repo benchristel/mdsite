@@ -3,7 +3,6 @@ import { test, expect, is, equals } from "@benchristel/taste";
 import { buffer } from "../lib/files";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 import { toc, htmlToc, leaf, branch } from "./toc.impl";
-import { addMissingIndexFiles } from "./project.impl";
 
 {
   // htmlToc() generates an HTML "tree of contents" with <ul> and <li>
@@ -116,14 +115,12 @@ test("toc", {
   },
 
   "sorts sibling branches by index.html title"() {
-    const files = parseProjectFiles(
-      addMissingIndexFiles({
-        "/bbb/foo.html": buffer(""),
-        "/ddd/foo.html": buffer(""),
-        "/aaa/foo.html": buffer(""),
-        "/ccc/foo.html": buffer(""),
-      })
-    );
+    const files = parseProjectFiles({
+      "/bbb/foo.html": buffer(""),
+      "/ddd/foo.html": buffer(""),
+      "/aaa/foo.html": buffer(""),
+      "/ccc/foo.html": buffer(""),
+    });
     const expected = [
       branch(
         { path: "/aaa/index.html", title: "Index of aaa" },

@@ -1,8 +1,10 @@
-import { FileSet } from "../lib/files";
+import { dirname, join, relative } from "path";
+import { FileSet, buffer } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
-import { mapEntries } from "../lib/objects";
+import { mapEntries, valuesToStrings } from "../lib/objects";
 import { removeSuffix } from "../lib/strings";
 import { title } from "./title";
+import { test, expect, equals } from "@benchristel/taste";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
@@ -69,8 +71,92 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
 }
 
 export function parseProjectFiles(files: FileSet): ProjectFileSet {
-  return mapEntries(files, ([srcPath, srcContents]) => {
+  return mapEntries(addMissingIndexFiles(files), ([srcPath, srcContents]) => {
     const projectFile = ProjectFile(srcPath, srcContents);
     return [projectFile.outputPath, projectFile];
   });
 }
+
+function addMissingIndexFiles(files: FileSet): FileSet {
+  files = { ...files };
+  if (!("/index.md" in files) && !("/index.html" in files)) {
+    files["/index.md"] = buffer("# Homepage\n\n{{toc}}");
+  }
+  const directories = [];
+  for (let path of Object.keys(files)) {
+    while (path.length > 1) {
+      path = dirname(path);
+      directories.push(path);
+    }
+  }
+  for (const dir of directories) {
+    const indexMdPath = join(dir, "index.md");
+    const indexHtmlPath = join(dir, "index.html");
+    if (!(indexMdPath in files) && !(indexHtmlPath in files)) {
+      files[indexMdPath] = buffer(
+        "# Index of " + relative("/", dir) + "\n\n{{toc}}"
+      );
+    }
+  }
+  return files;
+}
+
+test("addMissingIndexFiles", {
+  "adds an index file to the root directory"() {
+    expect(valuesToStrings(addMissingIndexFiles({})), equals, {
+      "/index.md": "# Homepage\n\n{{toc}}",
+    });
+  },
+
+  "leaves existing index.md files alone"() {
+    expect(
+      valuesToStrings(
+        addMissingIndexFiles({
+          "/index.md": buffer("hi"),
+          "/foo/index.md": buffer("foo"),
+        })
+      ),
+      equals,
+      {
+        "/index.md": "hi",
+        "/foo/index.md": "foo",
+      }
+    );
+  },
+
+  "leaves existing index.html files alone"() {
+    expect(
+      valuesToStrings(
+        addMissingIndexFiles({
+          "/index.html": buffer("hi"),
+          "/foo/index.html": buffer("foo"),
+        })
+      ),
+      equals,
+      {
+        "/index.html": "hi",
+        "/foo/index.html": "foo",
+      }
+    );
+  },
+
+  "adds index files to subdirectories"() {
+    expect(
+      valuesToStrings(
+        addMissingIndexFiles({
+          "/index.md": buffer("hi"),
+          "/foo/bar.md": buffer("hi"),
+          "/foo/bar/baz.md": buffer("hi"),
+        })
+      ),
+      equals,
+      {
+        "/index.md": "hi",
+        "/foo/bar.md": "hi",
+        "/foo/index.md": "# Index of foo\n\n{{toc}}",
+        "/foo/bar/baz.md": "hi",
+        "/foo/bar/index.md": "# Index of foo/bar\n\n{{toc}}",
+      }
+    );
+  },
+});
