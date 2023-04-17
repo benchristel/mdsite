@@ -10,6 +10,7 @@ import {
 } from "./project-file-set";
 
 export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
+  root = ensureTrailingSlash(root);
   return Object.values(files)
     .flatMap(
       (file): Array<TransformedFile | HtmlFile> =>
@@ -33,8 +34,17 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
     );
 }
 
-export function htmlToc(files: ProjectFileSet, linkOrigin: string): string {
-  const theToc = toc(files);
+function ensureTrailingSlash(path: string): string {
+  if (!path.endsWith("/")) return path + "/";
+  else return path;
+}
+
+export function htmlToc(
+  files: ProjectFileSet,
+  linkOrigin: string,
+  root: string = linkOrigin
+): string {
+  const theToc = toc(files, root);
   if (theToc.length === 0) {
     return "";
   }
@@ -83,6 +93,12 @@ test("toc", {
     const files = parseProjectFiles({ "/index.html": buffer("hi") });
     const expected: Array<string> = [];
     expect(toc(files), equals, expected);
+  },
+
+  "excludes the index.html under the given root"() {
+    const files = parseProjectFiles({ "/foo/index.html": buffer("hi") });
+    const expected: Array<string> = [];
+    expect(toc(files, "/foo"), equals, expected);
   },
 
   "excludes non-html files"() {
@@ -202,7 +218,7 @@ test("htmlToc", {
 
     const expected = `<ul><li><a href="../../../foo.html">Foo</a></li></ul>`;
 
-    expect(htmlToc(files, "/one/two/three"), is, expected);
+    expect(htmlToc(files, "/one/two/three", "/"), is, expected);
   },
 
   recurses() {
