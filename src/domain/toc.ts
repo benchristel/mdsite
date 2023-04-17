@@ -39,15 +39,17 @@ function htmlForToc(
 ): string {
   return (
     "<ul>" +
-    toc.map((node) => {
-      const subToc =
-        node.type === "leaf"
-          ? ""
-          : htmlForToc(files, node.contents, linkOrigin);
-      const relativePath = relative(linkOrigin, node.path);
-      const linkTitle = title(files, node.path, relativePath);
-      return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
-    }) +
+    toc
+      .map((node) => {
+        const subToc =
+          node.type === "leaf"
+            ? ""
+            : htmlForToc(files, node.contents, linkOrigin);
+        const relativePath = relative(linkOrigin, node.path);
+        const linkTitle = title(files, node.path, relativePath);
+        return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
+      })
+      .join("") +
     "</ul>"
   );
 }
@@ -160,6 +162,17 @@ test("htmlToc", {
     };
 
     const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
+
+    expect(htmlToc(files, "/"), is, expected);
+  },
+
+  "generates a list of multiple links"() {
+    const files = {
+      "/foo.html": "<title>Foo</title>",
+      "/bar.html": "<title>Bar</title>",
+    };
+
+    const expected = `<ul><li><a href="foo.html">Foo</a></li><li><a href="bar.html">Bar</a></li></ul>`;
 
     expect(htmlToc(files, "/"), is, expected);
   },
