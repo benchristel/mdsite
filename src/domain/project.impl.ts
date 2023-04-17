@@ -12,11 +12,11 @@ export function buildProject(files: FileSet): FileSet {
 
   return Object.entries(projectFiles)
     .map(([path, projectFile]) => {
-      switch (projectFile.fate) {
-        case "preserve":
+      switch (projectFile.type) {
+        case "opaque":
           return [path, projectFile.contents] as [string, Buffer];
-        case "transform":
-        case "preserve-html":
+        case "markdown":
+        case "html":
           return [
             projectFile.htmlPath,
             buffer(
@@ -29,7 +29,7 @@ export function buildProject(files: FileSet): FileSet {
             ),
           ] as [string, Buffer];
         default:
-          throw unreachable("unexpected fate for project file", projectFile);
+          throw unreachable("unexpected type of project file", projectFile);
       }
     })
     .reduce(intoObject, {});

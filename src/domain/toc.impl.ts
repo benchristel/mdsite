@@ -15,7 +15,7 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
   return Object.values(files)
     .flatMap(
       (file): Array<MarkdownFile | HtmlFile> =>
-        file.fate === "transform" || file.fate === "preserve-html" ? [file] : []
+        file.type === "markdown" || file.type === "html" ? [file] : []
     )
     .filter(
       ({ htmlPath: path }) =>
@@ -69,8 +69,7 @@ function htmlForToc(
         const relativePath = relative(linkOrigin, node.path);
         const file = files[node.path];
         const linkTitle =
-          file.fate === "transform" ||
-          (file.fate === "preserve-html" && file.title) ||
+          ((file.type === "markdown" || file.type === "html") && file.title) ||
           relativePath;
         return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
       })

@@ -10,12 +10,12 @@ export type ProjectFileSet = Record<string, ProjectFile>;
 export type ProjectFile = OpaqueFile | MarkdownFile | HtmlFile;
 
 export type OpaqueFile = {
-  fate: "preserve";
+  type: "opaque";
   contents: Buffer;
 };
 
 export type MarkdownFile = {
-  fate: "transform";
+  type: "markdown";
   markdown: string;
   rawHtml: string;
   title: string;
@@ -23,7 +23,7 @@ export type MarkdownFile = {
 };
 
 export type HtmlFile = {
-  fate: "preserve-html";
+  type: "html";
   rawHtml: string;
   title: string;
   htmlPath: string;
@@ -35,7 +35,7 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
     const rawHtml = htmlFromMarkdown(markdown).trim();
     const htmlPath = removeSuffix(path, ".md") + ".html";
     return {
-      fate: "transform",
+      type: "markdown",
       markdown,
       rawHtml,
       title: title(htmlPath, rawHtml),
@@ -44,14 +44,14 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   } else if (path.endsWith(".html")) {
     const rawHtml = contents.toString();
     return {
-      fate: "preserve-html",
+      type: "html",
       rawHtml,
       title: title(path, rawHtml),
       htmlPath: path,
     };
   } else {
     return {
-      fate: "preserve",
+      type: "opaque",
       contents,
     };
   }
@@ -61,14 +61,14 @@ export function parseProjectFiles(files: FileSet): ProjectFileSet {
   return Object.entries(files)
     .map(([srcPath, srcContents]) => {
       const projectFile = ProjectFile(srcPath, srcContents);
-      switch (projectFile.fate) {
-        case "preserve":
+      switch (projectFile.type) {
+        case "opaque":
           return [srcPath, projectFile] as [string, ProjectFile];
-        case "transform":
-        case "preserve-html":
+        case "markdown":
+        case "html":
           return [projectFile.htmlPath, projectFile] as [string, ProjectFile];
         default:
-          throw unreachable("unexpected fate for project file", projectFile);
+          throw unreachable("unexpected type of project file", projectFile);
       }
     })
     .reduce(intoObject, {});
