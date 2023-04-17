@@ -4,9 +4,7 @@ import { join, relative, dirname } from "path";
 import * as fs from "fs/promises";
 import { valuesToStrings } from "./objects";
 
-export type FileSet = {
-  [path: string]: Buffer;
-};
+export type FileSet = Record<string, Buffer>;
 
 export async function listDeep(
   dir: string,

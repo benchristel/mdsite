@@ -18,13 +18,13 @@ export function buildProject(files: FileSet): FileSet {
         case "markdown":
         case "html":
           return [
-            projectFile.htmlPath,
+            projectFile.outputPath,
             buffer(
               defaultTemplate
                 .replace("{{markdown}}", projectFile.rawHtml)
                 .replace("{{title}}", projectFile.title)
                 .replace("{{toc}}", () =>
-                  htmlToc(projectFiles, dirname(projectFile.htmlPath))
+                  htmlToc(projectFiles, dirname(projectFile.outputPath))
                 )
             ),
           ] as [string, Buffer];

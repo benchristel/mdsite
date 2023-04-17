@@ -18,13 +18,13 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
         file.type === "markdown" || file.type === "html" ? [file] : []
     )
     .filter(
-      ({ htmlPath: path }) =>
+      ({ outputPath: path }) =>
         path.startsWith(root) &&
         path.endsWith(".html") &&
         path !== root + "index.html" &&
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
-    .map(({ htmlPath: path }) =>
+    .map(({ outputPath: path }) =>
       path.endsWith("/index.html")
         ? {
             type: "branch",
