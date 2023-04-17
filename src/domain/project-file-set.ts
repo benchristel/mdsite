@@ -82,17 +82,17 @@ function addMissingIndexFiles(files: FileSet): FileSet {
   if (!("/index.md" in files) && !("/index.html" in files)) {
     files["/index.md"] = buffer("# Homepage\n\n{{toc}}");
   }
-  const directories = [];
+  const directories: Record<string, true> = {};
   for (let path of Object.keys(files)) {
     if (!(path.endsWith(".html") || path.endsWith(".md"))) {
       continue;
     }
     while (path.length > 1) {
       path = dirname(path);
-      directories.push(path);
+      directories[path] = true;
     }
   }
-  for (const dir of directories) {
+  for (const dir in directories) {
     const indexMdPath = join(dir, "index.md");
     const indexHtmlPath = join(dir, "index.html");
     if (!(indexMdPath in files) && !(indexHtmlPath in files)) {
