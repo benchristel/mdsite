@@ -45,7 +45,10 @@ test("toc", {
       "/aaa.html": buffer(""),
       "/bbb.html": buffer(""),
     });
-    const expected = [leaf({ path: "/aaa.html" }), leaf({ path: "/bbb.html" })];
+    const expected = [
+      leaf({ path: "/aaa.html", title: "aaa.html" }),
+      leaf({ path: "/bbb.html", title: "bbb.html" }),
+    ];
     expect(toc(files), equals, expected);
   },
 
@@ -53,7 +56,7 @@ test("toc", {
     const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
     });
-    const expected = [branch({ path: "/sub/index.html" })];
+    const expected = [branch({ path: "/sub/index.html", title: "index.html" })];
     expect(toc(files), equals, expected);
   },
 
@@ -65,9 +68,9 @@ test("toc", {
     });
     const expected = [
       branch(
-        { path: "/sub/index.html" },
-        leaf({ path: "/sub/aaa.html" }),
-        leaf({ path: "/sub/bbb.html" })
+        { path: "/sub/index.html", title: "index.html" },
+        leaf({ path: "/sub/aaa.html", title: "aaa.html" }),
+        leaf({ path: "/sub/bbb.html", title: "bbb.html" })
       ),
     ];
     expect(toc(files), equals, expected);
@@ -82,18 +85,15 @@ test("toc", {
       "/sub/marine/ccc.html": buffer(""),
     });
     const expected = [
-      {
-        type: "branch",
-        path: "/sub/index.html",
-        contents: [
-          branch(
-            { path: "/sub/marine/index.html" },
-            leaf({ path: "/sub/marine/aaa.html" }),
-            leaf({ path: "/sub/marine/bbb.html" }),
-            leaf({ path: "/sub/marine/ccc.html" })
-          ),
-        ],
-      },
+      branch(
+        { path: "/sub/index.html", title: "index.html" },
+        branch(
+          { path: "/sub/marine/index.html", title: "index.html" },
+          leaf({ path: "/sub/marine/aaa.html", title: "aaa.html" }),
+          leaf({ path: "/sub/marine/bbb.html", title: "bbb.html" }),
+          leaf({ path: "/sub/marine/ccc.html", title: "ccc.html" })
+        )
+      ),
     ];
     expect(toc(files), equals, expected);
   },

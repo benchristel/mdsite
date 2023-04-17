@@ -7,21 +7,30 @@ export type TreeOfContents = Array<Node>;
 
 export type Node = Branch | Leaf;
 
-export type Branch = { type: "branch"; path: string; contents: TreeOfContents };
+export type Branch = {
+  type: "branch";
+  path: string;
+  title: string;
+  contents: TreeOfContents;
+};
 
-export type Leaf = { type: "leaf"; path: string };
+export type Leaf = {
+  type: "leaf";
+  path: string;
+  title: string;
+};
 
 const path = (n: Node) => n.path;
 
 export function branch(
-  params: { path: string },
+  params: { path: string; title: string },
   ...contents: TreeOfContents
 ): Branch {
-  return { type: "branch", path: params.path, contents };
+  return { type: "branch", contents, ...params };
 }
 
-export function leaf(params: { path: string }): Leaf {
-  return { type: "leaf", path: params.path };
+export function leaf(params: { path: string; title: string }): Leaf {
+  return { type: "leaf", ...params };
 }
 
 export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
@@ -39,10 +48,13 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
     .map(
-      ({ outputPath: path }): Node =>
+      ({ outputPath: path, title }): Node =>
         path.endsWith("/index.html")
-          ? branch({ path }, ...toc(files, removeSuffix(path, "index.html")))
-          : leaf({ path })
+          ? branch(
+              { path, title },
+              ...toc(files, removeSuffix(path, "index.html"))
+            )
+          : leaf({ path, title })
     )
     .sort(by(path));
 }
@@ -62,28 +74,18 @@ export function htmlToc(
     return "";
   }
 
-  return htmlForToc(files, theToc, linkOrigin);
+  return htmlForToc(theToc, linkOrigin);
 }
 
-function htmlForToc(
-  files: ProjectFileSet,
-  toc: TreeOfContents,
-  linkOrigin: string
-): string {
+function htmlForToc(toc: TreeOfContents, linkOrigin: string): string {
   return (
     "<ul>" +
     toc
       .map((node) => {
         const subToc =
-          node.type === "leaf"
-            ? ""
-            : htmlForToc(files, node.contents, linkOrigin);
+          node.type === "leaf" ? "" : htmlForToc(node.contents, linkOrigin);
         const relativePath = relative(linkOrigin, node.path);
-        const file = files[node.path];
-        const linkTitle =
-          ((file.type === "markdown" || file.type === "html") && file.title) ||
-          relativePath;
-        return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
+        return `<li><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
       })
       .join("") +
     "</ul>"
