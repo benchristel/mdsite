@@ -7,7 +7,6 @@ import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 
 export function buildProject(files: FileSet): FileSet {
   files = addMissingIndexFiles(files);
-
   const projectFiles: ProjectFileSet = parseProjectFiles(files);
 
   return Object.entries(projectFiles)
@@ -21,8 +20,7 @@ export function buildProject(files: FileSet): FileSet {
             defaultTemplate
               .replace("{{markdown}}", projectFile.rawHtml)
               .replace("{{title}}", projectFile.title)
-              .replace(
-                "{{toc}}",
+              .replace("{{toc}}", () =>
                 htmlToc(projectFiles, dirname(projectFile.htmlPath))
               )
           ),
