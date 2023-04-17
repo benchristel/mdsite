@@ -6,17 +6,25 @@ import { trimMargin } from "../testing/formatting";
 import { basename, dirname, join, relative } from "path";
 import { isAnything } from "../testing/matchers";
 import "./toc";
+import { htmlToc } from "./toc";
+import { contains } from "../lib/strings";
+import { title } from "./title";
 
 export function buildProject(files: FileSet): FileSet {
   files = addMissingIndexFiles(files);
 
-  return Object.entries(files)
+  files = Object.entries(files)
     .map(([srcPath, srcContents]) => {
       if (srcPath.endsWith(".md")) {
         const htmlPath = srcPath.replace(/\.md$/, ".html");
-        const htmlContents = defaultTemplate
-          .replace("{{markdown}}", htmlFromMarkdown(srcContents).trim())
-          .replace("{{title}}", basename(htmlPath));
+        let htmlContents = defaultTemplate.replace(
+          "{{markdown}}",
+          htmlFromMarkdown(srcContents).trim()
+        );
+        htmlContents = htmlContents.replace(
+          "{{title}}",
+          title(htmlPath, htmlContents)
+        );
 
         return [htmlPath, htmlContents] as [string, string];
       } else {
@@ -24,6 +32,16 @@ export function buildProject(files: FileSet): FileSet {
       }
     })
     .reduce(intoObject, {});
+
+  files = Object.entries(files)
+    .map(([path, contents]) => {
+      return [
+        path,
+        contents.replace("{{toc}}", htmlToc(files, dirname(path))),
+      ] as [string, string];
+    })
+    .reduce(intoObject, {});
+  return files;
 }
 
 const defaultTemplate = trimMargin`
@@ -49,7 +67,7 @@ test("buildProject", {
         <!DOCTYPE html>
         <html>
           <head>
-            <title>index.html</title>
+            <title>Hello</title>
           </head>
           <body>
             <h1 id="hello">Hello</h1>
@@ -73,12 +91,25 @@ test("buildProject", {
 
     expect(buildProject(input), equals, expected);
   },
+
+  "creates a default index.html file with a table of contents"() {
+    const input = {
+      "/foo.md": "# This Is Foo",
+    };
+
+    const expected = {
+      "/foo.html": which(contains("This Is Foo")),
+      "/index.html": which(contains(`<a href="foo.html">This Is Foo</a>`)),
+    };
+
+    expect(buildProject(input), equals, expected);
+  },
 });
 
 function addMissingIndexFiles(files: FileSet): FileSet {
   files = { ...files };
   if (!("/index.md" in files)) {
-    files["/index.md"] = "# Homepage";
+    files["/index.md"] = "# Homepage\n\n{{toc}}";
   }
   const directories = [];
   for (let path of Object.keys(files)) {
@@ -90,7 +121,7 @@ function addMissingIndexFiles(files: FileSet): FileSet {
   for (const dir of directories) {
     const indexPath = join(dir, "index.md");
     if (!(indexPath in files)) {
-      files[indexPath] = "# Index of " + relative("/", dir);
+      files[indexPath] = "# Index of " + relative("/", dir) + "\n\n{{toc}}";
     }
   }
   return files;
@@ -98,7 +129,9 @@ function addMissingIndexFiles(files: FileSet): FileSet {
 
 test("addMissingIndexFiles", {
   "adds an index file to the root directory"() {
-    expect(addMissingIndexFiles({}), equals, { "/index.md": "# Homepage" });
+    expect(addMissingIndexFiles({}), equals, {
+      "/index.md": "# Homepage\n\n{{toc}}",
+    });
   },
 
   "leaves an existing index file alone"() {
@@ -118,9 +151,9 @@ test("addMissingIndexFiles", {
       {
         "/index.md": "hi",
         "/foo/bar.md": "hi",
-        "/foo/index.md": "# Index of foo",
+        "/foo/index.md": "# Index of foo\n\n{{toc}}",
         "/foo/bar/baz.md": "hi",
-        "/foo/bar/index.md": "# Index of foo/bar",
+        "/foo/bar/index.md": "# Index of foo/bar\n\n{{toc}}",
       }
     );
   },
