@@ -3,6 +3,7 @@ import { test, expect, is, equals } from "@benchristel/taste";
 import { buffer } from "../lib/files";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 import { toc, htmlToc, leaf, branch } from "./toc.impl";
+import { addMissingIndexFiles } from "./project.impl";
 
 {
   // htmlToc() generates an HTML "tree of contents" with <ul> and <li>
@@ -93,6 +94,52 @@ test("toc", {
           leaf({ path: "/sub/marine/bbb.html", title: "bbb.html" }),
           leaf({ path: "/sub/marine/ccc.html", title: "ccc.html" })
         )
+      ),
+    ];
+    expect(toc(files), equals, expected);
+  },
+
+  "sorts sibling leaves by title"() {
+    const files = parseProjectFiles({
+      "/aaa.html": buffer("<h1>3</h1>"),
+      "/bbb.html": buffer("<h1>1</h1>"),
+      "/ccc.html": buffer("<h1>4</h1>"),
+      "/ddd.html": buffer("<h1>2</h1>"),
+    });
+    const expected = [
+      leaf({ path: "/bbb.html", title: "1" }),
+      leaf({ path: "/ddd.html", title: "2" }),
+      leaf({ path: "/aaa.html", title: "3" }),
+      leaf({ path: "/ccc.html", title: "4" }),
+    ];
+    expect(toc(files), equals, expected);
+  },
+
+  "sorts sibling branches by index.html title"() {
+    const files = parseProjectFiles(
+      addMissingIndexFiles({
+        "/bbb/foo.html": buffer(""),
+        "/ddd/foo.html": buffer(""),
+        "/aaa/foo.html": buffer(""),
+        "/ccc/foo.html": buffer(""),
+      })
+    );
+    const expected = [
+      branch(
+        { path: "/aaa/index.html", title: "Index of aaa" },
+        leaf({ path: "/aaa/foo.html", title: "foo.html" })
+      ),
+      branch(
+        { path: "/bbb/index.html", title: "Index of bbb" },
+        leaf({ path: "/bbb/foo.html", title: "foo.html" })
+      ),
+      branch(
+        { path: "/ccc/index.html", title: "Index of ccc" },
+        leaf({ path: "/ccc/foo.html", title: "foo.html" })
+      ),
+      branch(
+        { path: "/ddd/index.html", title: "Index of ddd" },
+        leaf({ path: "/ddd/foo.html", title: "foo.html" })
       ),
     ];
     expect(toc(files), equals, expected);

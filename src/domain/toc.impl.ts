@@ -20,7 +20,7 @@ export type Leaf = {
   title: string;
 };
 
-const path = (n: Node) => n.path;
+const tocSortKey = (n: Node) => n.title;
 
 export function branch(
   params: { path: string; title: string },
@@ -56,7 +56,7 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
             )
           : leaf({ path, title })
     )
-    .sort(by(path));
+    .sort(by(tocSortKey));
 }
 
 function ensureTrailingSlash(path: string): string {
