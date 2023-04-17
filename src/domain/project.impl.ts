@@ -4,6 +4,7 @@ import { dirname, join, relative } from "path";
 import { htmlToc } from "./toc";
 import { trimMargin } from "../testing/formatting";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
+import { unreachable } from "../lib/unreachable";
 
 export function buildProject(files: FileSet): FileSet {
   files = addMissingIndexFiles(files);
@@ -11,20 +12,24 @@ export function buildProject(files: FileSet): FileSet {
 
   return Object.entries(projectFiles)
     .map(([path, projectFile]) => {
-      if (projectFile.fate === "preserve") {
-        return [path, projectFile.contents] as [string, Buffer];
-      } else {
-        return [
-          projectFile.htmlPath,
-          buffer(
-            defaultTemplate
-              .replace("{{markdown}}", projectFile.rawHtml)
-              .replace("{{title}}", projectFile.title)
-              .replace("{{toc}}", () =>
-                htmlToc(projectFiles, dirname(projectFile.htmlPath))
-              )
-          ),
-        ] as [string, Buffer];
+      switch (projectFile.fate) {
+        case "preserve":
+          return [path, projectFile.contents] as [string, Buffer];
+        case "transform":
+        case "preserve-html":
+          return [
+            projectFile.htmlPath,
+            buffer(
+              defaultTemplate
+                .replace("{{markdown}}", projectFile.rawHtml)
+                .replace("{{title}}", projectFile.title)
+                .replace("{{toc}}", () =>
+                  htmlToc(projectFiles, dirname(projectFile.htmlPath))
+                )
+            ),
+          ] as [string, Buffer];
+        default:
+          throw unreachable("unexpected fate for project file", projectFile);
       }
     })
     .reduce(intoObject, {});

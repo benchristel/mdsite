@@ -2,18 +2,19 @@ import { FileSet } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { intoObject } from "../lib/objects";
 import { removeSuffix } from "../lib/strings";
+import { unreachable } from "../lib/unreachable";
 import { title } from "./title";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
-export type ProjectFile = PreservedFile | TransformedFile | HtmlFile;
+export type ProjectFile = OpaqueFile | MarkdownFile | HtmlFile;
 
-export type PreservedFile = {
+export type OpaqueFile = {
   fate: "preserve";
   contents: Buffer;
 };
 
-export type TransformedFile = {
+export type MarkdownFile = {
   fate: "transform";
   markdown: string;
   rawHtml: string;
@@ -28,7 +29,7 @@ export type HtmlFile = {
   htmlPath: string;
 };
 
-export function ProjectFile(path: string, contents: Buffer) {
+export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   if (path.endsWith(".md")) {
     const markdown = contents.toString();
     const rawHtml = htmlFromMarkdown(markdown).trim();
@@ -60,10 +61,14 @@ export function parseProjectFiles(files: FileSet): ProjectFileSet {
   return Object.entries(files)
     .map(([srcPath, srcContents]) => {
       const projectFile = ProjectFile(srcPath, srcContents);
-      if (projectFile.fate === "preserve") {
-        return [srcPath, projectFile] as [string, ProjectFile];
-      } else {
-        return [projectFile.htmlPath, projectFile] as [string, ProjectFile];
+      switch (projectFile.fate) {
+        case "preserve":
+          return [srcPath, projectFile] as [string, ProjectFile];
+        case "transform":
+        case "preserve-html":
+          return [projectFile.htmlPath, projectFile] as [string, ProjectFile];
+        default:
+          throw unreachable("unexpected fate for project file", projectFile);
       }
     })
     .reduce(intoObject, {});

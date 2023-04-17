@@ -1,6 +1,6 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { relative } from "path";
-import { HtmlFile, ProjectFileSet, TransformedFile } from "./project-file-set";
+import { HtmlFile, ProjectFileSet, MarkdownFile } from "./project-file-set";
 
 export type TreeOfContents = Array<Node>;
 
@@ -14,8 +14,8 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
   root = ensureTrailingSlash(root);
   return Object.values(files)
     .flatMap(
-      (file): Array<TransformedFile | HtmlFile> =>
-        file.fate !== "preserve" ? [file] : []
+      (file): Array<MarkdownFile | HtmlFile> =>
+        file.fate === "transform" || file.fate === "preserve-html" ? [file] : []
     )
     .filter(
       ({ htmlPath: path }) =>
@@ -69,7 +69,9 @@ function htmlForToc(
         const relativePath = relative(linkOrigin, node.path);
         const file = files[node.path];
         const linkTitle =
-          (file.fate !== "preserve" && file.title) || relativePath;
+          file.fate === "transform" ||
+          (file.fate === "preserve-html" && file.title) ||
+          relativePath;
         return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
       })
       .join("") +
