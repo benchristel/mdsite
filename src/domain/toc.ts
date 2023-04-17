@@ -1,88 +1,24 @@
-import { test, expect, is, equals, debug } from "@benchristel/taste";
+export { htmlToc } from "./toc.impl";
+import { test, expect, is, equals } from "@benchristel/taste";
 import { buffer } from "../lib/files";
-import { contains, removePrefix, removeSuffix } from "../lib/strings";
-import { relative } from "path";
-import {
-  HtmlFile,
-  ProjectFileSet,
-  TransformedFile,
-  parseProjectFiles,
-} from "./project-file-set";
+import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
+import { toc, htmlToc } from "./toc.impl";
 
-export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
-  root = ensureTrailingSlash(root);
-  return Object.values(files)
-    .flatMap(
-      (file): Array<TransformedFile | HtmlFile> =>
-        file.fate !== "preserve" ? [file] : []
-    )
-    .filter(
-      ({ htmlPath: path }) =>
-        path.startsWith(root) &&
-        path.endsWith(".html") &&
-        path !== root + "index.html" &&
-        !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
-    )
-    .map(({ htmlPath: path }) =>
-      path.endsWith("/index.html")
-        ? {
-            type: "branch",
-            path,
-            contents: toc(files, removeSuffix(path, "index.html")),
-          }
-        : { type: "leaf", path }
-    );
+{
+  // htmlToc() generates an HTML "tree of contents" with <ul> and <li>
+  // elements, and links.
+  htmlToc satisfies (
+    // files: the set of files in the project
+    files: ProjectFileSet,
+    // linkOrigin: a directory path. Paths in link hrefs will be relative to
+    // linkOrigin. Links are always generated with relative paths, so sites
+    // can be deployed to a subdirectory of a domain.
+    linkOrigin: string,
+    // root: a directory, which defaults to linkOrigin. The generated tree of
+    // contents will include only files under the given root.
+    root: string | undefined
+  ) => string;
 }
-
-function ensureTrailingSlash(path: string): string {
-  if (!path.endsWith("/")) return path + "/";
-  else return path;
-}
-
-export function htmlToc(
-  files: ProjectFileSet,
-  linkOrigin: string,
-  root: string = linkOrigin
-): string {
-  const theToc = toc(files, root);
-  if (theToc.length === 0) {
-    return "";
-  }
-
-  return htmlForToc(files, theToc, linkOrigin);
-}
-
-function htmlForToc(
-  files: ProjectFileSet,
-  toc: TreeOfContents,
-  linkOrigin: string
-): string {
-  return (
-    "<ul>" +
-    toc
-      .map((node) => {
-        const subToc =
-          node.type === "leaf"
-            ? ""
-            : htmlForToc(files, node.contents, linkOrigin);
-        const relativePath = relative(linkOrigin, node.path);
-        const file = files[node.path];
-        const linkTitle =
-          (file.fate !== "preserve" && file.title) || relativePath;
-        return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
-      })
-      .join("") +
-    "</ul>"
-  );
-}
-
-export type TreeOfContents = Array<Node>;
-
-export type Node = Branch | Leaf;
-
-export type Branch = { type: "branch"; path: string; contents: TreeOfContents };
-
-export type Leaf = { type: "leaf"; path: string };
 
 test("toc", {
   "given an empty set of files"() {
