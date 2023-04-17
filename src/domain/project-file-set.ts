@@ -1,4 +1,4 @@
-import { dirname, join, relative } from "path";
+import { basename, dirname, join } from "path";
 import { FileSet, buffer } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { mapEntries, valuesToStrings } from "../lib/objects";
@@ -93,9 +93,7 @@ function addMissingIndexFiles(files: FileSet): FileSet {
     const indexMdPath = join(dir, "index.md");
     const indexHtmlPath = join(dir, "index.html");
     if (!(indexMdPath in files) && !(indexHtmlPath in files)) {
-      files[indexMdPath] = buffer(
-        "# Index of " + relative("/", dir) + "\n\n{{toc}}"
-      );
+      files[indexMdPath] = buffer("# " + basename(dir) + "\n\n{{toc}}");
     }
   }
   return files;
@@ -153,9 +151,9 @@ test("addMissingIndexFiles", {
       {
         "/index.md": "hi",
         "/foo/bar.md": "hi",
-        "/foo/index.md": "# Index of foo\n\n{{toc}}",
+        "/foo/index.md": "# foo\n\n{{toc}}",
         "/foo/bar/baz.md": "hi",
-        "/foo/bar/index.md": "# Index of foo/bar\n\n{{toc}}",
+        "/foo/bar/index.md": "# bar\n\n{{toc}}",
       }
     );
   },

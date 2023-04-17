@@ -123,19 +123,19 @@ test("toc", {
     });
     const expected = [
       branch(
-        { path: "/aaa/index.html", title: "Index of aaa" },
+        { path: "/aaa/index.html", title: "aaa" },
         leaf({ path: "/aaa/foo.html", title: "foo.html" })
       ),
       branch(
-        { path: "/bbb/index.html", title: "Index of bbb" },
+        { path: "/bbb/index.html", title: "bbb" },
         leaf({ path: "/bbb/foo.html", title: "foo.html" })
       ),
       branch(
-        { path: "/ccc/index.html", title: "Index of ccc" },
+        { path: "/ccc/index.html", title: "ccc" },
         leaf({ path: "/ccc/foo.html", title: "foo.html" })
       ),
       branch(
-        { path: "/ddd/index.html", title: "Index of ddd" },
+        { path: "/ddd/index.html", title: "ddd" },
         leaf({ path: "/ddd/foo.html", title: "foo.html" })
       ),
     ];
