@@ -29,31 +29,41 @@ export type HtmlFile = {
   htmlPath: string;
 };
 
+export function MarkdownFile(path: string, markdown: string): MarkdownFile {
+  const rawHtml = htmlFromMarkdown(markdown).trim();
+  const htmlPath = removeSuffix(path, ".md") + ".html";
+  return {
+    type: "markdown",
+    markdown,
+    rawHtml,
+    title: title(htmlPath, rawHtml),
+    htmlPath,
+  };
+}
+
+export function HtmlFile(path: string, rawHtml: string): HtmlFile {
+  return {
+    type: "html",
+    rawHtml,
+    title: title(path, rawHtml),
+    htmlPath: path,
+  };
+}
+
+export function OpaqueFile(contents: Buffer): OpaqueFile {
+  return {
+    type: "opaque",
+    contents,
+  };
+}
+
 export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   if (path.endsWith(".md")) {
-    const markdown = contents.toString();
-    const rawHtml = htmlFromMarkdown(markdown).trim();
-    const htmlPath = removeSuffix(path, ".md") + ".html";
-    return {
-      type: "markdown",
-      markdown,
-      rawHtml,
-      title: title(htmlPath, rawHtml),
-      htmlPath,
-    };
+    return MarkdownFile(path, contents.toString());
   } else if (path.endsWith(".html")) {
-    const rawHtml = contents.toString();
-    return {
-      type: "html",
-      rawHtml,
-      title: title(path, rawHtml),
-      htmlPath: path,
-    };
+    return HtmlFile(path, contents.toString());
   } else {
-    return {
-      type: "opaque",
-      contents,
-    };
+    return OpaqueFile(contents);
   }
 }
 
