@@ -1,18 +1,28 @@
-import { test, expect, is, equals } from "@benchristel/taste";
+import { test, expect, is, equals, debug } from "@benchristel/taste";
 import { FileSet, buffer } from "../lib/files";
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { relative } from "path";
+import {
+  HtmlFile,
+  ProjectFileSet,
+  TransformedFile,
+  parseProjectFiles,
+} from "./project-file-set";
 
-export function toc(files: FileSet, root: string = "/"): TreeOfContents {
-  return Object.keys(files)
+export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
+  return Object.values(files)
+    .flatMap(
+      (file): Array<TransformedFile | HtmlFile> =>
+        file.fate !== "preserve" ? [file] : []
+    )
     .filter(
-      (path) =>
+      ({ htmlPath: path }) =>
         path.startsWith(root) &&
         path.endsWith(".html") &&
         path !== root + "index.html" &&
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
-    .map((path) =>
+    .map(({ htmlPath: path }) =>
       path.endsWith("/index.html")
         ? {
             type: "branch",
@@ -23,7 +33,7 @@ export function toc(files: FileSet, root: string = "/"): TreeOfContents {
     );
 }
 
-export function htmlToc(files: FileSet, linkOrigin: string): string {
+export function htmlToc(files: ProjectFileSet, linkOrigin: string): string {
   const theToc = toc(files);
   if (theToc.length === 0) {
     return "";
@@ -33,7 +43,7 @@ export function htmlToc(files: FileSet, linkOrigin: string): string {
 }
 
 function htmlForToc(
-  files: FileSet,
+  files: ProjectFileSet,
   toc: TreeOfContents,
   linkOrigin: string
 ): string {
@@ -46,7 +56,9 @@ function htmlForToc(
             ? ""
             : htmlForToc(files, node.contents, linkOrigin);
         const relativePath = relative(linkOrigin, node.path);
-        const linkTitle = title(files, node.path, relativePath);
+        const file = files[node.path];
+        const linkTitle =
+          (file.fate !== "preserve" && file.title) || relativePath;
         return `<li><a href="${relativePath}">${linkTitle}</a>${subToc}</li>`;
       })
       .join("") +
@@ -74,22 +86,22 @@ test("toc", {
   },
 
   "excludes the root index.html file"() {
-    const files = { "/index.html": buffer("hi") };
+    const files = parseProjectFiles({ "/index.html": buffer("hi") });
     const expected: Array<string> = [];
     expect(toc(files), equals, expected);
   },
 
   "excludes non-html files"() {
-    const files = { "/foo.png": buffer("") };
+    const files = parseProjectFiles({ "/foo.png": buffer("") });
     const expected: Array<string> = [];
     expect(toc(files), equals, expected);
   },
 
   "given several files"() {
-    const files = {
+    const files = parseProjectFiles({
       "/foo.html": buffer(""),
       "/bar.html": buffer(""),
-    };
+    });
     const expected = [
       { type: "leaf", path: "/foo.html" },
       { type: "leaf", path: "/bar.html" },
@@ -98,9 +110,9 @@ test("toc", {
   },
 
   "given an index.html file in a subdirectory"() {
-    const files = {
+    const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
-    };
+    });
     const expected = [
       { type: "branch", path: "/sub/index.html", contents: [] },
     ];
@@ -108,11 +120,11 @@ test("toc", {
   },
 
   "given a subdirectory with several files"() {
-    const files = {
+    const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
       "/sub/foo.html": buffer(""),
       "/sub/bar.html": buffer(""),
-    };
+    });
     const expected = [
       {
         type: "branch",
@@ -127,12 +139,12 @@ test("toc", {
   },
 
   "given a sub-subdirectory"() {
-    const files = {
+    const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
       "/sub/marine/index.html": buffer(""),
       "/sub/marine/foo.html": buffer(""),
       "/sub/marine/bar.html": buffer(""),
-    };
+    });
     const expected = [
       {
         type: "branch",
@@ -159,9 +171,9 @@ test("htmlToc", {
   },
 
   "given a tree with one file"() {
-    const files = {
-      "/foo.html": buffer("<title>This Is Foo</title>"),
-    };
+    const files = parseProjectFiles({
+      "/foo.html": buffer("<h1>This Is Foo</h1>"),
+    });
 
     const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
 
@@ -169,10 +181,10 @@ test("htmlToc", {
   },
 
   "generates a list of multiple links"() {
-    const files = {
-      "/foo.html": buffer("<title>Foo</title>"),
-      "/bar.html": buffer("<title>Bar</title>"),
-    };
+    const files = parseProjectFiles({
+      "/foo.html": buffer("<h1>Foo</h1>"),
+      "/bar.html": buffer("<h1>Bar</h1>"),
+    });
 
     const expected = `<ul><li><a href="foo.html">Foo</a></li><li><a href="bar.html">Bar</a></li></ul>`;
 
@@ -180,9 +192,9 @@ test("htmlToc", {
   },
 
   "defaults link titles to the path"() {
-    const files = {
+    const files = parseProjectFiles({
       "/foo.html": buffer("no title here"),
-    };
+    });
 
     const expected = `<ul><li><a href="foo.html">foo.html</a></li></ul>`;
 
@@ -190,20 +202,20 @@ test("htmlToc", {
   },
 
   "creates relative links, starting from the linkOrigin"() {
-    const files = {
-      "/foo.html": buffer("no title here"),
-    };
+    const files = parseProjectFiles({
+      "/foo.html": buffer("<h1>Foo</h1>"),
+    });
 
-    const expected = `<ul><li><a href="../../../foo.html">../../../foo.html</a></li></ul>`;
+    const expected = `<ul><li><a href="../../../foo.html">Foo</a></li></ul>`;
 
     expect(htmlToc(files, "/one/two/three"), is, expected);
   },
 
   recurses() {
-    const files = {
-      "/bar/index.html": buffer("<title>Bar</title>"),
-      "/bar/baz.html": buffer("<title>Baz</title>"),
-    };
+    const files = parseProjectFiles({
+      "/bar/index.html": buffer("<h1>Bar</h1>"),
+      "/bar/baz.html": buffer("<h1>Baz</h1>"),
+    });
 
     const expected = `<ul><li><a href="bar/index.html">Bar</a><ul><li><a href="bar/baz.html">Baz</a></li></ul></li></ul>`;
 
