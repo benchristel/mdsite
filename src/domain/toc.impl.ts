@@ -13,6 +13,17 @@ export type Leaf = { type: "leaf"; path: string };
 
 const path = (n: Node) => n.path;
 
+export function branch(
+  params: { path: string },
+  ...contents: TreeOfContents
+): Branch {
+  return { type: "branch", path: params.path, contents };
+}
+
+export function leaf(params: { path: string }): Leaf {
+  return { type: "leaf", path: params.path };
+}
+
 export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
   root = ensureTrailingSlash(root);
   return Object.values(files)
@@ -30,12 +41,8 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
     .map(
       ({ outputPath: path }): Node =>
         path.endsWith("/index.html")
-          ? {
-              type: "branch",
-              path,
-              contents: toc(files, removeSuffix(path, "index.html")),
-            }
-          : { type: "leaf", path }
+          ? branch({ path }, ...toc(files, removeSuffix(path, "index.html")))
+          : leaf({ path })
     )
     .sort(by(path));
 }

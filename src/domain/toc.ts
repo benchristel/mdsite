@@ -2,7 +2,7 @@ export { htmlToc } from "./toc.impl";
 import { test, expect, is, equals } from "@benchristel/taste";
 import { buffer } from "../lib/files";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
-import { toc, htmlToc } from "./toc.impl";
+import { toc, htmlToc, leaf, branch } from "./toc.impl";
 
 {
   // htmlToc() generates an HTML "tree of contents" with <ul> and <li>
@@ -27,20 +27,17 @@ test("toc", {
 
   "excludes the root index.html file"() {
     const files = parseProjectFiles({ "/index.html": buffer("hi") });
-    const expected: Array<string> = [];
-    expect(toc(files), equals, expected);
+    expect(toc(files), equals, []);
   },
 
   "excludes the index.html under the given root"() {
     const files = parseProjectFiles({ "/foo/index.html": buffer("hi") });
-    const expected: Array<string> = [];
-    expect(toc(files, "/foo"), equals, expected);
+    expect(toc(files, "/foo"), equals, []);
   },
 
   "excludes non-html files"() {
     const files = parseProjectFiles({ "/foo.png": buffer("") });
-    const expected: Array<string> = [];
-    expect(toc(files), equals, expected);
+    expect(toc(files), equals, []);
   },
 
   "given several files"() {
@@ -48,10 +45,7 @@ test("toc", {
       "/aaa.html": buffer(""),
       "/bbb.html": buffer(""),
     });
-    const expected = [
-      { type: "leaf", path: "/aaa.html" },
-      { type: "leaf", path: "/bbb.html" },
-    ];
+    const expected = [leaf({ path: "/aaa.html" }), leaf({ path: "/bbb.html" })];
     expect(toc(files), equals, expected);
   },
 
@@ -59,9 +53,7 @@ test("toc", {
     const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
     });
-    const expected = [
-      { type: "branch", path: "/sub/index.html", contents: [] },
-    ];
+    const expected = [branch({ path: "/sub/index.html" })];
     expect(toc(files), equals, expected);
   },
 
@@ -72,14 +64,11 @@ test("toc", {
       "/sub/bbb.html": buffer(""),
     });
     const expected = [
-      {
-        type: "branch",
-        path: "/sub/index.html",
-        contents: [
-          { type: "leaf", path: "/sub/aaa.html" },
-          { type: "leaf", path: "/sub/bbb.html" },
-        ],
-      },
+      branch(
+        { path: "/sub/index.html" },
+        leaf({ path: "/sub/aaa.html" }),
+        leaf({ path: "/sub/bbb.html" })
+      ),
     ];
     expect(toc(files), equals, expected);
   },
@@ -97,15 +86,12 @@ test("toc", {
         type: "branch",
         path: "/sub/index.html",
         contents: [
-          {
-            type: "branch",
-            path: "/sub/marine/index.html",
-            contents: [
-              { type: "leaf", path: "/sub/marine/aaa.html" },
-              { type: "leaf", path: "/sub/marine/bbb.html" },
-              { type: "leaf", path: "/sub/marine/ccc.html" },
-            ],
-          },
+          branch(
+            { path: "/sub/marine/index.html" },
+            leaf({ path: "/sub/marine/aaa.html" }),
+            leaf({ path: "/sub/marine/bbb.html" }),
+            leaf({ path: "/sub/marine/ccc.html" })
+          ),
         ],
       },
     ];
