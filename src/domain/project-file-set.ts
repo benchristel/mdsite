@@ -5,6 +5,7 @@ import { mapEntries, valuesToStrings } from "../lib/objects";
 import { removeSuffix } from "../lib/strings";
 import { title } from "./title";
 import { test, expect, equals } from "@benchristel/taste";
+import { trimMargin } from "../testing/formatting";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
@@ -32,7 +33,7 @@ export type HtmlFile = {
 };
 
 export function MarkdownFile(path: string, markdown: string): MarkdownFile {
-  const rawHtml = htmlFromMarkdown(markdown).trim();
+  const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
   const htmlPath = removeSuffix(path, ".md") + ".html";
   return {
     type: "markdown",
@@ -101,6 +102,34 @@ function addMissingIndexFiles(files: FileSet): FileSet {
   }
   return files;
 }
+
+function replaceMarkdownHrefs(html: string): string {
+  return html.replace(/(<a[^>]+href="[^"]+\.)md(")/g, "$1html$2");
+}
+
+test("replaceMarkdownHrefs", {
+  "converts a .md link to a .html link"() {
+    expect(
+      replaceMarkdownHrefs(`<a href="foo/bar.md">link</a>`),
+      equals,
+      `<a href="foo/bar.html">link</a>`
+    );
+  },
+
+  "converts several .md links"() {
+    expect(
+      replaceMarkdownHrefs(trimMargin`
+        <a href="one.md">one</a>
+        <a href="two.md">two</a>
+      `),
+      equals,
+      trimMargin`
+        <a href="one.html">one</a>
+        <a href="two.html">two</a>
+      `
+    );
+  },
+});
 
 test("addMissingIndexFiles", {
   "adds an index file to the root directory"() {
