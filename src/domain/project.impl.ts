@@ -30,7 +30,13 @@ export function buildProject(files: FileSet): FileSet {
         case "order":
           return [
             projectFile.outputPath,
-            buffer(Object.keys(projectFile.ordering.indexForName).join("\n")),
+            buffer(
+              Object.keys(projectFile.ordering.indexForName).join("\n") +
+                (projectFile.ordering.entriesWithUnspecifiedOrder.length
+                  ? "\n\n!unspecified\n" +
+                    projectFile.ordering.entriesWithUnspecifiedOrder.join("\n")
+                  : "")
+            ),
           ] as [string, Buffer];
         default:
           throw unreachable("unexpected type of project file", projectFile);

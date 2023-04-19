@@ -1,8 +1,13 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { basename, join, relative } from "path";
-import { HtmlFile, ProjectFileSet, MarkdownFile } from "./project-file-set";
+import {
+  HtmlFile,
+  ProjectFileSet,
+  MarkdownFile,
+  OrderFile,
+} from "./project-file-set";
 import { by } from "../lib/sorting";
-import { EntryOrdering } from "./entry-ordering";
+import { EntryOrdering, parse } from "./entry-ordering";
 import { ensureTrailingSlash } from "../lib/files";
 
 export type TreeOfContents = Array<Node>;
@@ -78,9 +83,7 @@ function getOrdering(files: ProjectFileSet, root: string): EntryOrdering {
   if (orderFile?.type === "order") {
     return orderFile.ordering;
   } else {
-    return {
-      indexForName: {},
-    };
+    return OrderFile(root, "", Object.keys(files)).ordering;
   }
 }
 

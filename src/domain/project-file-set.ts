@@ -71,10 +71,10 @@ export function OpaqueFile(path: string, contents: Buffer): OpaqueFile {
 export function OrderFile(
   path: string,
   contents: string,
-  files: FileSet
+  files: Array<string>
 ): OrderFile {
   const dir = ensureTrailingSlash(dirname(path));
-  const names = Object.keys(files)
+  const names = files
     .filter((p) => p.startsWith(dir))
     .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
   return {
@@ -94,7 +94,7 @@ export function ProjectFile(
   } else if (path.endsWith(".html")) {
     return HtmlFile(path, contents.toString());
   } else if (path.endsWith("/order.txt")) {
-    return OrderFile(path, contents.toString(), files);
+    return OrderFile(path, contents.toString(), Object.keys(files));
   } else {
     return OpaqueFile(path, contents);
   }
