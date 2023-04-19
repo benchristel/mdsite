@@ -1,4 +1,4 @@
-import "./app/run";
+import "./cli/run";
 
 import {
   getAllTests,

@@ -1,3 +1,3 @@
-import { run } from "./app/run";
+import { run } from "./cli/run";
 
 run();
