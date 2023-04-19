@@ -2,4 +2,4 @@
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 
-bun "$HERE/src/main.ts"
+bun "$HERE/src/main.ts" "$@"
