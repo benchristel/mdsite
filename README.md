@@ -23,4 +23,12 @@ export PATH="$PATH:/path/to/mdsite"
 
 ## Usage
 
-Run `mdsite` to build the Markdown files in `./src` recursively into `./docs`.
+To build a website from a directory of markdown files, run:
+
+```
+mdsite [-i INPUTDIR] [-o OUTPUTDIR]
+```
+
+Where `INPUTDIR` and `OUTPUTDIR` are paths to directories. `OUTPUTDIR` will
+be created if it does not exist. `INPUTDIR` defaults to `src`, and `OUTPUTDIR`
+to `docs`.
