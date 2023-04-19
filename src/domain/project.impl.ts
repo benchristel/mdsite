@@ -27,6 +27,11 @@ export function buildProject(files: FileSet): FileSet {
                 )
             ),
           ] as [string, Buffer];
+        case "order":
+          return [
+            projectFile.outputPath,
+            buffer(Object.keys(projectFile.ordering.indexForName).join("\n")),
+          ] as [string, Buffer];
         default:
           throw unreachable("unexpected type of project file", projectFile);
       }

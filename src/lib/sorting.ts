@@ -1,15 +1,18 @@
-export function by<T>(
-  projection: (obj: T) => string
-): (a: T, b: T) => -1 | 0 | 1 {
+type Criterion<T> = ((obj: T) => string) | ((obj: T) => number);
+
+type Comparator<T> = (a: T, b: T) => -1 | 0 | 1;
+
+export function by<T>(...criteria: Array<Criterion<T>>): Comparator<T> {
   return (a, b) => {
-    const aKey = projection(a);
-    const bKey = projection(b);
-    if (aKey > bKey) {
-      return 1;
-    } else if (aKey < bKey) {
-      return -1;
-    } else {
-      return 1;
+    for (const criterion of criteria) {
+      const aKey = criterion(a);
+      const bKey = criterion(b);
+      if (aKey > bKey) {
+        return 1;
+      } else if (aKey < bKey) {
+        return -1;
+      }
     }
+    return 0;
   };
 }

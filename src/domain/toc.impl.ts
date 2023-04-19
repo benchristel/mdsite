@@ -1,7 +1,9 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
-import { relative } from "path";
+import { basename, join, relative } from "path";
 import { HtmlFile, ProjectFileSet, MarkdownFile } from "./project-file-set";
 import { by } from "../lib/sorting";
+import { EntryOrdering } from "./entry-ordering";
+import { ensureTrailingSlash } from "../lib/files";
 
 export type TreeOfContents = Array<Node>;
 
@@ -35,6 +37,7 @@ export function leaf(params: { path: string; title: string }): Leaf {
 
 export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
   root = ensureTrailingSlash(root);
+  const ordering = getOrdering(files, root);
   return Object.values(files)
     .flatMap(
       (file): Array<MarkdownFile | HtmlFile> =>
@@ -56,12 +59,29 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
             )
           : leaf({ path, title })
     )
-    .sort(by(tocSortKey));
+    .sort(by(indexIn(ordering), tocSortKey));
 }
 
-function ensureTrailingSlash(path: string): string {
-  if (!path.endsWith("/")) return path + "/";
-  else return path;
+export function indexIn(
+  ordering: EntryOrdering
+): (node: { path: string }) => number {
+  return ({ path }) => {
+    return (
+      ordering.indexForName[basename(removeSuffix(path, "/index.html"))] ??
+      Infinity
+    );
+  };
+}
+
+function getOrdering(files: ProjectFileSet, root: string): EntryOrdering {
+  const orderFile = files[join(root, "order.txt")];
+  if (orderFile?.type === "order") {
+    return orderFile.ordering;
+  } else {
+    return {
+      indexForName: {},
+    };
+  }
 }
 
 export function htmlToc(

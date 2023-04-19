@@ -1,15 +1,16 @@
 import { basename, dirname, join } from "path";
-import { FileSet, buffer } from "../lib/files";
+import { FileSet, buffer, ensureTrailingSlash } from "../lib/files";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { mapEntries, valuesToStrings } from "../lib/objects";
 import { removeSuffix } from "../lib/strings";
 import { title } from "./title";
 import { test, expect, equals } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
+import { EntryOrdering, parse } from "./entry-ordering";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
-export type ProjectFile = OpaqueFile | MarkdownFile | HtmlFile;
+export type ProjectFile = OpaqueFile | MarkdownFile | HtmlFile | OrderFile;
 
 export type OpaqueFile = {
   type: "opaque";
@@ -29,6 +30,12 @@ export type HtmlFile = {
   type: "html";
   rawHtml: string;
   title: string;
+  outputPath: string;
+};
+
+export type OrderFile = {
+  type: "order";
+  ordering: EntryOrdering;
   outputPath: string;
 };
 
@@ -61,11 +68,33 @@ export function OpaqueFile(path: string, contents: Buffer): OpaqueFile {
   };
 }
 
-export function ProjectFile(path: string, contents: Buffer): ProjectFile {
+export function OrderFile(
+  path: string,
+  contents: string,
+  files: FileSet
+): OrderFile {
+  const dir = ensureTrailingSlash(dirname(path));
+  const names = Object.keys(files)
+    .filter((p) => p.startsWith(dir))
+    .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
+  return {
+    type: "order",
+    outputPath: path,
+    ordering: parse(contents, new Set(names)),
+  };
+}
+
+export function ProjectFile(
+  path: string,
+  contents: Buffer,
+  files: FileSet
+): ProjectFile {
   if (path.endsWith(".md")) {
     return MarkdownFile(path, contents.toString());
   } else if (path.endsWith(".html")) {
     return HtmlFile(path, contents.toString());
+  } else if (path.endsWith("/order.txt")) {
+    return OrderFile(path, contents.toString(), files);
   } else {
     return OpaqueFile(path, contents);
   }
@@ -73,7 +102,7 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
 
 export function parseProjectFiles(files: FileSet): ProjectFileSet {
   return mapEntries(addMissingIndexFiles(files), ([srcPath, srcContents]) => {
-    const projectFile = ProjectFile(srcPath, srcContents);
+    const projectFile = ProjectFile(srcPath, srcContents, files);
     return [projectFile.outputPath, projectFile];
   });
 }
