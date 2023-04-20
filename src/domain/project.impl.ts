@@ -20,7 +20,7 @@ export function buildProject(files: FileSet): FileSet {
             projectFile.outputPath,
             buffer(
               defaultTemplate
-                .replace("{{markdown}}", projectFile.rawHtml)
+                .replace("{{content}}", projectFile.rawHtml)
                 .replace("{{title}}", projectFile.title)
                 .replace("{{toc}}", () =>
                   htmlToc(projectFiles, dirname(projectFile.outputPath))
@@ -52,7 +52,7 @@ const defaultTemplate = trimMargin`
       <title>{{title}}</title>
     </head>
     <body>
-      {{markdown}}
+      {{content}}
     </body>
   </html>
 `;

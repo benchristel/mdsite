@@ -60,21 +60,21 @@ HTML boilerplate. Here is the default template:
     <title>{{title}}</title>
   </head>
   <body>
-    {{markdown}}
+    {{content}}
   </body>
 </html>
 ```
 
-`{{title}}` and `{{markdown}}` are _macros_—more on those later. They instruct
+`{{title}}` and `{{content}}` are _macros_—more on those later. They instruct
 `mdsite` to insert some data into the page.
 
-- `{{markdown}}` (TODO: rename) inserts the content of the source file.
+- `{{content}}` inserts the content of the source file.
 - `{{title}}` inserts the content of the first `<h1>` element on the page,
   or the filename if there is no `<h1>`.
 
 ## Tables of Contents
 
-Currently, the only macro other than `{{title}}` and `{{markdown}}` is
+Currently, the only macro other than `{{title}}` and `{{content}}` is
 `{{toc}}`, which inserts a table of contents formatted as a nested list.
 `{{toc}}` lists the files within the current file's parent directory.
 
