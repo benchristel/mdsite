@@ -20,8 +20,7 @@ export function run() {
 }
 
 async function build(args: BuildArgs) {
-  const inputDir = args.inputDir ?? "src";
-  const outputDir = args.outputDir ?? "docs";
+  const { inputDir, outputDir } = args;
 
   const input = await listDeep(inputDir);
   const output = buildProject(input);
@@ -29,7 +28,7 @@ async function build(args: BuildArgs) {
 }
 
 async function order(args: OrderArgs) {
-  const inputDir = args.inputDir ?? "src";
+  const { inputDir } = args;
 
   const input = await listDeep(inputDir);
   const output = buildProject(input);
