@@ -1,4 +1,3 @@
-import { basename } from "path";
 import { buildProject } from "../domain/project";
 import { listDeep, writeDeep } from "../lib/files";
 import { parseArgs, BuildArgs, OrderArgs } from "./args";
