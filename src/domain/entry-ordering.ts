@@ -2,6 +2,7 @@ import { test, expect, equals, not } from "@benchristel/taste";
 import { isBlank, trimMargin } from "../testing/formatting";
 import { intoObject } from "../lib/objects";
 import { diff } from "../lib/sets";
+import { basename } from "path";
 
 // An EntryOrdering specifies a partial order of the entries in a directory.
 export type EntryOrdering = {
@@ -35,6 +36,10 @@ export function parse(
       .reduce(intoObject, {}),
     entriesWithUnspecifiedOrder: entriesWithUnspecifiedOrder,
   };
+}
+
+export function isOrderFile(path: string): boolean {
+  return basename(path) === "order.txt";
 }
 
 function htmlize(name: string): string {
@@ -150,5 +155,23 @@ test("parse(orderFile)", {
       entriesWithUnspecifiedOrder: ["bar.md"],
     };
     expect(parse(input, sourceFiles), equals, expected);
+  },
+});
+
+test("isOrderFile", {
+  "is true given /order.txt"() {
+    expect("/order.txt", isOrderFile);
+  },
+
+  "is false given /foo.txt"() {
+    expect("/foo.txt", not(isOrderFile));
+  },
+
+  "is true given /foo/order.txt"() {
+    expect("/foo/order.txt", isOrderFile);
+  },
+
+  "is false given /order.html"() {
+    expect("/order.html", not(isOrderFile));
   },
 });
