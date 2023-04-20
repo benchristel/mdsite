@@ -5,8 +5,8 @@ import { intoObject } from "../lib/objects";
 import { unreachable } from "../lib/unreachable";
 import { isOrderFile } from "../domain/entry-ordering";
 
-export function run() {
-  const args = parseArgs(process.argv.slice(2));
+export function run(argv: Array<string>) {
+  const args = parseArgs(argv);
   switch (args.command) {
     case "build":
       build(args);
