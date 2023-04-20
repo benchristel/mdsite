@@ -22,7 +22,6 @@ export type OpaqueFile = {
 
 export type MarkdownFile = {
   type: "markdown";
-  markdown: string;
   rawHtml: string;
   title: string;
   outputPath: string;
@@ -46,7 +45,6 @@ export function MarkdownFile(path: string, markdown: string): MarkdownFile {
   const htmlPath = removeSuffix(path, ".md") + ".html";
   return {
     type: "markdown",
-    markdown,
     rawHtml,
     title: title(htmlPath, rawHtml),
     outputPath: htmlPath,
