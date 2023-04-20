@@ -46,11 +46,6 @@ export async function writeDeep(dir: string, fileSet: FileSet): Promise<void> {
   await Promise.all(promises);
 }
 
-export function ensureTrailingSlash(path: string): string {
-  if (!path.endsWith("/")) return path + "/";
-  else return path;
-}
-
 test("listDeep", {
   async "on an empty directory"() {
     const tmpDir = TmpDir();

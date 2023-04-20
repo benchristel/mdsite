@@ -7,8 +7,8 @@ import {
   OrderFile,
 } from "./project-file-set";
 import { by } from "../lib/sorting";
-import { EntryOrdering, parse } from "./entry-ordering";
-import { ensureTrailingSlash } from "../lib/files";
+import { EntryOrdering } from "./entry-ordering";
+import { ensureTrailingSlash } from "../lib/paths";
 
 export type TreeOfContents = Array<Node>;
 
