@@ -71,3 +71,28 @@ HTML boilerplate. Here is the default template:
 - `{{markdown}}` (TODO: rename) inserts the content of the source file.
 - `{{title}}` inserts the content of the first `<h1>` element on the page,
   or the filename if there is no `<h1>`.
+
+## Tables of Contents
+
+Currently, the only macro other than `{{title}}` and `{{markdown}}` is
+`{{toc}}`, which inserts a table of contents formatted as a nested list.
+`{{toc}}` lists the files within the current file's parent directory.
+
+By default, entries in the table of contents are ordered lexicographically by
+title. You can customize the ordering of the files in a directory by creating
+an `order.txt` file in that directory. The `order.txt` file simply lists the
+files in the order you want them displayed, one per line. E.g.
+
+```
+foo.md
+bar.md
+baz.md
+```
+
+Any files you don't list in `order.txt` will be ordered by title, after the
+listed files.
+
+Once you've created some `order.txt` files, you can run `mdsite order` to
+populate them with the complete list of filenames. If you've listed some files
+in `order.txt` already, `mdsite order` won't mess with them. It just adds any
+missing filenames to the end of the file.
