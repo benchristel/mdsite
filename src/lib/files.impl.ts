@@ -17,15 +17,13 @@ export async function listDeep(
       return fs.readFile(path).then((contents) => {
         fileSet[pathFromRoot] = contents;
       });
-    }
-
-    if (entry.isDirectory()) {
+    } else if (entry.isDirectory()) {
       return listDeep(path, root).then((listing) => {
         fileSet = { ...fileSet, ...listing };
       });
+    } else {
+      return Promise.resolve();
     }
-
-    return Promise.resolve();
   });
 
   await Promise.all(promises);
