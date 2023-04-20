@@ -4,7 +4,7 @@ import { test, expect, equals, which } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
 import { isAnything } from "../testing/matchers";
 import { contains } from "../lib/strings";
-import { buffer } from "../lib/files";
+import { buffer } from "../lib/buffer";
 import { valuesToStrings } from "../lib/objects";
 
 test("buildProject", {

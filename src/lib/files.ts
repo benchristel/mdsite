@@ -3,6 +3,7 @@ import { test, expect, equals, is } from "@benchristel/taste";
 import { join, relative, dirname } from "path";
 import * as fs from "fs/promises";
 import { valuesToStrings } from "./objects";
+import { buffer } from "./buffer";
 
 export type FileSet = Record<string, Buffer>;
 
@@ -136,7 +137,3 @@ test("writeDeep", {
     expect(await tmpDir.read("food/recipes/lentils.txt"), is, "lentils");
   },
 });
-
-export function buffer(s: string): Buffer {
-  return Buffer.from(s, "utf8");
-}

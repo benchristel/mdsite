@@ -1,4 +1,5 @@
-import { FileSet, buffer } from "../lib/files";
+import { FileSet } from "../lib/files";
+import { buffer } from "../lib/buffer";
 import { intoObject } from "../lib/objects";
 import { dirname } from "path";
 import { htmlToc } from "./toc";

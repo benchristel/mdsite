@@ -1,5 +1,6 @@
 import { basename, dirname, join } from "path";
-import { FileSet, buffer, ensureTrailingSlash } from "../lib/files";
+import { FileSet, ensureTrailingSlash } from "../lib/files";
+import { buffer } from "../lib/buffer";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { mapEntries, valuesToStrings } from "../lib/objects";
 import { removeSuffix } from "../lib/strings";

@@ -1,6 +1,6 @@
 export { htmlToc } from "./toc.impl";
 import { test, expect, is, equals } from "@benchristel/taste";
-import { buffer } from "../lib/files";
+import { buffer } from "../lib/buffer";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 import { toc, htmlToc, leaf, branch } from "./toc.impl";
 
