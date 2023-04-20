@@ -12,19 +12,12 @@ import { EntryOrdering, parse } from "./order";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
-export type ProjectFile = OpaqueFile | MarkdownFile | HtmlFile | OrderFile;
+export type ProjectFile = OpaqueFile | HtmlFile | OrderFile;
 
 export type OpaqueFile = {
   type: "opaque";
   outputPath: string;
   contents: Buffer;
-};
-
-export type MarkdownFile = {
-  type: "markdown";
-  rawHtml: string;
-  title: string;
-  outputPath: string;
 };
 
 export type HtmlFile = {
@@ -40,11 +33,11 @@ export type OrderFile = {
   outputPath: string;
 };
 
-export function MarkdownFile(path: string, markdown: string): MarkdownFile {
+export function MarkdownFile(path: string, markdown: string): HtmlFile {
   const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
   const htmlPath = removeSuffix(path, ".md") + ".html";
   return {
-    type: "markdown",
+    type: "html",
     rawHtml,
     title: title(htmlPath, rawHtml),
     outputPath: htmlPath,

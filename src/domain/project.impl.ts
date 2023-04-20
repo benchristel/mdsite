@@ -15,7 +15,6 @@ export function buildProject(files: FileSet): FileSet {
       switch (projectFile.type) {
         case "opaque":
           return [path, projectFile.contents] as [string, Buffer];
-        case "markdown":
         case "html":
           return [
             projectFile.outputPath,

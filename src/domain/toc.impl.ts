@@ -1,11 +1,6 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { basename, join, relative } from "path";
-import {
-  HtmlFile,
-  ProjectFileSet,
-  MarkdownFile,
-  OrderFile,
-} from "./project-file-set";
+import { HtmlFile, ProjectFileSet, OrderFile } from "./project-file-set";
 import { by } from "../lib/sorting";
 import { EntryOrdering } from "./order";
 import { ensureTrailingSlash } from "../lib/paths";
@@ -44,10 +39,7 @@ export function toc(files: ProjectFileSet, root: string = "/"): TreeOfContents {
   root = ensureTrailingSlash(root);
   const ordering = getOrdering(files, root);
   return Object.values(files)
-    .flatMap(
-      (file): Array<MarkdownFile | HtmlFile> =>
-        file.type === "markdown" || file.type === "html" ? [file] : []
-    )
+    .flatMap((file): Array<HtmlFile> => (file.type === "html" ? [file] : []))
     .filter(
       ({ outputPath: path }) =>
         path.startsWith(root) &&
