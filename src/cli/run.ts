@@ -3,7 +3,7 @@ import { listDeep, writeDeep } from "../lib/files";
 import { parseArgs, BuildArgs, OrderArgs } from "./args";
 import { intoObject } from "../lib/objects";
 import { unreachable } from "../lib/unreachable";
-import { isOrderFile } from "../domain/entry-ordering";
+import { isOrderFile } from "../domain/order";
 
 export function run(argv: Array<string>) {
   const args = parseArgs(argv);

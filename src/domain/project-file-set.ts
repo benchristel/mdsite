@@ -8,7 +8,7 @@ import { removeSuffix } from "../lib/strings";
 import { title } from "./title";
 import { test, expect, equals } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
-import { EntryOrdering, parse } from "./entry-ordering";
+import { EntryOrdering, parse } from "./order";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
