@@ -1,38 +1,15 @@
 import { basename, dirname, join } from "path";
 import { FileSet } from "../lib/files";
-import { ensureTrailingSlash } from "../lib/paths";
 import { buffer } from "../lib/buffer";
 import { mapEntries, valuesToStrings } from "../lib/objects";
 import { test, expect, equals } from "@benchristel/taste";
-import { EntryOrdering, parse } from "./order";
 import { OpaqueFile } from "./opaque-file";
 import { HtmlFile, MarkdownFile } from "./html-file";
+import { OrderFile } from "./order-file";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
 export type ProjectFile = OpaqueFile | HtmlFile | OrderFile;
-
-export type OrderFile = {
-  type: "order";
-  ordering: EntryOrdering;
-  outputPath: string;
-};
-
-export function OrderFile(
-  path: string,
-  contents: string,
-  files: Array<string>
-): OrderFile {
-  const dir = ensureTrailingSlash(dirname(path));
-  const names = files
-    .filter((p) => p.startsWith(dir))
-    .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
-  return {
-    type: "order",
-    outputPath: path,
-    ordering: parse(contents, new Set(names)),
-  };
-}
 
 export function ProjectFile(
   path: string,

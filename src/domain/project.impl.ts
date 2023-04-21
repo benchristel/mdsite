@@ -1,10 +1,10 @@
 import { FileSet } from "../lib/files";
-import { buffer } from "../lib/buffer";
 import { intoObject } from "../lib/objects";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 import { unreachable } from "../lib/unreachable";
 import { renderOpaqueFile } from "./opaque-file";
 import { renderHtmlFile } from "./html-file";
+import { renderOrderFile } from "./order-file";
 
 export function buildProject(files: FileSet): FileSet {
   const projectFiles: ProjectFileSet = parseProjectFiles(files);
@@ -17,16 +17,7 @@ export function buildProject(files: FileSet): FileSet {
         case "html":
           return renderHtmlFile(projectFiles, projectFile);
         case "order":
-          return [
-            projectFile.outputPath,
-            buffer(
-              Object.keys(projectFile.ordering.indexForName).join("\n") +
-                (projectFile.ordering.entriesWithUnspecifiedOrder.length
-                  ? "\n\n!unspecified\n" +
-                    projectFile.ordering.entriesWithUnspecifiedOrder.join("\n")
-                  : "")
-            ),
-          ] as [string, Buffer];
+          return renderOrderFile(projectFile);
         default:
           throw unreachable("unexpected type of project file", projectFile);
       }
