@@ -13,43 +13,38 @@ export type HtmlFile = {
   rawHtml: string;
   title: string;
   outputPath: string;
+  render: (projectFiles: ProjectFileSet) => [string, Buffer];
 };
 
 export function MarkdownFile(path: string, markdown: string): HtmlFile {
   const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
   const htmlPath = removeSuffix(path, ".md") + ".html";
-  return {
-    type: "html",
-    rawHtml,
-    title: title(htmlPath, rawHtml),
-    outputPath: htmlPath,
-  };
+  return HtmlFile(htmlPath, rawHtml);
 }
 
 export function HtmlFile(path: string, rawHtml: string): HtmlFile {
-  return {
+  const self: HtmlFile = {
     type: "html",
     rawHtml,
     title: title(path, rawHtml),
     outputPath: path,
+    render: renderHtmlFile,
   };
-}
+  return self;
 
-export function renderHtmlFile(
-  projectFiles: ProjectFileSet,
-  file: HtmlFile
-): [string, Buffer] {
-  return [
-    file.outputPath,
-    buffer(
-      defaultTemplate
-        .replace("{{content}}", file.rawHtml)
-        .replace("{{title}}", file.title)
-        .replace("{{toc}}", () =>
-          htmlToc(projectFiles, dirname(file.outputPath))
-        )
-    ),
-  ];
+  function renderHtmlFile(projectFiles: ProjectFileSet): [string, Buffer] {
+    return [
+      self.outputPath,
+      buffer(
+        defaultTemplate
+          .replace("{{content}}", self.rawHtml)
+          .replace("{{title}}", self.title)
+          .replace("{{toc}}", () =>
+            htmlToc(projectFiles, dirname(self.outputPath))
+          )
+      ),
+    ];
+  }
 }
 
 function replaceMarkdownHrefs(html: string): string {

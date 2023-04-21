@@ -2,6 +2,7 @@ export type OpaqueFile = {
   type: "opaque";
   outputPath: string;
   contents: Buffer;
+  render: () => [string, Buffer];
 };
 
 export function OpaqueFile(path: string, contents: Buffer): OpaqueFile {
@@ -9,9 +10,6 @@ export function OpaqueFile(path: string, contents: Buffer): OpaqueFile {
     type: "opaque",
     outputPath: path,
     contents,
+    render: () => [path, contents],
   };
-}
-
-export function renderOpaqueFile(f: OpaqueFile): [string, Buffer] {
-  return [f.outputPath, f.contents];
 }
