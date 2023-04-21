@@ -1,6 +1,7 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings";
 import { basename, join, relative } from "path";
-import { HtmlFile, ProjectFileSet, OrderFile } from "./project-file-set";
+import { ProjectFileSet, OrderFile } from "./project-file-set";
+import { HtmlFile } from "./html-file";
 import { by } from "../lib/sorting";
 import { EntryOrdering } from "./order";
 import { ensureTrailingSlash } from "../lib/paths";
