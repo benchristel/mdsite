@@ -6,6 +6,7 @@ import { htmlToc } from "./toc";
 import { trimMargin } from "../testing/formatting";
 import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
 import { unreachable } from "../lib/unreachable";
+import { renderOpaqueFile } from "./opaque-file";
 
 export function buildProject(files: FileSet): FileSet {
   const projectFiles: ProjectFileSet = parseProjectFiles(files);
@@ -14,7 +15,7 @@ export function buildProject(files: FileSet): FileSet {
     .map(([path, projectFile]) => {
       switch (projectFile.type) {
         case "opaque":
-          return [path, projectFile.contents] as [string, Buffer];
+          return renderOpaqueFile(projectFile);
         case "html":
           return [
             projectFile.outputPath,

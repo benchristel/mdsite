@@ -9,16 +9,11 @@ import { title } from "./title";
 import { test, expect, equals } from "@benchristel/taste";
 import { trimMargin } from "../testing/formatting";
 import { EntryOrdering, parse } from "./order";
+import { OpaqueFile } from "./opaque-file";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
 export type ProjectFile = OpaqueFile | HtmlFile | OrderFile;
-
-export type OpaqueFile = {
-  type: "opaque";
-  outputPath: string;
-  contents: Buffer;
-};
 
 export type HtmlFile = {
   type: "html";
@@ -50,14 +45,6 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
     rawHtml,
     title: title(path, rawHtml),
     outputPath: path,
-  };
-}
-
-export function OpaqueFile(path: string, contents: Buffer): OpaqueFile {
-  return {
-    type: "opaque",
-    outputPath: path,
-    contents,
   };
 }
 
