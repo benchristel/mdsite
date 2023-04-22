@@ -1,7 +1,9 @@
+import { defaultTemplate } from "../policy/defaults";
+import { isAnything } from "../testing/matchers";
 import { HtmlFile } from "./html-file";
 import { Order, sortHtmlFiles } from "./order";
 import { ProjectFile, ProjectFileSet } from "./project-file-set";
-import { test, expect, equals } from "@benchristel/taste";
+import { test, expect, equals, which } from "@benchristel/taste";
 
 export type ProjectGlobalInfo = {
   // orderedLinkables contains the information about each HTML page needed
@@ -15,6 +17,8 @@ export type ProjectGlobalInfo = {
   // gets the information needed to construct the "next" link on the page
   // at `path`.
   index: Record<string, number>;
+  // template is the HTML template into which to render content
+  template: string;
 };
 
 export type Linkable = {
@@ -27,6 +31,7 @@ export function ProjectGlobalInfo(files: ProjectFileSet): ProjectGlobalInfo {
   return {
     orderedLinkables: order.items.map((path) => Linkable(files[path])),
     index: order.index,
+    template: defaultTemplate,
   };
 }
 
@@ -43,6 +48,7 @@ test("ProjectGlobalInfo", {
     expect(ProjectGlobalInfo(files), equals, {
       orderedLinkables: [],
       index: {},
+      template: which(isAnything),
     });
   },
 
@@ -53,6 +59,7 @@ test("ProjectGlobalInfo", {
     expect(ProjectGlobalInfo(files), equals, {
       orderedLinkables: [{ path: "/a.html", title: "a.html" }],
       index: { "/a.html": 0 },
+      template: which(isAnything),
     });
   },
 
@@ -76,6 +83,7 @@ test("ProjectGlobalInfo", {
         "/c.html": 2,
         "/d.html": 3,
       },
+      template: which(isAnything),
     });
   },
 });

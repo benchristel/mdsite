@@ -7,7 +7,6 @@ import { test, expect, equals } from "@benchristel/taste";
 import { htmlToc } from "./toc";
 import { dirname } from "path";
 import { ProjectGlobalInfo } from "./project-global-info";
-import { defaultTemplate } from "../policy/defaults";
 
 export type HtmlFile = {
   type: "html";
@@ -37,7 +36,7 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
     return [
       self.outputPath,
       buffer(
-        defaultTemplate
+        globalInfo.template
           .replace("{{content}}", self.rawHtml)
           .replace("{{title}}", self.title)
           .replace("{{toc}}", () =>
