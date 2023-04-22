@@ -2,8 +2,6 @@ import { FileSet } from "../lib/files";
 import { mapEntries } from "../lib/objects";
 import { pathAndBufferToProjectFile } from "./project-file-set";
 import { addSyntheticFiles } from "./synthetic-files";
-import "./order2";
-import "./project-global-info";
 import { ProjectGlobalInfo } from "./project-global-info";
 
 export function buildProject(files: FileSet): FileSet {

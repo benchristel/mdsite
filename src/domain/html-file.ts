@@ -2,7 +2,6 @@ import { buffer } from "../lib/buffer";
 import { htmlFromMarkdown } from "../lib/markdown";
 import { removeSuffix } from "../lib/strings";
 import { trimMargin } from "../testing/formatting";
-import { ProjectFileSet } from "./project-file-set";
 import { title } from "./title";
 import { test, expect, equals } from "@benchristel/taste";
 import { htmlToc } from "./toc";

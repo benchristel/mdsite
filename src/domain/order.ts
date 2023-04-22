@@ -1,4 +1,4 @@
-import { test, expect, equals, debug } from "@benchristel/taste";
+import { test, expect, equals } from "@benchristel/taste";
 import { ProjectFileSet } from "./project-file-set";
 import { HtmlFile } from "./html-file";
 import { Comparator } from "../lib/sorting";

@@ -1,5 +1,5 @@
 import { HtmlFile } from "./html-file";
-import { Order, sortHtmlFiles } from "./order2";
+import { Order, sortHtmlFiles } from "./order";
 import { ProjectFile, ProjectFileSet } from "./project-file-set";
 import { test, expect, equals } from "@benchristel/taste";
 
