@@ -3,9 +3,8 @@ import { basename, join, relative } from "path";
 import { ProjectFileSet } from "./project-file-set";
 import { HtmlFile } from "./html-file";
 import { by } from "../lib/sorting";
-import { EntryOrdering } from "./order";
+import { EntryOrdering, parse } from "./order";
 import { ensureTrailingSlash } from "../lib/paths";
-import { OrderFile } from "./order-file";
 
 export type TreeOfContents = Array<Node>;
 
@@ -73,12 +72,14 @@ export function indexIn(
 }
 
 function getOrdering(files: ProjectFileSet, root: string): EntryOrdering {
+  const dir = ensureTrailingSlash(root);
+  const names = Object.keys(files)
+    .filter((p) => p.startsWith(dir))
+    .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
   const orderFile = files[join(root, "order.txt")];
-  if (orderFile?.type === "order") {
-    return orderFile.ordering;
-  } else {
-    return OrderFile(root, "", Object.keys(files)).ordering;
-  }
+  const orderFileContents =
+    orderFile?.type === "order" ? orderFile.contents : "";
+  return parse(orderFileContents, new Set(names));
 }
 
 export function htmlToc(

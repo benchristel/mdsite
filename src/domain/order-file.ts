@@ -1,41 +1,38 @@
 import { dirname } from "path";
 import { buffer } from "../lib/buffer";
 import { ensureTrailingSlash } from "../lib/paths";
-import { EntryOrdering, parse } from "./order";
+import { parse } from "./order";
 import { ProjectFileSet } from "./project-file-set";
 
 export type OrderFile = {
   type: "order";
-  ordering: EntryOrdering;
+  contents: string;
   outputPath: string;
   render: (files: ProjectFileSet) => [string, Buffer];
 };
 
-export function OrderFile(
-  path: string,
-  contents: string,
-  files: Array<string>
-): OrderFile {
+export function OrderFile(path: string, contents: string): OrderFile {
   const dir = ensureTrailingSlash(dirname(path));
-  const names = files
-    .filter((p) => p.startsWith(dir))
-    .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
   const self: OrderFile = {
     type: "order",
     outputPath: path,
-    ordering: parse(contents, new Set(names)),
+    contents,
     render,
   };
   return self;
 
-  function render(): [string, Buffer] {
+  function render(files: ProjectFileSet): [string, Buffer] {
+    const names = Object.keys(files)
+      .filter((p) => p.startsWith(dir))
+      .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
+    const ordering = parse(contents, new Set(names));
     return [
       self.outputPath,
       buffer(
-        Object.keys(self.ordering.indexForName).join("\n") +
-          (self.ordering.entriesWithUnspecifiedOrder.length
+        Object.keys(ordering.indexForName).join("\n") +
+          (ordering.entriesWithUnspecifiedOrder.length
             ? "\n\n!unspecified\n" +
-              self.ordering.entriesWithUnspecifiedOrder.join("\n")
+              ordering.entriesWithUnspecifiedOrder.join("\n")
             : "")
       ),
     ];

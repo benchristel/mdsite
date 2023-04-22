@@ -206,7 +206,7 @@ test("htmlToc", {
 
 function parseProjectFiles(files: FileSet): ProjectFileSet {
   return mapEntries(addSyntheticFiles(files), ([srcPath, srcContents]) => {
-    const projectFile = ProjectFile(srcPath, srcContents, files);
+    const projectFile = ProjectFile(srcPath, srcContents);
     return [projectFile.outputPath, projectFile];
   });
 }
