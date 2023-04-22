@@ -1,6 +1,6 @@
-type Criterion<T> = ((obj: T) => string) | ((obj: T) => number);
+export type Criterion<T> = ((obj: T) => string) | ((obj: T) => number);
 
-type Comparator<T> = (a: T, b: T) => -1 | 0 | 1;
+export type Comparator<T> = (a: T, b: T) => -1 | 0 | 1;
 
 export function by<T>(...criteria: Array<Criterion<T>>): Comparator<T> {
   return (a, b) => {
