@@ -1,11 +1,10 @@
-import { dirname } from "path";
+import { basename, dirname } from "path";
 import { buffer } from "../lib/buffer";
 import { ensureTrailingSlash } from "../lib/paths";
-import { parse } from "./order";
-import { ProjectFileSet } from "./project-file-set";
 import { test, expect, equals, not } from "@benchristel/taste";
 import { isBlank, trimMargin } from "../testing/formatting";
 import { ProjectGlobalInfo } from "./project-global-info";
+import { diff } from "../lib/sets";
 
 export type OrderFile = {
   type: "order";
@@ -29,23 +28,27 @@ export function OrderFile(path: string, contents: string): OrderFile {
   return self;
 
   function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
-    const names = globalInfo.orderedLinkables
+    const extantEntries = globalInfo.orderedLinkables
       .map((l) => l.path)
       .filter((p) => p.startsWith(dir))
       .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
-    // TODO: this can be simplified
-    const ordering = parse(self.filenames, new Set(names));
+
+    const unspecified = diff(new Set(extantEntries), new Set(self.filenames));
+
     return [
       self.outputPath,
       buffer(
-        Object.keys(ordering.indexForName).join("\n") +
-          (ordering.entriesWithUnspecifiedOrder.length
-            ? "\n\n!unspecified\n" +
-              ordering.entriesWithUnspecifiedOrder.join("\n")
+        self.filenames.join("\n") +
+          (unspecified.size
+            ? "\n\n!unspecified\n" + [...unspecified].sort().join("\n")
             : "")
       ),
     ];
   }
+}
+
+export function isOrderFile(path: string): boolean {
+  return basename(path) === "order.txt";
 }
 
 test("OrderFile", {
@@ -103,5 +106,23 @@ test("OrderFile", {
   "trims space from each line"() {
     const orderFile = OrderFile("", "  a.html  ");
     expect(orderFile.filenames, equals, ["a.html"]);
+  },
+});
+
+test("isOrderFile", {
+  "is true given /order.txt"() {
+    expect("/order.txt", isOrderFile);
+  },
+
+  "is false given /foo.txt"() {
+    expect("/foo.txt", not(isOrderFile));
+  },
+
+  "is true given /foo/order.txt"() {
+    expect("/foo/order.txt", isOrderFile);
+  },
+
+  "is false given /order.html"() {
+    expect("/order.html", not(isOrderFile));
   },
 });
