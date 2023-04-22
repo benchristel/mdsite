@@ -1,5 +1,3 @@
-import { FileSet } from "../lib/files";
-import { mapEntries } from "../lib/objects";
 import { OpaqueFile } from "./opaque-file";
 import { HtmlFile, MarkdownFile } from "./html-file";
 import { OrderFile } from "./order-file";

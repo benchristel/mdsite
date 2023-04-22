@@ -7,13 +7,14 @@ import { title } from "./title";
 import { test, expect, equals } from "@benchristel/taste";
 import { htmlToc } from "./toc";
 import { dirname } from "path";
+import { ProjectGlobalInfo } from "./project-global-info";
 
 export type HtmlFile = {
   type: "html";
   rawHtml: string;
   title: string;
   outputPath: string;
-  render: (projectFiles: ProjectFileSet) => [string, Buffer];
+  render: (globalInfo: ProjectGlobalInfo) => [string, Buffer];
 };
 
 export function MarkdownFile(path: string, markdown: string): HtmlFile {
@@ -32,7 +33,7 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
   };
   return self;
 
-  function renderHtmlFile(projectFiles: ProjectFileSet): [string, Buffer] {
+  function renderHtmlFile(globalInfo: ProjectGlobalInfo): [string, Buffer] {
     return [
       self.outputPath,
       buffer(
@@ -40,7 +41,7 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
           .replace("{{content}}", self.rawHtml)
           .replace("{{title}}", self.title)
           .replace("{{toc}}", () =>
-            htmlToc(projectFiles, dirname(self.outputPath))
+            htmlToc(globalInfo, dirname(self.outputPath))
           )
       ),
     ];

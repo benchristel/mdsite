@@ -5,12 +5,13 @@ import { parse } from "./order";
 import { ProjectFileSet } from "./project-file-set";
 import { test, expect, equals, not } from "@benchristel/taste";
 import { isBlank, trimMargin } from "../testing/formatting";
+import { ProjectGlobalInfo } from "./project-global-info";
 
 export type OrderFile = {
   type: "order";
   filenames: Array<string>;
   outputPath: string;
-  render: (files: ProjectFileSet) => [string, Buffer];
+  render: (globalInfo: ProjectGlobalInfo) => [string, Buffer];
 };
 
 export function OrderFile(path: string, contents: string): OrderFile {
@@ -27,10 +28,12 @@ export function OrderFile(path: string, contents: string): OrderFile {
   };
   return self;
 
-  function render(files: ProjectFileSet): [string, Buffer] {
-    const names = Object.keys(files)
+  function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
+    const names = globalInfo.orderedLinkables
+      .map((l) => l.path)
       .filter((p) => p.startsWith(dir))
       .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
+    // TODO: this can be simplified
     const ordering = parse(self.filenames, new Set(names));
     return [
       self.outputPath,
