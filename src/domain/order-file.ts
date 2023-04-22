@@ -5,6 +5,7 @@ import { test, expect, equals, not } from "@benchristel/taste";
 import { isBlank, trimMargin } from "../testing/formatting";
 import { ProjectGlobalInfo } from "./project-global-info";
 import { diff } from "../lib/sets";
+import { line } from "../lib/strings";
 
 export type OrderFile = {
   type: "order";
@@ -38,9 +39,9 @@ export function OrderFile(path: string, contents: string): OrderFile {
     return [
       self.outputPath,
       buffer(
-        self.filenames.join("\n") +
+        self.filenames.map(line).join("") +
           (unspecified.size
-            ? "\n\n!unspecified\n" + [...unspecified].sort().join("\n")
+            ? "\n!unspecified\n" + [...unspecified].sort().map(line).join("")
             : "")
       ),
     ];

@@ -20,6 +20,10 @@ export const contains = curry((needle: string, haystack: string): boolean => {
   return haystack.includes(needle);
 }, "contains");
 
+export function line(s: string): string {
+  return s + "\n";
+}
+
 export function commonPrefix(a: string, b: string): string {
   const shorter = a.length < b.length ? a : b;
   for (let i = 0; i < shorter.length; i++) {
