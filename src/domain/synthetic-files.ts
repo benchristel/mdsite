@@ -1,15 +1,13 @@
-import { basename, dirname, join } from "path";
+import { dirname, join } from "path";
 import { buffer } from "../lib/buffer";
 import { FileSet } from "../lib/files";
 import { test, expect, equals } from "@benchristel/taste";
 import { valuesToStrings } from "../lib/objects";
+import { defaultIndexMdContent } from "../policy/defaults";
 
 export function addSyntheticFiles(files: FileSet): FileSet {
   files = { ...files };
-  if (!("/index.md" in files) && !("/index.html" in files)) {
-    files["/index.md"] = buffer("# Homepage\n\n{{toc}}");
-  }
-  const directories: Record<string, true> = {};
+  const directories: Record<string, true> = { "/": true };
   for (let path of Object.keys(files)) {
     if (!(path.endsWith(".html") || path.endsWith(".md"))) {
       continue;
@@ -22,17 +20,22 @@ export function addSyntheticFiles(files: FileSet): FileSet {
   for (const dir in directories) {
     const indexMdPath = join(dir, "index.md");
     const indexHtmlPath = join(dir, "index.html");
+    const orderTxtPath = join(dir, "order.txt");
     if (!(indexMdPath in files) && !(indexHtmlPath in files)) {
-      files[indexMdPath] = buffer("# " + basename(dir) + "\n\n{{toc}}");
+      files[indexMdPath] = buffer(defaultIndexMdContent(dir));
+    }
+    if (!(orderTxtPath in files)) {
+      files[orderTxtPath] = buffer("");
     }
   }
   return files;
 }
 
 test("addSyntheticFiles", {
-  "adds an index file to the root directory"() {
+  "adds an index file and an order.txt file to the root directory"() {
     expect(valuesToStrings(addSyntheticFiles({})), equals, {
       "/index.md": "# Homepage\n\n{{toc}}",
+      "/order.txt": "",
     });
   },
 
@@ -42,12 +45,16 @@ test("addSyntheticFiles", {
         addSyntheticFiles({
           "/index.md": buffer("hi"),
           "/foo/index.md": buffer("foo"),
+          "/order.txt": buffer(""),
+          "/foo/order.txt": buffer(""),
         })
       ),
       equals,
       {
         "/index.md": "hi",
         "/foo/index.md": "foo",
+        "/order.txt": "",
+        "/foo/order.txt": "",
       }
     );
   },
@@ -58,17 +65,39 @@ test("addSyntheticFiles", {
         addSyntheticFiles({
           "/index.html": buffer("hi"),
           "/foo/index.html": buffer("foo"),
+          "/order.txt": buffer(""),
+          "/foo/order.txt": buffer(""),
         })
       ),
       equals,
       {
         "/index.html": "hi",
         "/foo/index.html": "foo",
+        "/order.txt": "",
+        "/foo/order.txt": "",
       }
     );
   },
 
-  "adds index files to subdirectories"() {
+  "leaves existing order.txt files alone"() {
+    expect(
+      valuesToStrings(
+        addSyntheticFiles({
+          "/index.html": buffer(""),
+          "/order.txt": buffer("hi"),
+          "/foo/order.txt": buffer("foo"),
+        })
+      ),
+      equals,
+      {
+        "/index.html": "",
+        "/order.txt": "hi",
+        "/foo/order.txt": "foo",
+      }
+    );
+  },
+
+  "adds files to subdirectories"() {
     expect(
       valuesToStrings(
         addSyntheticFiles({
@@ -80,15 +109,18 @@ test("addSyntheticFiles", {
       equals,
       {
         "/index.md": "hi",
+        "/order.txt": "",
         "/foo/bar.md": "hi",
         "/foo/index.md": "# foo\n\n{{toc}}",
+        "/foo/order.txt": "",
         "/foo/bar/baz.md": "hi",
         "/foo/bar/index.md": "# bar\n\n{{toc}}",
+        "/foo/bar/order.txt": "",
       }
     );
   },
 
-  "does not add index files to directories containing only non-htmlable files"() {
+  "does not add files to directories containing only non-htmlable files"() {
     expect(
       valuesToStrings(
         addSyntheticFiles({
@@ -101,6 +133,7 @@ test("addSyntheticFiles", {
         "/foo/bar.png": "",
         "/foo/baz/kludge.png": "",
         "/index.md": "# Homepage\n\n{{toc}}",
+        "/order.txt": "",
       }
     );
   },

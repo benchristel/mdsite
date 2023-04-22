@@ -25,6 +25,7 @@ test("buildProject", {
           </body>
         </html>
       `,
+      "/order.txt": which(isAnything),
     };
 
     expect(valuesToStrings(buildProject(input)), equals, expected);
@@ -36,11 +37,12 @@ test("buildProject", {
     };
 
     const expected = {
-      "/foo.txt": buffer("# Hello"),
+      "/foo.txt": "# Hello",
       "/index.html": which(isAnything),
+      "/order.txt": which(isAnything),
     };
 
-    expect(buildProject(input), equals, expected);
+    expect(valuesToStrings(buildProject(input)), equals, expected);
   },
 
   "creates a default index.html file with a table of contents"() {
@@ -51,8 +53,9 @@ test("buildProject", {
     const expected = {
       "/foo.html": which(contains("This Is Foo")),
       "/index.html": which(contains(`<a href="foo.html">This Is Foo</a>`)),
+      "/order.txt": which(isAnything),
     };
 
-    expect(buildProject(input), equals, expected);
+    expect(valuesToStrings(buildProject(input)), equals, expected);
   },
 });
