@@ -20,9 +20,10 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   }
 }
 
-export function parseProjectFiles(files: FileSet): ProjectFileSet {
-  return mapEntries(files, ([srcPath, srcContents]) => {
-    const projectFile = ProjectFile(srcPath, srcContents);
-    return [projectFile.outputPath, projectFile];
-  });
+export function pathAndBufferToProjectFile([srcPath, srcContents]: [
+  string,
+  Buffer
+]): [string, ProjectFile] {
+  const projectFile = ProjectFile(srcPath, srcContents);
+  return [projectFile.outputPath, projectFile];
 }
