@@ -26,7 +26,7 @@ export function ProjectFile(
 }
 
 export function parseProjectFiles(files: FileSet): ProjectFileSet {
-  return mapEntries(addSyntheticFiles(files), ([srcPath, srcContents]) => {
+  return mapEntries(files, ([srcPath, srcContents]) => {
     const projectFile = ProjectFile(srcPath, srcContents, files);
     return [projectFile.outputPath, projectFile];
   });

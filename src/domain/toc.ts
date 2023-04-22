@@ -1,8 +1,11 @@
 export { htmlToc } from "./toc.impl";
 import { test, expect, is, equals } from "@benchristel/taste";
 import { buffer } from "../lib/buffer";
-import { ProjectFileSet, parseProjectFiles } from "./project-file-set";
+import { ProjectFile, ProjectFileSet } from "./project-file-set";
 import { toc, htmlToc, leaf, branch } from "./toc.impl";
+import { FileSet } from "../lib/files";
+import { mapEntries } from "../lib/objects";
+import { addSyntheticFiles } from "./synthetic-files";
 
 {
   // htmlToc() generates an HTML "tree of contents" with <ul> and <li>
@@ -200,3 +203,10 @@ test("htmlToc", {
     expect(htmlToc(files, "/"), is, expected);
   },
 });
+
+function parseProjectFiles(files: FileSet): ProjectFileSet {
+  return mapEntries(addSyntheticFiles(files), ([srcPath, srcContents]) => {
+    const projectFile = ProjectFile(srcPath, srcContents, files);
+    return [projectFile.outputPath, projectFile];
+  });
+}
