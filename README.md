@@ -92,7 +92,13 @@ baz.md
 Any files you don't list in `order.txt` will be ordered by title, after the
 listed files.
 
-Once you've created some `order.txt` files, you can run `mdsite order` to
-populate them with the complete list of filenames. If you've listed some files
-in `order.txt` already, `mdsite order` won't mess with them. It just adds any
-missing filenames to the end of the file.
+To populate your INPUTDIR with `order.txt` files, you can run
+`mdsite order [-i INPUTDIR]`. This does the following:
+
+- Creates an `order.txt` in each directory that lacks one.
+- Appends any missing files and folders to each `order.txt`, below an
+  `!unspecified` line which causes them to be ignored when sorting
+  files.
+
+Running `mdsite order` won't mess with the filenames you've listed
+manually, and won't affect the overall order of the pages on your site.
