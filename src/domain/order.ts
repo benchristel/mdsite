@@ -1,5 +1,4 @@
 import { test, expect, equals, not } from "@benchristel/taste";
-import { isBlank, trimMargin } from "../testing/formatting";
 import { intoObject } from "../lib/objects";
 import { diff } from "../lib/sets";
 import { basename } from "path";
@@ -14,13 +13,10 @@ export type EntryOrdering = {
 };
 
 export function parse(
-  orderFile: string,
+  orderedFiles: Array<string>,
   sourceFiles: Set<string>
 ): EntryOrdering {
-  const names = orderFile
-    .split("\n!unspecified\n")[0]
-    .split("\n")
-    .filter(not(isBlank))
+  const names = orderedFiles
     .filter(
       (name) => sourceFiles.has(name) || sourceFiles.has(markdownize(name))
     )
@@ -51,8 +47,8 @@ function markdownize(name: string): string {
 }
 
 test("parse(orderFile)", {
-  "handles an empty file"() {
-    const input = "";
+  "handles an empty set of files"() {
+    const input: Array<string> = [];
     const expected = {
       indexForName: {},
       entriesWithUnspecifiedOrder: [],
@@ -60,17 +56,8 @@ test("parse(orderFile)", {
     expect(parse(input, new Set([])), equals, expected);
   },
 
-  "handles a file with only whitespace"() {
-    const input = "\n\n";
-    const expected = {
-      indexForName: {},
-      entriesWithUnspecifiedOrder: [],
-    };
-    expect(parse(input, new Set([])), equals, expected);
-  },
-
-  "parses a one-line file"() {
-    const input = "foo.html";
+  "parses one file"() {
+    const input = ["foo.html"];
     const expected = {
       indexForName: { "foo.html": 0 },
       entriesWithUnspecifiedOrder: [],
@@ -78,13 +65,8 @@ test("parse(orderFile)", {
     expect(parse(input, new Set(["foo.html"])), equals, expected);
   },
 
-  "parses a multi-line file"() {
-    const input = trimMargin`
-      foo.html
-      bar.html
-
-      a-directory
-    `;
+  "parses multiple files"() {
+    const input = ["foo.html", "bar.html", "a-directory"];
     const expected = {
       indexForName: {
         "foo.html": 0,
@@ -101,7 +83,7 @@ test("parse(orderFile)", {
   },
 
   "converts .md extensions to .html"() {
-    const input = "foo.md";
+    const input = ["foo.md"];
     const expected = {
       indexForName: {
         "foo.html": 0,
@@ -112,7 +94,7 @@ test("parse(orderFile)", {
   },
 
   "ignores names that don't appear in the given set of source files"() {
-    const input = "bar.md";
+    const input = ["bar.md"];
     const expected = {
       indexForName: {},
       entriesWithUnspecifiedOrder: [],
@@ -121,7 +103,7 @@ test("parse(orderFile)", {
   },
 
   "accepts .html names whose .md versions appear in the given set of source files"() {
-    const input = "foo.html";
+    const input = ["foo.html"];
     const expected = {
       indexForName: {
         "foo.html": 0,
@@ -132,7 +114,7 @@ test("parse(orderFile)", {
   },
 
   "puts any source files that don't appear in the order file in the 'unspecified' section"() {
-    const input = "";
+    const input: Array<string> = [];
     const sourceFiles = new Set(["foo.md", "bar.html"]);
     const expected = {
       indexForName: {},
@@ -141,12 +123,8 @@ test("parse(orderFile)", {
     expect(parse(input, sourceFiles), equals, expected);
   },
 
-  "puts any source files below the !unspecified line in the 'unspecified' section"() {
-    const input = trimMargin`
-      foo.md
-      !unspecified
-      bar.md
-    `;
+  "puts any unordered source files in the 'unspecified' section"() {
+    const input = ["foo.md"];
     const sourceFiles = new Set(["foo.md", "bar.md"]);
     const expected = {
       indexForName: {

@@ -77,9 +77,9 @@ function getOrdering(files: ProjectFileSet, root: string): EntryOrdering {
     .filter((p) => p.startsWith(dir))
     .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
   const orderFile = files[join(root, "order.txt")];
-  const orderFileContents =
-    orderFile?.type === "order" ? orderFile.contents : "";
-  return parse(orderFileContents, new Set(names));
+  const orderedFilenames =
+    orderFile?.type === "order" ? orderFile.filenames : [];
+  return parse(orderedFilenames, new Set(names));
 }
 
 export function htmlToc(
