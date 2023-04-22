@@ -7,6 +7,7 @@ import { test, expect, equals } from "@benchristel/taste";
 import { htmlToc } from "./toc";
 import { dirname } from "path";
 import { ProjectGlobalInfo } from "./project-global-info";
+import { defaultTemplate } from "../policy/defaults";
 
 export type HtmlFile = {
   type: "html";
@@ -50,18 +51,6 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
 function replaceMarkdownHrefs(html: string): string {
   return html.replace(/(<a[^>]+href="[^"]+\.)md(")/g, "$1html$2");
 }
-
-const defaultTemplate = trimMargin`
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <title>{{title}}</title>
-    </head>
-    <body>
-      {{content}}
-    </body>
-  </html>
-`;
 
 test("replaceMarkdownHrefs", {
   "converts a .md link to a .html link"() {
