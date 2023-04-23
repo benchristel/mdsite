@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>A Hello World Site</title>
+		<style>
+			html {
+				background: #fed;
+			}
+			nav {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			nav > div {
+				flex-grow: 0;
+			}
+			nav a {
+				display: inline-block;
+				padding: 0 0.5em 0.5ex;
+			}
+			nav a + a {
+				border-left: 1px solid black;
+			}
+			nav a:hover {
+				background: #0001;
+			}
+			article h1 {
+				font-size: 200%;
+			}
+			.credits {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div>
+				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				
+			</div>
+		</nav>
+		<hr/>
+
+		<article>
+			<h1 id="a-hello-world-site">A Hello World Site</h1>
+<p>This tutorial assumes you&#39;ve <a href="../installation.html">installed mdsite</a>.</p>
+<h2 id="step-1-create-a-src-directory-and-an-indexmd-file">Step 1: Create a <code>src/</code> directory and an <code>index.md</code> file</h2>
+<pre><code class="language-bash">mkdir src
+echo &#39;# Hello, world!&#39; &gt; src/index.md
+</code></pre>
+<h2 id="step-2-run-mdsite">Step 2: Run <code>mdsite</code></h2>
+<p>While still in the directory that contains your <code>src</code> directory, run
+<code>mdsite</code>.</p>
+<p>To check that it worked, list the entries in your current directory with <code>ls</code>.
+You should see the <code>docs</code> directory that <code>mdsite</code> generated.</p>
+<h2 id="step-3-serve">Step 3: Serve</h2>
+<p>Run <code>bunx http-server -p 3000 docs</code> to serve your docs folder to your
+local network over HTTP.</p>
+<p>You should now be able to visit <a href="http://localhost:3000">http://localhost:3000</a>
+and see the page that <code>mdsite</code> built!</p>
+<h2 id="step-4-customize-the-page">Step 4: Customize the page</h2>
+<p>Edit your <code>index.md</code> in the editor of your choice. Then run <code>mdsite</code> again
+to apply the updates.</p>
+		</article>
+
+		<hr/>
+		<nav>
+			<div>
+				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				
+			</div>
+		</nav>
+		<div class="credits">
+			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
+		</div>
+	</body>
+</html>

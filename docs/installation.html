@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Installation</title>
+		<style>
+			html {
+				background: #fed;
+			}
+			nav {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			nav > div {
+				flex-grow: 0;
+			}
+			nav a {
+				display: inline-block;
+				padding: 0 0.5em 0.5ex;
+			}
+			nav a + a {
+				border-left: 1px solid black;
+			}
+			nav a:hover {
+				background: #0001;
+			}
+			article h1 {
+				font-size: 200%;
+			}
+			.credits {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div>
+				<a href="index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				<a href="tutorials/index.html" class="mdsite-next-link">Next</a>
+			</div>
+		</nav>
+		<hr/>
+
+		<article>
+			<h1 id="installation">Installation</h1>
+<p>You will need to install <a href="https://bun.sh">Bun</a> first. Then:</p>
+<pre><code>git clone https://github.com/benchristel/mdsite
+cd mdsite
+bun install
+</code></pre>
+<p>Put the <code>mdsite</code> directory on your <code>PATH</code> somehow, probably by adding
+a line like the following to your <code>.bashrc</code>:</p>
+<pre><code>export PATH=&quot;$PATH:/path/to/mdsite&quot;
+</code></pre>
+		</article>
+
+		<hr/>
+		<nav>
+			<div>
+				<a href="index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				<a href="tutorials/index.html" class="mdsite-next-link">Next</a>
+			</div>
+		</nav>
+		<div class="credits">
+			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
+		</div>
+	</body>
+</html>

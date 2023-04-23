@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{title}}</title>
+		<style>
+			html {
+				background: #fed;
+			}
+			nav {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			nav > div {
+				flex-grow: 0;
+			}
+			nav a {
+				display: inline-block;
+				padding: 0 0.5em 0.5ex;
+			}
+			nav a + a {
+				border-left: 1px solid black;
+			}
+			nav a:hover {
+				background: #0001;
+			}
+			article h1 {
+				font-size: 200%;
+			}
+			.credits {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div>
+				{{home}}{{up}}{{prev}}
+			</div>
+			<div>
+				{{next}}
+			</div>
+		</nav>
+		<hr/>
+
+		<article>
+			{{content}}
+		</article>
+
+		<hr/>
+		<nav>
+			<div>
+				{{home}}{{up}}{{prev}}
+			</div>
+			<div>
+				{{next}}
+			</div>
+		</nav>
+		<div class="credits">
+			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
+		</div>
+	</body>
+</html>

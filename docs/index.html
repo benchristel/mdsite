@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>mdsite</title>
+		<style>
+			html {
+				background: #fed;
+			}
+			nav {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			nav > div {
+				flex-grow: 0;
+			}
+			nav a {
+				display: inline-block;
+				padding: 0 0.5em 0.5ex;
+			}
+			nav a + a {
+				border-left: 1px solid black;
+			}
+			nav a:hover {
+				background: #0001;
+			}
+			article h1 {
+				font-size: 200%;
+			}
+			.credits {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<div>
+				<a href="index.html">Home</a><a href="index.html">Up</a>
+			</div>
+			<div>
+				<a href="installation.html" class="mdsite-next-link">Next</a>
+			</div>
+		</nav>
+		<hr/>
+
+		<article>
+			<h1 id="mdsite">mdsite</h1>
+<p>A modern generator for old-school static sites.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><ul><li><a href="installation.html">Installation</a></li><li><a href="tutorials/index.html">tutorials</a><ul><li><a href="tutorials/hello-world.html">A Hello World Site</a></li></ul></li></ul></p>
+		</article>
+
+		<hr/>
+		<nav>
+			<div>
+				<a href="index.html">Home</a><a href="index.html">Up</a>
+			</div>
+			<div>
+				<a href="installation.html" class="mdsite-next-link">Next</a>
+			</div>
+		</nav>
+		<div class="credits">
+			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
+		</div>
+	</body>
+</html>
