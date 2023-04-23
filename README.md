@@ -26,12 +26,14 @@ export PATH="$PATH:/path/to/mdsite"
 To build a website from a directory of markdown files, run:
 
 ```
-mdsite [-i INPUTDIR] [-o OUTPUTDIR]
+mdsite [-i INPUTDIR] [-o OUTPUTDIR] [-t TEMPLATEFILE]
 ```
 
 Where `INPUTDIR` and `OUTPUTDIR` are paths to directories. `OUTPUTDIR` will
 be created if it does not exist. `INPUTDIR` defaults to `src`, and `OUTPUTDIR`
-to `docs`.
+to `docs`. `TEMPLATEFILE` is the path to an HTML file. If not given, it defaults
+to `template.html`, and if that file is not found, `mdsite` will use a built-in
+default template.
 
 Files already in `OUTPUTDIR` will not be deleted; if they do not need to be
 updated, `mdsite` will simply leave them in place. This may be valuable if you want
@@ -75,6 +77,11 @@ HTML boilerplate. Here is the default template:
 - `{{title}}` inserts the content of the first `<h1>` element on the page,
   or the filename if there is no `<h1>`.
 
+## Custom Templates
+
+You can customize the HTML template for your pages by creating a `template.html` file
+in the directory where you run `mdsite`.
+
 ## Macros
 
 The available macros are:
@@ -91,6 +98,9 @@ The available macros are:
 - `{{up}}` creates a link that goes one level up in the hierarchy. If used on a "leaf" page,
   it goes to the sibling `./index.html` file; if used on an index page, it goes to `../index.html`.
 - `{{home}}` links to the root `/index.html` file.
+
+You can use most of these macros anywhere—in your template file, or in HTML or markdown content.
+The exception to this is `{{content}}`, which should only be used in the template file.
 
 All of the generated links are relative, making it safe to deploy your site to
 a subdirectory of your domain.
