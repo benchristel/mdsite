@@ -68,18 +68,37 @@ HTML boilerplate. Here is the default template:
 </html>
 ```
 
-`{{title}}` and `{{content}}` are _macros_—more on those later. They instruct
+`{{title}}` and `{{content}}` are _macros_. They instruct
 `mdsite` to insert some data into the page.
 
 - `{{content}}` inserts the content of the source file.
 - `{{title}}` inserts the content of the first `<h1>` element on the page,
   or the filename if there is no `<h1>`.
 
-## Tables of Contents
+## Macros
 
-Currently, the only macro other than `{{title}}` and `{{content}}` is
-`{{toc}}`, which inserts a table of contents formatted as a nested list.
-`{{toc}}` lists the files within the current file's parent directory.
+The available macros are:
+
+- `{{content}}` inserts the content of the source file.
+- `{{title}}` inserts the content of the first `<h1>` element on the page,
+  or the filename if there is no `<h1>`.
+- `{{toc}}` inserts a table of contents for the current directory and
+  subdirectories.
+- `{{next}}` creates a link to the next page. The order of pages is determined by the
+  set of `order.txt` files (see below).
+- `{{prev}}` creates a link to the previous page. The order of pages is determined by the
+  set of `order.txt` files (see below).
+- `{{up}}` creates a link that goes one level up in the hierarchy. If used on a "leaf" page,
+  it goes to the sibling `./index.html` file; if used on an index page, it goes to `../index.html`.
+- `{{home}}` links to the root `/index.html` file.
+
+All of the generated links are relative, making it safe to deploy your site to
+a subdirectory of your domain.
+
+## Table of Contents, `{{toc}}` and order.txt
+
+`{{toc}}` is a macro which inserts a table of contents formatted as a nested
+list. `{{toc}}` lists the files within the current file's parent directory.
 
 By default, entries in the table of contents are ordered lexicographically by
 title. You can customize the ordering of the files in a directory by creating
