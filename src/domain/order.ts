@@ -37,12 +37,13 @@ function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
     );
     const orderFile = files[join(prefix, "order.txt")];
     if (orderFile?.type === "order") {
-      const aIndex = orderFile.filenames.indexOf(
-        a.outputPath.slice(prefix.length).split("/")[0]
-      );
-      const bIndex = orderFile.filenames.indexOf(
-        b.outputPath.slice(prefix.length).split("/")[0]
-      );
+      const aName = a.outputPath.slice(prefix.length).split("/")[0];
+      const bName = b.outputPath.slice(prefix.length).split("/")[0];
+      if (aName === "index.html") return -1;
+      if (bName === "index.html") return 1;
+
+      const aIndex = orderFile.filenames.indexOf(aName);
+      const bIndex = orderFile.filenames.indexOf(bName);
       if (aIndex !== -1 && bIndex !== -1) {
         return aIndex > bIndex ? 1 : -1;
       } else if (bIndex !== -1) {
@@ -200,6 +201,44 @@ test("sortProjectFiles", {
       "/bbb/two.html",
       "/bbb/three.html",
       "/bbb/four.html",
+    ]);
+  },
+
+  "puts index.html first no matter what"() {
+    const files = {
+      "/order.txt": OrderFile(
+        "/order.txt",
+        trimMargin`
+          aaa
+          bbb
+        `
+      ),
+      "/bbb/order.txt": OrderFile(
+        "/bbb/order.txt",
+        trimMargin`
+          one.html
+          index.html
+        `
+      ),
+      "/aaa/order.txt": OrderFile(
+        "/aaa/order.txt",
+        trimMargin`
+          one.html
+          index.html
+        `
+      ),
+      "/bbb/one.html": HtmlFile("/bbb/one.html", ""),
+      "/aaa/one.html": HtmlFile("/aaa/one.html", ""),
+      "/bbb/index.html": HtmlFile("/bbb/index.html", ""),
+      "/aaa/index.html": HtmlFile("/aaa/index.html", ""),
+      "/index.html": HtmlFile("/index.html", ""),
+    };
+    expect(sortHtmlFiles(files), equals, [
+      "/index.html",
+      "/aaa/index.html",
+      "/aaa/one.html",
+      "/bbb/index.html",
+      "/bbb/one.html",
     ]);
   },
 });

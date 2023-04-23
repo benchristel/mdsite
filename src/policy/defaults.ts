@@ -17,6 +17,9 @@ export const defaultTemplate = trimMargin`
     </head>
     <body>
       {{content}}
+      <nav>
+        {{home}} | {{up}} | {{prev}} | {{next}}
+      </nav>
     </body>
   </html>
 `;

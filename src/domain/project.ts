@@ -22,6 +22,9 @@ test("buildProject", {
           </head>
           <body>
             <h1 id="hello">Hello</h1>
+            <nav>
+              <a href="index.html">Home</a> | <a href="index.html">Up</a> |  | 
+            </nav>
           </body>
         </html>
       `,

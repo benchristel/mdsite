@@ -7,6 +7,7 @@ import { test, expect, equals } from "@benchristel/taste";
 import { htmlToc } from "./toc";
 import { dirname } from "path";
 import { ProjectGlobalInfo } from "./project-global-info";
+import { homeLink, nextLink, prevLink, upLink } from "./links";
 
 export type HtmlFile = {
   type: "html";
@@ -38,10 +39,14 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
       buffer(
         globalInfo.template
           .replace("{{content}}", self.rawHtml)
-          .replace("{{title}}", self.title)
-          .replace("{{toc}}", () =>
+          .replace(/{{title}}/g, self.title)
+          .replace(/{{toc}}/g, () =>
             htmlToc(globalInfo, dirname(self.outputPath))
           )
+          .replace(/{{next}}/g, () => nextLink(globalInfo, self.outputPath))
+          .replace(/{{prev}}/g, () => prevLink(globalInfo, self.outputPath))
+          .replace(/{{up}}/g, () => upLink(self.outputPath))
+          .replace(/{{home}}/g, () => homeLink(self.outputPath))
       ),
     ];
   }
