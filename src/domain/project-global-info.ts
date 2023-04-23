@@ -26,12 +26,15 @@ export type Linkable = {
   title: string;
 };
 
-export function ProjectGlobalInfo(files: ProjectFileSet): ProjectGlobalInfo {
+export function ProjectGlobalInfo(
+  files: ProjectFileSet,
+  template: string
+): ProjectGlobalInfo {
   const order = Order(sortHtmlFiles(files));
   return {
     orderedLinkables: order.items.map((path) => Linkable(files[path])),
     index: order.index,
-    template: defaultTemplate,
+    template,
   };
 }
 
@@ -45,7 +48,7 @@ function Linkable(file: ProjectFile) {
 test("ProjectGlobalInfo", {
   "is empty given no files"() {
     const files = {};
-    expect(ProjectGlobalInfo(files), equals, {
+    expect(ProjectGlobalInfo(files, ""), equals, {
       orderedLinkables: [],
       index: {},
       template: which(isAnything),
@@ -56,11 +59,20 @@ test("ProjectGlobalInfo", {
     const files = {
       "/a.html": HtmlFile("/a.html", ""),
     };
-    expect(ProjectGlobalInfo(files), equals, {
+    expect(ProjectGlobalInfo(files, ""), equals, {
       orderedLinkables: [{ path: "/a.html", title: "a.html" }],
       index: { "/a.html": 0 },
       template: which(isAnything),
     });
+  },
+
+  "given a template"() {
+    const files = {};
+    expect(
+      ProjectGlobalInfo(files, "the-template").template,
+      equals,
+      "the-template"
+    );
   },
 
   "given several files"() {
@@ -70,7 +82,7 @@ test("ProjectGlobalInfo", {
       "/c.html": HtmlFile("/c.html", ""),
       "/a.html": HtmlFile("/a.html", ""),
     };
-    expect(ProjectGlobalInfo(files), equals, {
+    expect(ProjectGlobalInfo(files, ""), equals, {
       orderedLinkables: [
         { path: "/a.html", title: "a.html" },
         { path: "/b.html", title: "b.html" },

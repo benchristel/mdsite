@@ -3,6 +3,7 @@ import { trimMargin } from "../testing/formatting";
 
 export const DEFAULT_INPUTDIR = "src";
 export const DEFAULT_OUTPUTDIR = "docs";
+export const DEFAULT_TEMPLATEFILE = "template.html";
 
 export function defaultIndexMdContent(dir: string) {
   const title = dir === "/" ? "Homepage" : basename(dir);

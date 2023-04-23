@@ -13,25 +13,14 @@ test("buildProject", {
       "/index.md": buffer("# Hello"),
     };
 
+    const template = "- {{content}} -";
+
     const expected = {
-      "/index.html": trimMargin`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Hello</title>
-          </head>
-          <body>
-            <h1 id="hello">Hello</h1>
-            <nav>
-              <a href="index.html">Home</a> | <a href="index.html">Up</a> |  | 
-            </nav>
-          </body>
-        </html>
-      `,
+      "/index.html": `- <h1 id="hello">Hello</h1> -`,
       "/order.txt": which(isAnything),
     };
 
-    expect(valuesToStrings(buildProject(input)), equals, expected);
+    expect(valuesToStrings(buildProject(input, template)), equals, expected);
   },
 
   "does nothing to a .txt file"() {
@@ -45,7 +34,7 @@ test("buildProject", {
       "/order.txt": which(isAnything),
     };
 
-    expect(valuesToStrings(buildProject(input)), equals, expected);
+    expect(valuesToStrings(buildProject(input, "")), equals, expected);
   },
 
   "creates a default index.html file with a table of contents"() {
@@ -59,6 +48,10 @@ test("buildProject", {
       "/order.txt": which(isAnything),
     };
 
-    expect(valuesToStrings(buildProject(input)), equals, expected);
+    expect(
+      valuesToStrings(buildProject(input, "{{content}}")),
+      equals,
+      expected
+    );
   },
 });

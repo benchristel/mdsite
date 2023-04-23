@@ -1,6 +1,10 @@
 import yargsParser from "yargs-parser";
 import { test, expect, equals } from "@benchristel/taste";
-import { DEFAULT_INPUTDIR, DEFAULT_OUTPUTDIR } from "../policy/defaults";
+import {
+  DEFAULT_INPUTDIR,
+  DEFAULT_OUTPUTDIR,
+  DEFAULT_TEMPLATEFILE,
+} from "../policy/defaults";
 
 export type Args = BuildArgs | OrderArgs;
 
@@ -8,6 +12,7 @@ export type BuildArgs = {
   command: "build";
   inputDir: string;
   outputDir: string;
+  templateFile: string;
 };
 
 export type OrderArgs = {
@@ -16,7 +21,7 @@ export type OrderArgs = {
 };
 
 export function parseArgs(rawArgs: Array<string>): Args {
-  const yargs = yargsParser(rawArgs, { string: ["i", "o"] });
+  const yargs = yargsParser(rawArgs, { string: ["i", "o", "t"] });
   if (yargs._[0] === "order") {
     return {
       command: "order",
@@ -27,6 +32,7 @@ export function parseArgs(rawArgs: Array<string>): Args {
       command: "build",
       inputDir: yargs.i || DEFAULT_INPUTDIR,
       outputDir: yargs.o || DEFAULT_OUTPUTDIR,
+      templateFile: yargs.t || DEFAULT_TEMPLATEFILE,
     };
   }
 }
@@ -38,48 +44,58 @@ function order(inputDir: string): OrderArgs {
   };
 }
 
-function build(inputDir: string, outputDir: string): BuildArgs {
+function build(
+  inputDir: string,
+  outputDir: string,
+  templateFile: string
+): BuildArgs {
   return {
     command: "build",
     inputDir,
     outputDir,
+    templateFile,
   };
 }
 
 test("parsing arguments", {
   "given no options"() {
     const args = parseArgs([]);
-    expect(args, equals, build("src", "docs"));
+    expect(args, equals, build("src", "docs", "template.html"));
   },
 
   "given -i"() {
     const args = parseArgs(["-i", "foo"]);
-    expect(args, equals, build("foo", "docs"));
+    expect(args, equals, build("foo", "docs", "template.html"));
   },
 
   "given -o"() {
     const args = parseArgs(["-o", "foo"]);
-    expect(args, equals, build("src", "foo"));
+    expect(args, equals, build("src", "foo", "template.html"));
+  },
+
+  "given -t"() {
+    const args = parseArgs(["-t", "foo"]);
+    expect(args, equals, build("src", "docs", "foo"));
   },
 
   "given -i with no argument"() {
     const args = parseArgs(["-i"]);
-    expect(args, equals, build("src", "docs"));
+    expect(args, equals, build("src", "docs", "template.html"));
   },
 
   "given -o with no argument"() {
     const args = parseArgs(["-o"]);
-    expect(args, equals, build("src", "docs"));
+    expect(args, equals, build("src", "docs", "template.html"));
   },
 
   "converts numeric arguments to strings"() {
     const args = parseArgs(["-i", "111", "-o", "222"]);
-    expect(args, equals, build("111", "222"));
+    expect(args, equals, build("111", "222", "template.html"));
   },
 
   "parses arguments with = after the flag"() {
     const args = parseArgs(["-i=foo", "-o=bar"]);
-    expect(args, equals, build("foo", "bar"));
+    expect(args, equals, build("foo", "bar", "template.html"));
   },
 
   "parses an order command"() {

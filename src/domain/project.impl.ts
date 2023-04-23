@@ -4,7 +4,7 @@ import { pathAndBufferToProjectFile } from "./project-file-set";
 import { addSyntheticFiles } from "./synthetic-files";
 import { ProjectGlobalInfo } from "./project-global-info";
 
-export function buildProject(files: FileSet): FileSet {
+export function buildProject(files: FileSet, template: string): FileSet {
   // Step 1: We create "synthetic files" that aren't in the source tree, but
   // appear in or affect the output. These currently include index.html files,
   // and in the future might include order.txt files as well.
@@ -16,7 +16,7 @@ export function buildProject(files: FileSet): FileSet {
 
   // Step 3: We synthesize the local information to get global information
   // about the project: e.g. what order the pages go in.
-  const globalInfo = ProjectGlobalInfo(projectFiles);
+  const globalInfo = ProjectGlobalInfo(projectFiles, template);
 
   // Step 4: We feed that global information about the project back into each
   // file, enabling it to render its FINAL FORM!
