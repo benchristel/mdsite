@@ -12,7 +12,7 @@ echo '# Hello, world!' > src/index.md
 ## Step 2: Run `mdsite`
 
 While still in the directory that contains your `src` directory, run
-`mdsite`.
+`mdsite`. You'll see a warning about `template.html` not existing; that's fine.
 
 To check that it worked, list the entries in your current directory with `ls`.
 You should see the `docs` directory that `mdsite` generated.
