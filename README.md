@@ -61,6 +61,9 @@ HTML boilerplate. Here is the default template:
   </head>
   <body>
     {{content}}
+    <nav>
+      {{home}} | {{up}} | {{prev}} | {{next}}
+    </nav>
   </body>
 </html>
 ```
