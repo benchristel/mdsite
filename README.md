@@ -108,7 +108,8 @@ a subdirectory of your domain.
 ## Table of Contents, `{{toc}}` and order.txt
 
 `{{toc}}` is a macro which inserts a table of contents formatted as a nested
-list. `{{toc}}` lists the files within the current file's parent directory.
+list. `{{toc}}` recursively lists the files and directories within the current file's
+parent directory.
 
 By default, entries in the table of contents are ordered lexicographically by
 title. You can customize the ordering of the entries in a directory by creating
@@ -126,6 +127,10 @@ kludge
 
 Any files you don't list in `order.txt` will be ordered by title, after the
 listed files.
+
+Each `order.txt` file can only affect the order of its sibling
+files/directories; `order.txt` can't reach into subdirectories. Any lines in
+`order.txt` that contain a slash are ignored.
 
 To populate your INPUTDIR with `order.txt` files, you can run
 `mdsite order [-i INPUTDIR]`. This does the following:
