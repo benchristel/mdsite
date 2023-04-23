@@ -101,14 +101,17 @@ a subdirectory of your domain.
 list. `{{toc}}` lists the files within the current file's parent directory.
 
 By default, entries in the table of contents are ordered lexicographically by
-title. You can customize the ordering of the files in a directory by creating
+title. You can customize the ordering of the entries in a directory by creating
 an `order.txt` file in that directory. The `order.txt` file simply lists the
-files in the order you want them displayed, one per line. E.g.
+entries (files or directories) in the order you want them
+displayed, one per line. E.g.
 
 ```
 foo.md
 bar.md
 baz.md
+quux
+kludge
 ```
 
 Any files you don't list in `order.txt` will be ordered by title, after the
