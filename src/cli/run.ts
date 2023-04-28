@@ -7,15 +7,13 @@ import { isOrderFile } from "../domain/order-file";
 import { readFile } from "fs/promises";
 import { defaultTemplate } from "../policy/defaults";
 
-export function run(argv: Array<string>) {
+export function run(argv: Array<string>): Promise<void> {
   const args = parseArgs(argv);
   switch (args.command) {
     case "build":
-      build(args);
-      break;
+      return build(args);
     case "order":
-      order(args);
-      break;
+      return order(args);
     default:
       throw unreachable("unexpected command", args);
   }
@@ -25,10 +23,15 @@ async function build(args: BuildArgs) {
   const { inputDir, outputDir, templateFile } = args;
 
   const [input, template] = await Promise.all([
-    listDeep(inputDir),
+    listDeep(inputDir).catch(() => {
+      throw Error(
+        `ERROR: could not read from input directory '${inputDir}'.` +
+          `\nhint: create the '${inputDir}' directory, or specify a different one with -i INPUTDIR`
+      );
+    }),
     readFile(templateFile).catch(() => {
       console.warn(
-        `Could not read template file ${templateFile}. Using the default template.`
+        `Warning: could not read template file '${templateFile}'. Using the default template.`
       );
       return defaultTemplate;
     }),
