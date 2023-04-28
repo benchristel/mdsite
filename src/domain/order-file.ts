@@ -23,7 +23,7 @@ export function OrderFile(path: string, contents: string): OrderFile {
       .split("!unspecified")[0]
       .split("\n")
       .filter(not(isBlank))
-      .map((f) => f.replace(/\.md$/, ".html").trim()),
+      .map((f) => basename(f.replace(/\.md$/, ".html").trim())),
     render,
   };
   return self;
@@ -31,15 +31,19 @@ export function OrderFile(path: string, contents: string): OrderFile {
   function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
     const extantEntries = globalInfo.orderedLinkables
       .map((l) => l.path)
-      .filter((p) => p.startsWith(dir))
+      .filter((path) => path.startsWith(dir))
       .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
 
     const unspecified = diff(new Set(extantEntries), new Set(self.filenames));
+    unspecified.delete("index.html");
 
     return [
       self.outputPath,
       buffer(
-        self.filenames.map(line).join("") +
+        self.filenames
+          .filter((name) => name !== "index.html")
+          .map(line)
+          .join("") +
           (unspecified.size
             ? "\n!unspecified\n" + [...unspecified].sort().map(line).join("")
             : "")
@@ -107,6 +111,83 @@ test("OrderFile", {
   "trims space from each line"() {
     const orderFile = OrderFile("", "  a.html  ");
     expect(orderFile.filenames, equals, ["a.html"]);
+  },
+
+  "ignores leading/trailing slashes"() {
+    const orderFile = OrderFile(
+      "",
+      trimMargin`
+      /a.html
+      b/
+    `
+    );
+    expect(orderFile.filenames, equals, ["a.html", "b"]);
+  },
+
+  "removes index.html (which has no effect) when rendering"() {
+    const orderFile = OrderFile(
+      "/order.txt",
+      trimMargin`
+      a
+      index.html
+      b
+    `
+    );
+    const globalProjectInfo = {
+      index: {},
+      template: "",
+      orderedLinkables: [
+        { path: "/a", title: "" },
+        { path: "/b", title: "" },
+        { path: "/index.html", title: "" },
+      ],
+    };
+    expect(String(orderFile.render(globalProjectInfo)[1]), equals, "a\nb\n");
+  },
+
+  "removes index.md (which has no effect) when rendering"() {
+    const orderFile = OrderFile(
+      "/order.txt",
+      trimMargin`
+      a
+      index.md
+      b
+    `
+    );
+    const globalProjectInfo = {
+      index: {},
+      template: "",
+      orderedLinkables: [
+        { path: "/a", title: "" },
+        { path: "/b", title: "" },
+        { path: "/index.html", title: "" },
+      ],
+    };
+    expect(String(orderFile.render(globalProjectInfo)[1]), equals, "a\nb\n");
+  },
+
+  "does not list index.html in the !unspecified section"() {
+    const orderFile = OrderFile("/order.txt", "");
+    const globalProjectInfo = {
+      index: {},
+      template: "",
+      orderedLinkables: [
+        { path: "/a", title: "" },
+        { path: "/b", title: "" },
+        { path: "/index.html", title: "" },
+      ],
+    };
+    expect(
+      String(orderFile.render(globalProjectInfo)[1]),
+      equals,
+      trimMargin`
+      
+      !unspecified
+      a
+      b
+      
+    `
+    );
   },
 });
 
