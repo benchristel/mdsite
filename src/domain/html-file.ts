@@ -47,6 +47,7 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
           .replace(/{{prev}}/g, () => prevLink(globalInfo, self.outputPath))
           .replace(/{{up}}/g, () => upLink(self.outputPath))
           .replace(/{{home}}/g, () => homeLink(self.outputPath))
+          .replace(/{{macro ([^}]+)}}/g, "{{$1}}")
       ),
     ];
   }
