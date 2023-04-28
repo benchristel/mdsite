@@ -23,6 +23,8 @@
   "scripts": {
     "docs": "./mdsite -i docs-src",
     "format": "node_modules/.bin/prettier --write .",
+    "order": "./mdsite order -i docs-src",
+    "serve": "http-server -p 3000 docs",
     "setup": "yarn install; yarn run husky install",
     "test": "bun src/test.ts",
     "ts": "yarn tsc --watch --noEmit"
