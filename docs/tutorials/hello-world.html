@@ -30,6 +30,9 @@
 			.credits {
 				text-align: center;
 			}
+			pre {
+				margin-left: 4ch;
+			}
 		</style>
 	</head>
 	<body>
@@ -38,7 +41,7 @@
 				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
 			</div>
 			<div>
-				
+				<a href="custom-index-page.html" class="mdsite-next-link">Next</a>
 			</div>
 		</nav>
 		<hr/>
@@ -46,23 +49,35 @@
 		<article>
 			<h1 id="a-hello-world-site">A Hello World Site</h1>
 <p>This tutorial assumes you&#39;ve <a href="../installation.html">installed mdsite</a>.</p>
-<h2 id="step-1-create-a-src-directory-and-an-indexmd-file">Step 1: Create a <code>src/</code> directory and an <code>index.md</code> file</h2>
-<pre><code class="language-bash">mkdir src
-echo &#39;# Hello, world!&#39; &gt; src/index.md
+<h2 id="step-1-create-a-directory-for-your-project">Step 1: Create a directory for your project</h2>
+<pre><code class="language-bash">cd ~/Desktop
+mkdir mdsite-tutorial
+cd mdsite-tutorial
 </code></pre>
-<h2 id="step-2-run-mdsite">Step 2: Run <code>mdsite</code></h2>
-<p>While still in the directory that contains your <code>src</code> directory, run
-<code>mdsite</code>. You&#39;ll see a warning about <code>template.html</code> not existing; that&#39;s fine.</p>
+<p>Optionally, initialize a git repository so you can version your site
+and deploy it to <a href="https://docs.gitlab.com/ee/user/project/pages/">GitLab Pages</a>
+or <a href="https://pages.github.com/">GitHub Pages</a>:</p>
+<pre><code>git init
+</code></pre>
+<h2 id="step-2-create-a-src-directory-and-a-hellomd-file">Step 2: Create a <code>src/</code> directory and a <code>hello.md</code> file</h2>
+<pre><code class="language-bash">mkdir src
+echo &#39;# Hello, world!&#39; &gt; src/hello.md
+</code></pre>
+<h2 id="step-3-run-mdsite">Step 3: Run <code>mdsite</code></h2>
+<p>While still in the directory that contains your <code>src</code> directory, run:</p>
+<pre><code class="language-bash">mdsite
+</code></pre>
+<p>You&#39;ll see a warning about <code>template.html</code> not existing; that&#39;s fine.</p>
 <p>To check that it worked, list the entries in your current directory with <code>ls</code>.
 You should see the <code>docs</code> directory that <code>mdsite</code> generated.</p>
-<h2 id="step-3-serve">Step 3: Serve</h2>
-<p>Run <code>bunx http-server -p 3000 docs</code> to serve your docs folder to your
-local network over HTTP.</p>
+<h2 id="step-4-serve">Step 4: Serve</h2>
+<p>Run:</p>
+<pre><code>bunx http-server -p 3000 docs
+</code></pre>
+<p>to serve your docs folder to your local network over HTTP.</p>
 <p>You should now be able to visit <a href="http://localhost:3000">http://localhost:3000</a>
-and see the page that <code>mdsite</code> built!</p>
-<h2 id="step-4-customize-the-page">Step 4: Customize the page</h2>
-<p>Edit your <code>index.md</code> in the editor of your choice. Then run <code>mdsite</code> again
-to apply the updates.</p>
+and see the homepage that <code>mdsite</code> built! It will have a link to your
+hello world page.</p>
 		</article>
 
 		<hr/>
@@ -71,7 +86,7 @@ to apply the updates.</p>
 				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
 			</div>
 			<div>
-				
+				<a href="custom-index-page.html" class="mdsite-next-link">Next</a>
 			</div>
 		</nav>
 		<div class="credits">
