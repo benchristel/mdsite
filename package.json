@@ -17,6 +17,7 @@
   "dependencies": {
     "@benchristel/taste": "^0.4.0",
     "@types/yargs-parser": "^21.0.0",
+    "cheerio": "^1.0.0-rc.12",
     "marked": "^4.3.0",
     "yargs-parser": "^21.1.1"
   },
