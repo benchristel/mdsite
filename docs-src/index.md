@@ -9,7 +9,7 @@ It can turn any tree of markdown files into a website like this one (but you can
 
 - easy to start using
 - easy to stop using, with minimal lock-in
-- simple and intuitive
+- a thin layer on top of the tech you already know: files, markdown, and HTML.
 - great for web books, blogs, and documentation.
 
 ## Table of Contents
