@@ -59,7 +59,7 @@ test("toc", {
     const files = parseProjectFiles({
       "/sub/index.html": buffer(""),
     });
-    const expected = [branch({ path: "/sub/index.html", title: "index.html" })];
+    const expected = [branch({ path: "/sub/index.html", title: "sub" })];
     expect(toc(ProjectGlobalInfo(files, "")), equals, expected);
   },
 
@@ -71,7 +71,7 @@ test("toc", {
     });
     const expected = [
       branch(
-        { path: "/sub/index.html", title: "index.html" },
+        { path: "/sub/index.html", title: "sub" },
         leaf({ path: "/sub/aaa.html", title: "aaa.html" }),
         leaf({ path: "/sub/bbb.html", title: "bbb.html" })
       ),
@@ -89,9 +89,9 @@ test("toc", {
     });
     const expected = [
       branch(
-        { path: "/sub/index.html", title: "index.html" },
+        { path: "/sub/index.html", title: "sub" },
         branch(
-          { path: "/sub/marine/index.html", title: "index.html" },
+          { path: "/sub/marine/index.html", title: "marine" },
           leaf({ path: "/sub/marine/aaa.html", title: "aaa.html" }),
           leaf({ path: "/sub/marine/bbb.html", title: "bbb.html" }),
           leaf({ path: "/sub/marine/ccc.html", title: "ccc.html" })

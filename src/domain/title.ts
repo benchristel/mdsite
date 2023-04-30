@@ -1,11 +1,21 @@
-import { basename } from "path";
+import { basename, dirname } from "path";
 import * as cheerio from "cheerio";
 import { text } from "cheerio";
 import { test, expect, is } from "@benchristel/taste";
 
 export function title(path: string, html: string): string {
   const $ = cheerio.load(html);
-  return text($("h1").slice(0, 1)) || basename(path);
+  return text($("h1").slice(0, 1)) || defaultTitle(path);
+}
+
+function defaultTitle(path: string) {
+  if (path === "/index.html") {
+    return "index.html";
+  }
+  if (basename(path) === "index.html") {
+    return basename(dirname(path));
+  }
+  return basename(path);
 }
 
 test("title", {
@@ -31,5 +41,13 @@ test("title", {
 
   "defaults to the filename if the h1 is empty"() {
     expect(title("file.html", `<h1></h1>`), is, "file.html");
+  },
+
+  "defaults to the name of the containing directory if the filename is index.html"() {
+    expect(title("stuff/index.html", ""), is, "stuff");
+  },
+
+  "defaults to index.html for the root index"() {
+    expect(title("/index.html", ""), is, "index.html");
   },
 });
