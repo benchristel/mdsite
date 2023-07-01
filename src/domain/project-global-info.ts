@@ -26,6 +26,12 @@ export type Linkable = {
   title: string;
 };
 
+export const dummyProjectGlobalInfo = {
+  orderedLinkables: [],
+  index: {},
+  template: "dummy template",
+};
+
 export function ProjectGlobalInfo(
   files: ProjectFileSet,
   template: string

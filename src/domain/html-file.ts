@@ -3,10 +3,13 @@ import { htmlFromMarkdown } from "../lib/markdown";
 import { removeSuffix } from "../lib/strings";
 import { trimMargin } from "../testing/formatting";
 import { title } from "./title";
-import { test, expect, equals } from "@benchristel/taste";
+import { test, expect, equals, is } from "@benchristel/taste";
 import { htmlToc } from "./toc";
-import { dirname } from "path";
-import { ProjectGlobalInfo } from "./project-global-info";
+import { dirname, relative } from "path";
+import {
+  ProjectGlobalInfo,
+  dummyProjectGlobalInfo,
+} from "./project-global-info";
 import { homeLink, nextLink, prevLink, upLink } from "./links";
 
 export type HtmlFile = {
@@ -48,10 +51,85 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
           .replace(/{{up}}/g, () => upLink(self.outputPath))
           .replace(/{{home}}/g, () => homeLink(self.outputPath))
           .replace(/{{macro ([^}]+)}}/g, "{{$1}}")
+          // Relativize links
+          .replace(
+            /((?:href|src)=")(\/[^"]+)/g,
+            (_, prefix, path) =>
+              prefix + relative(dirname(self.outputPath), path)
+          )
       ),
     ];
   }
 }
+
+test("HtmlFile", {
+  "replaces absolute hrefs with relative ones"() {
+    const file = HtmlFile("/foo/bar.html", `<a href="/baz/kludge.html"></a>`);
+    const [_, rendered] = file.render({
+      ...dummyProjectGlobalInfo,
+      template: "{{content}}",
+    });
+    expect(String(rendered), is, `<a href="../baz/kludge.html"></a>`);
+  },
+
+  "relativizes multiple hrefs"() {
+    const file = HtmlFile(
+      "/foo/bar.html",
+      `<a href="/a/b.html"></a><a href="/foo/d.html"></a>`
+    );
+    const [_, rendered] = file.render({
+      ...dummyProjectGlobalInfo,
+      template: "{{content}}",
+    });
+    expect(
+      String(rendered),
+      is,
+      `<a href="../a/b.html"></a><a href="d.html"></a>`
+    );
+  },
+
+  "relativizes links in the template"() {
+    const file = HtmlFile("/foo/bar.html", "");
+    const [_, rendered] = file.render({
+      ...dummyProjectGlobalInfo,
+      template: `<link rel="stylesheet" href="/assets/style.css">`,
+    });
+    expect(
+      String(rendered),
+      is,
+      `<link rel="stylesheet" href="../assets/style.css">`
+    );
+  },
+
+  "relativizes script src attributes"() {
+    const file = HtmlFile("/foo/bar.html", "");
+    const [_, rendered] = file.render({
+      ...dummyProjectGlobalInfo,
+      template: `<script type="module" src="/js/main.js"></script>`,
+    });
+    expect(
+      String(rendered),
+      is,
+      `<script type="module" src="../js/main.js"></script>`
+    );
+  },
+
+  "leaves links in code tags alone"() {
+    const file = MarkdownFile(
+      "/foo/bar.md",
+      '`<a href="/baz/kludge.html"></a>`'
+    );
+    const [_, rendered] = file.render({
+      ...dummyProjectGlobalInfo,
+      template: "{{content}}",
+    });
+    expect(
+      String(rendered),
+      is,
+      `<p><code>&lt;a href=&quot;/baz/kludge.html&quot;&gt;&lt;/a&gt;</code></p>`
+    );
+  },
+});
 
 function replaceMarkdownHrefs(html: string): string {
   return html.replace(/(<a[^>]+href="[^"]+\.)md(")/g, "$1html$2");
