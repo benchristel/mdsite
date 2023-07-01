@@ -29,11 +29,11 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
     rawHtml,
     title: title(path, rawHtml),
     outputPath: path,
-    render: renderHtmlFile,
+    render,
   };
   return self;
 
-  function renderHtmlFile(globalInfo: ProjectGlobalInfo): [string, Buffer] {
+  function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
     return [
       self.outputPath,
       buffer(
