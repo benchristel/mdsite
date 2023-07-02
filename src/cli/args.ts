@@ -4,7 +4,7 @@ import {
   DEFAULT_INPUTDIR,
   DEFAULT_OUTPUTDIR,
   DEFAULT_TEMPLATEFILE,
-} from "../policy/defaults";
+} from "../policy/defaults.js";
 
 export type Args = BuildArgs | OrderArgs;
 

@@ -1,8 +1,8 @@
-import { FileSet } from "../lib/files";
-import { mapEntries } from "../lib/objects";
-import { pathAndBufferToProjectFile } from "./project-file-set";
-import { addSyntheticFiles } from "./synthetic-files";
-import { ProjectGlobalInfo } from "./project-global-info";
+import { FileSet } from "../lib/files.js";
+import { mapEntries } from "../lib/objects.js";
+import { pathAndBufferToProjectFile } from "./project-file-set.js";
+import { addSyntheticFiles } from "./synthetic-files.js";
+import { ProjectGlobalInfo } from "./project-global-info.js";
 
 export function buildProject(files: FileSet, template: string): FileSet {
   // Step 1: We create "synthetic files" that aren't in the source tree, but

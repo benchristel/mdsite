@@ -1,5 +1,5 @@
 import { dirname, join, relative } from "path";
-import { ProjectGlobalInfo } from "./project-global-info";
+import { ProjectGlobalInfo } from "./project-global-info.js";
 
 export function nextLink(globalInfo: ProjectGlobalInfo, origin: string) {
   const { index, orderedLinkables } = globalInfo;

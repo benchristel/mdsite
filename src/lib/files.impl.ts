@@ -1,6 +1,6 @@
 import { join, relative, dirname } from "path";
 import * as fs from "fs/promises";
-import { FileSet } from "./files";
+import { FileSet } from "./files.js";
 
 export async function listDeep(
   dir: string,

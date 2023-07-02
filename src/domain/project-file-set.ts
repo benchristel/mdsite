@@ -1,6 +1,6 @@
-import { OpaqueFile } from "./opaque-file";
-import { HtmlFile, MarkdownFile } from "./html-file";
-import { OrderFile } from "./order-file";
+import { OpaqueFile } from "./opaque-file.js";
+import { HtmlFile, MarkdownFile } from "./html-file.js";
+import { OrderFile } from "./order-file.js";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 

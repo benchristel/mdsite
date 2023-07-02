@@ -1,7 +1,7 @@
-import { contains, removePrefix, removeSuffix } from "../lib/strings";
+import { contains, removePrefix, removeSuffix } from "../lib/strings.js";
 import { relative } from "path";
-import { ensureTrailingSlash } from "../lib/paths";
-import { ProjectGlobalInfo } from "./project-global-info";
+import { ensureTrailingSlash } from "../lib/paths.js";
+import { ProjectGlobalInfo } from "./project-global-info.js";
 
 export type TreeOfContents = Array<Node>;
 

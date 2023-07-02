@@ -1,11 +1,11 @@
-import { buildProject } from "../domain/project";
-import { listDeep, writeDeep } from "../lib/files";
-import { parseArgs, BuildArgs, OrderArgs } from "./args";
-import { intoObject } from "../lib/objects";
-import { unreachable } from "../lib/unreachable";
-import { isOrderFile } from "../domain/order-file";
+import { buildProject } from "../domain/project.js";
+import { listDeep, writeDeep } from "../lib/files.js";
+import { parseArgs, BuildArgs, OrderArgs } from "./args.js";
+import { intoObject } from "../lib/objects.js";
+import { unreachable } from "../lib/unreachable.js";
+import { isOrderFile } from "../domain/order-file.js";
 import { readFile } from "fs/promises";
-import { defaultTemplate } from "../policy/defaults";
+import { defaultTemplate } from "../policy/defaults.js";
 
 export function run(argv: Array<string>): Promise<void> {
   const args = parseArgs(argv);

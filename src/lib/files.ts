@@ -1,9 +1,9 @@
-export { listDeep, writeDeep } from "./files.impl";
-import { listDeep, writeDeep } from "./files.impl";
-import { TmpDir } from "../testing/tmp-dir";
+export { listDeep, writeDeep } from "./files.impl.js";
+import { listDeep, writeDeep } from "./files.impl.js";
+import { TmpDir } from "../testing/tmp-dir.js";
 import { test, expect, equals, is } from "@benchristel/taste";
-import { valuesToStrings } from "./objects";
-import { buffer } from "./buffer";
+import { valuesToStrings } from "./objects.js";
+import { buffer } from "./buffer.js";
 
 export type FileSet = Record<string, Buffer>;
 

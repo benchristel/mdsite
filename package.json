@@ -2,7 +2,7 @@
   "name": "mdsite",
   "version": "1.0.0",
   "description": "A modern generator for old-school static sites",
-  "main": "src/main.ts",
+  "main": "dist/main.js",
   "repository": "git@github.com:benchristel/mdsite",
   "author": "Ben Christel <ben.christel@gmail.com>",
   "license": "MIT",
@@ -29,5 +29,6 @@
     "setup": "yarn install; yarn run husky install",
     "test": "bun src/test.ts",
     "ts": "yarn tsc --watch --noEmit"
-  }
+  },
+  "type": "module"
 }

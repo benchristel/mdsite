@@ -1,12 +1,12 @@
 import { test, expect, equals } from "@benchristel/taste";
-import { ProjectFileSet } from "./project-file-set";
-import { HtmlFile } from "./html-file";
-import { Comparator } from "../lib/sorting";
-import { OrderFile } from "./order-file";
-import { trimMargin } from "../testing/formatting";
+import { ProjectFileSet } from "./project-file-set.js";
+import { HtmlFile } from "./html-file.js";
+import { Comparator } from "../lib/sorting.js";
+import { OrderFile } from "./order-file.js";
+import { trimMargin } from "../testing/formatting.js";
 import { join } from "path";
-import { commonPrefix } from "../lib/strings";
-import { ensureTrailingSlash } from "../lib/paths";
+import { commonPrefix } from "../lib/strings.js";
+import { ensureTrailingSlash } from "../lib/paths.js";
 
 // TODO inline
 export type Order = {

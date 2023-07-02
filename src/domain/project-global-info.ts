@@ -1,8 +1,8 @@
-import { defaultTemplate } from "../policy/defaults";
-import { isAnything } from "../testing/matchers";
-import { HtmlFile } from "./html-file";
-import { Order, sortHtmlFiles } from "./order";
-import { ProjectFile, ProjectFileSet } from "./project-file-set";
+import { defaultTemplate } from "../policy/defaults.js";
+import { isAnything } from "../testing/matchers.js";
+import { HtmlFile } from "./html-file.js";
+import { Order, sortHtmlFiles } from "./order.js";
+import { ProjectFile, ProjectFileSet } from "./project-file-set.js";
 import { test, expect, equals, which } from "@benchristel/taste";
 
 export type ProjectGlobalInfo = {

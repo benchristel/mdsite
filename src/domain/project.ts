@@ -1,11 +1,11 @@
-export { buildProject } from "./project.impl";
-import { buildProject } from "./project.impl";
+export { buildProject } from "./project.impl.js";
+import { buildProject } from "./project.impl.js";
 import { test, expect, equals, which } from "@benchristel/taste";
-import { trimMargin } from "../testing/formatting";
-import { isAnything } from "../testing/matchers";
-import { contains } from "../lib/strings";
-import { buffer } from "../lib/buffer";
-import { valuesToStrings } from "../lib/objects";
+import { trimMargin } from "../testing/formatting.js";
+import { isAnything } from "../testing/matchers.js";
+import { contains } from "../lib/strings.js";
+import { buffer } from "../lib/buffer.js";
+import { valuesToStrings } from "../lib/objects.js";
 
 test("buildProject", {
   "converts a markdown file to an HTML file"() {

@@ -1,9 +1,9 @@
 import { dirname, join } from "path";
-import { buffer } from "../lib/buffer";
-import { FileSet } from "../lib/files";
+import { buffer } from "../lib/buffer.js";
+import { FileSet } from "../lib/files.js";
 import { test, expect, equals } from "@benchristel/taste";
-import { valuesToStrings } from "../lib/objects";
-import { defaultIndexMdContent } from "../policy/defaults";
+import { valuesToStrings } from "../lib/objects.js";
+import { defaultIndexMdContent } from "../policy/defaults.js";
 
 export function addSyntheticFiles(files: FileSet): FileSet {
   files = { ...files };

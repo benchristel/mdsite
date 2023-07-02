@@ -1,12 +1,12 @@
-export { htmlToc } from "./toc.impl";
+export { htmlToc } from "./toc.impl.js";
 import { test, expect, is, equals } from "@benchristel/taste";
-import { buffer } from "../lib/buffer";
-import { ProjectFile, ProjectFileSet } from "./project-file-set";
-import { toc, htmlToc, leaf, branch } from "./toc.impl";
-import { FileSet } from "../lib/files";
-import { mapEntries } from "../lib/objects";
-import { addSyntheticFiles } from "./synthetic-files";
-import { ProjectGlobalInfo } from "./project-global-info";
+import { buffer } from "../lib/buffer.js";
+import { ProjectFile, ProjectFileSet } from "./project-file-set.js";
+import { toc, htmlToc, leaf, branch } from "./toc.impl.js";
+import { FileSet } from "../lib/files.js";
+import { mapEntries } from "../lib/objects.js";
+import { addSyntheticFiles } from "./synthetic-files.js";
+import { ProjectGlobalInfo } from "./project-global-info.js";
 
 {
   // htmlToc() generates an HTML "tree of contents" with <ul> and <li>

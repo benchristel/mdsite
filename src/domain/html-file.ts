@@ -1,16 +1,16 @@
-import { buffer } from "../lib/buffer";
-import { htmlFromMarkdown } from "../lib/markdown";
-import { removeSuffix } from "../lib/strings";
-import { trimMargin } from "../testing/formatting";
-import { title } from "./title";
+import { buffer } from "../lib/buffer.js";
+import { htmlFromMarkdown } from "../lib/markdown.js";
+import { removeSuffix } from "../lib/strings.js";
+import { trimMargin } from "../testing/formatting.js";
+import { title } from "./title.js";
 import { test, expect, equals, is } from "@benchristel/taste";
-import { htmlToc } from "./toc";
+import { htmlToc } from "./toc.js";
 import { dirname, relative } from "path";
 import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
-} from "./project-global-info";
-import { homeLink, nextLink, prevLink, upLink } from "./links";
+} from "./project-global-info.js";
+import { homeLink, nextLink, prevLink, upLink } from "./links.js";
 
 export type HtmlFile = {
   type: "html";
