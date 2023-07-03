@@ -1,7 +1,10 @@
 import { test, expect, equals, not } from "@benchristel/taste";
 import { first, isEmpty } from "../lib/indexables";
 
-const macros = /{{\s*[a-z]+(\s+([a-zA-Z0-9\/\-_\.]+|"(\\.|[^"\\])*"))*\s*}}/g;
+const bareArg = String.raw`[a-zA-Z0-9\/\-_\.]+`;
+const quotedArg = String.raw`"(?:\\.|[^"\\])*"`;
+const arg = String.raw`(?:${bareArg}|${quotedArg})`;
+const macros = new RegExp(String.raw`{{\s*[a-z]+(\s+${arg})*\s*}}`, "g");
 
 const findAllMacros = (s: string) => [...s.matchAll(macros)].map(first);
 
@@ -90,5 +93,50 @@ test("extracting macros", {
 
   "does not accept an unterminated quoted arg with an escaped quote"() {
     expect(String.raw`{{foo "\\\"}}`, not(isAMacro));
+  },
+});
+
+function tokens(s: string): Array<string> {
+  return [...s.matchAll(new RegExp(arg, "g"))]
+    .map(first)
+    .filter(defined)
+    .map(unquote);
+}
+
+function defined<T>(s: T | undefined): s is T {
+  return s !== undefined;
+}
+
+function unquote(s: string) {
+  if (s[0] === '"') {
+    return JSON.parse(s);
+  } else {
+    return s;
+  }
+}
+
+test("tokenizing macros", {
+  "extracts the macro name"() {
+    expect(tokens("{{foo}}"), equals, ["foo"]);
+  },
+
+  "extracts bare arguments"() {
+    expect(tokens("{{foo bar baz}}"), equals, ["foo", "bar", "baz"]);
+  },
+
+  "extracts bare arguments with symbols"() {
+    expect(tokens("{{foo -a /tmp/Bar_baz.txt 9}}"), equals, [
+      "foo",
+      "-a",
+      "/tmp/Bar_baz.txt",
+      "9",
+    ]);
+  },
+
+  "extracts and interprets quoted arguments"() {
+    expect(tokens(String.raw`{{foo "\"hello\""}}`), equals, [
+      "foo",
+      String.raw`"hello"`,
+    ]);
   },
 });
