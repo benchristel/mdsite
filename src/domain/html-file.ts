@@ -11,6 +11,7 @@ import {
   dummyProjectGlobalInfo,
 } from "./project-global-info.js";
 import { homeLink, nextLink, prevLink, upLink } from "./links.js";
+import { evaluate, macros } from "./macros.js";
 
 export type HtmlFile = {
   type: "html";
@@ -41,16 +42,10 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
       self.outputPath,
       buffer(
         globalInfo.template
-          .replace("{{content}}", self.rawHtml)
-          .replace(/{{title}}/g, self.title)
-          .replace(/{{toc}}/g, () =>
-            htmlToc(globalInfo, dirname(self.outputPath))
+          .replace(
+            macros,
+            evaluate({ content: rawHtml, globalInfo, outputPath: path })
           )
-          .replace(/{{next}}/g, () => nextLink(globalInfo, self.outputPath))
-          .replace(/{{prev}}/g, () => prevLink(globalInfo, self.outputPath))
-          .replace(/{{up}}/g, () => upLink(self.outputPath))
-          .replace(/{{home}}/g, () => homeLink(self.outputPath))
-          .replace(/{{macro ([^}]+)}}/g, "{{$1}}")
           // Relativize links
           .replace(
             /((?:href|src)=")(\/[^"]+)/g,
