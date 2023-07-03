@@ -1,25 +1,42 @@
-# mdsite
+# @benchristel/mdsite
 
 A modern generator for old-school static sites. Under construction!
 
 `mdsite` generates an HTML website from any tree of Markdown files.
 
+[**@benchristel/mdsite on NPM**](https://www.npmjs.com/package/@benchristel/mdsite)
+
+## Quick Start
+
+Create a "hello, world" markdown file:
+
+```bash
+mkdir -p my-first-mdsite/src
+cd my-first-mdsite
+echo -e '# Hello, world!\nThis is a cool website.' > src/hello.md
+```
+
+Compile it to HTML:
+
+```bash
+npx @benchristel/mdsite
+```
+
+mdsite will create a `docs` folder with the compiled HTML. You'll see a warning about a missing template file; that's okay.
+
+Serve the website locally:
+
+```bash
+npx http-server -c-1 -o docs
+```
+
 ## Installation
 
-You will need to install [Bun](https://bun.sh) first. Then:
-
 ```
-git clone https://github.com/benchristel/mdsite
-cd mdsite
-bun install
+npm install -g @benchristel/mdsite
 ```
 
-Put the `mdsite` directory on your `PATH` somehow, probably by adding
-a line like the following to your `.bashrc`:
-
-```
-export PATH="$PATH:/path/to/mdsite"
-```
+After installing, you should be able to run `mdsite` anywhere.
 
 ## Basic Usage
 
