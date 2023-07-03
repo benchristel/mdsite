@@ -1,4 +1,5 @@
 import "./cli/run";
+import "./domain/macros";
 
 import {
   getAllTests,
