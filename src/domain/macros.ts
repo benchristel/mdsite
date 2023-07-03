@@ -1,9 +1,11 @@
-import { test, expect, equals } from "@benchristel/taste";
+import { test, expect, equals, not } from "@benchristel/taste";
 import { first, isEmpty } from "../lib/indexables";
 
 const macros = /{{\s*[a-z]+(\s+([a-zA-Z0-9\/\-_\.]+|"(\\.|[^"\\])*"))*\s*}}/g;
 
 const findAllMacros = (s: string) => [...s.matchAll(macros)].map(first);
+
+const isAMacro = (s: string) => s.match(macros)?.[0]?.length === s.length;
 
 test("extracting macros", {
   "given empty string"() {
@@ -15,15 +17,15 @@ test("extracting macros", {
   },
 
   "does not match an empty pair of double-curlies"() {
-    expect(findAllMacros("{{}}"), isEmpty);
+    expect("{{}}", not(isAMacro));
   },
 
   "matches {{toc}}"() {
-    expect(findAllMacros("{{toc}}"), equals, ["{{toc}}"]);
+    expect("{{toc}}", isAMacro);
   },
 
   "matches any ol' macro name"() {
-    expect(findAllMacros("{{foobar}}"), equals, ["{{foobar}}"]);
+    expect("{{foobar}}", isAMacro);
   },
 
   "matches macros embedded in other content"() {
@@ -31,78 +33,62 @@ test("extracting macros", {
   },
 
   "matches a macro with whitespace inside the double-curlies"() {
-    expect(findAllMacros("{{\n  blah\n }}"), equals, ["{{\n  blah\n }}"]);
+    expect("{{\n  blah\n }}", isAMacro);
   },
 
   "matches a macro with an argument"() {
-    expect(findAllMacros("{{foo bar}}"), equals, ["{{foo bar}}"]);
+    expect("{{foo bar}}", isAMacro);
   },
 
   "accepts multiple arguments"() {
-    expect(findAllMacros("{{foo bar baz}}"), equals, ["{{foo bar baz}}"]);
+    expect("{{foo bar baz}}", isAMacro);
   },
 
   "accepts extra whitespace between arguments"() {
-    expect(findAllMacros("{{foo\n bar\n baz}}"), equals, [
-      "{{foo\n bar\n baz}}",
-    ]);
+    expect("{{foo\n bar\n baz}}", isAMacro);
   },
 
   "accepts slashes, dashes, underscores, and periods in bare arguments"() {
-    expect(findAllMacros("{{foo -a /tmp/bar_baz.txt}}"), equals, [
-      "{{foo -a /tmp/bar_baz.txt}}",
-    ]);
+    expect("{{foo -a /tmp/bar_baz.txt}}", isAMacro);
   },
 
   "accepts capital letters and numbers in bare arguments"() {
-    expect(findAllMacros("{{foo A 9}}"), equals, ["{{foo A 9}}"]);
+    expect("{{foo A 9}}", isAMacro);
   },
 
   "does not accept other special characters in bare arguments"() {
-    expect(findAllMacros("{{foo &}}"), isEmpty);
+    expect("{{foo &}}", not(isAMacro));
   },
 
   "accepts special characters in quoted arguments"() {
-    expect(findAllMacros(String.raw`{{foo "&"}}`), equals, [
-      String.raw`{{foo "&"}}`,
-    ]);
+    expect(String.raw`{{foo "&"}}`, isAMacro);
   },
 
   "accepts multi-character quoted arguments"() {
-    expect(findAllMacros(String.raw`{{foo "abc"}}`), equals, [
-      String.raw`{{foo "abc"}}`,
-    ]);
+    expect(String.raw`{{foo "abc"}}`, isAMacro);
   },
 
   "accepts empty quoted arguments"() {
-    expect(findAllMacros(String.raw`{{foo ""}}`), equals, [
-      String.raw`{{foo ""}}`,
-    ]);
+    expect(String.raw`{{foo ""}}`, isAMacro);
   },
 
   "does not accept unpaired quotes"() {
-    expect(findAllMacros(String.raw`{{foo "}}`), isEmpty);
+    expect(String.raw`{{foo "}}`, not(isAMacro));
   },
 
   "accepts escaped quotes inside quotes"() {
-    expect(findAllMacros(String.raw`{{foo "\""}}`), equals, [
-      String.raw`{{foo "\""}}`,
-    ]);
+    expect(String.raw`{{foo "\""}}`, isAMacro);
   },
 
   "accepts escaped backslashes inside quotes"() {
-    expect(findAllMacros(String.raw`{{foo "\\"}}`), equals, [
-      String.raw`{{foo "\\"}}`,
-    ]);
+    expect(String.raw`{{foo "\\"}}`, isAMacro);
   },
 
   "accepts an escaped backslash followed by an escaped quote"() {
-    expect(findAllMacros(String.raw`{{foo "\\\""}}`), equals, [
-      String.raw`{{foo "\\\""}}`,
-    ]);
+    expect(String.raw`{{foo "\\\""}}`, isAMacro);
   },
 
   "does not accept an unterminated quoted arg with an escaped quote"() {
-    expect(findAllMacros(String.raw`{{foo "\\\"}}`), isEmpty);
+    expect(String.raw`{{foo "\\\"}}`, not(isAMacro));
   },
 });
