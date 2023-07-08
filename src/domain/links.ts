@@ -1,4 +1,4 @@
-import { dirname, join, relative } from "path";
+import { dirname, relative } from "path";
 import { ProjectGlobalInfo } from "./project-global-info.js";
 import { expect, is, test } from "@benchristel/taste";
 
