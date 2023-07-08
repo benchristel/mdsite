@@ -1,5 +1,5 @@
 import { macros, getTokens } from "./parser";
-import { test, expect, is, equals, curry } from "@benchristel/taste";
+import { test, expect, equals, curry } from "@benchristel/taste";
 import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
@@ -10,7 +10,7 @@ import { htmlToc } from "../toc";
 import { dirname } from "path";
 import { homeLink, nextLink, prevLink, upLink } from "../links";
 
-type EvaluationContext = {
+export type EvaluationContext = {
   outputPath: string;
   content: string;
   globalInfo: ProjectGlobalInfo;
@@ -22,33 +22,6 @@ export const expandAll = curry(
   },
   "expandAll"
 );
-
-test("expandAll", {
-  "does nothing to the empty string"() {
-    const htmlTemplate = "";
-    const context = dummyContext;
-    expect(expandAll(context, htmlTemplate), is, "");
-  },
-
-  "expands a content macro"() {
-    const htmlTemplate = "{{content}}";
-    const context = { ...dummyContext, content: "hello" };
-    expect(expandAll(context, htmlTemplate), is, "hello");
-  },
-
-  "expands multiple macros"() {
-    const htmlTemplate = "{{title}} {{content}} {{title}}";
-    const context = { ...dummyContext, content: "<h1>hello</h1>" };
-    expect(expandAll(context, htmlTemplate), is, "hello <h1>hello</h1> hello");
-  },
-
-  "is curried"() {
-    const htmlTemplate = "{{content}}";
-    const context = { ...dummyContext, content: "hello" };
-    const expandAllInContext = expandAll(context);
-    expect(expandAllInContext(htmlTemplate), is, "hello");
-  },
-});
 
 function evaluate(context: EvaluationContext): (macro: string) => string {
   return (macroStr) => compileMacro(macroStr)(context);
