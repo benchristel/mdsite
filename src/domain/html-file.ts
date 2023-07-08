@@ -4,13 +4,11 @@ import { removeSuffix } from "../lib/strings.js";
 import { trimMargin } from "../testing/formatting.js";
 import { title } from "./title.js";
 import { test, expect, equals, is } from "@benchristel/taste";
-import { htmlToc } from "./toc.js";
 import { dirname, relative } from "path";
 import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
 } from "./project-global-info.js";
-import { homeLink, nextLink, prevLink, upLink } from "./links.js";
 import { evaluate, macros } from "./macros.js";
 
 export type HtmlFile = {
