@@ -8,12 +8,21 @@ A modern generator for old-school static sites. Under construction!
 
 ## Quick Start
 
-Create a "hello, world" markdown file:
+Create a directory for your project to live in:
 
 ```bash
-mkdir -p my-first-mdsite/src
+mkdir my-first-mdsite
 cd my-first-mdsite
-echo -e '# Hello, world!\nThis is a cool website.' > src/hello.md
+```
+
+Create a markdown file in a `src` directory:
+
+```bash
+mkdir src
+cat <<<'
+# Welcome to My Website
+Pretty cool, right?
+' > src/welcome.md
 ```
 
 Compile it to HTML:
@@ -27,8 +36,11 @@ mdsite will create a `docs` folder with the compiled HTML. You'll see a warning 
 Serve the website locally:
 
 ```bash
-npx http-server -c-1 -o docs
+npx http-server -c-1 -o docs -p 8080
 ```
+
+The site should open in your browser automatically. If it doesn't, visit
+http://localhost:8080.
 
 ## Installation
 
