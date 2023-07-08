@@ -3,13 +3,14 @@ import { htmlFromMarkdown } from "../lib/markdown.js";
 import { removeSuffix } from "../lib/strings.js";
 import { trimMargin } from "../testing/formatting.js";
 import { title } from "./title.js";
-import { test, expect, equals, is } from "@benchristel/taste";
+import { test, expect, equals, is, curry } from "@benchristel/taste";
 import { dirname, relative } from "path";
 import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
 } from "./project-global-info.js";
 import { expandAll } from "./macros";
+import { pass, pipe } from "../lib/functional.js";
 
 export type HtmlFile = {
   type: "html";
@@ -36,22 +37,27 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
   return self;
 
   function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
-    const context = {
-      content: rawHtml,
-      globalInfo,
-      outputPath: path,
-    };
-    return [
-      self.outputPath,
-      buffer(
-        expandAll(context, globalInfo.template).replace(
-          /((?:href|src)=")(\/[^"]+)/g,
-          (_, prefix, path) => prefix + relative(dirname(self.outputPath), path)
-        )
-      ),
-    ];
+    const renderedHtml = pass(
+      globalInfo.template,
+      pipe(
+        expandAll({
+          content: rawHtml,
+          globalInfo,
+          outputPath: path,
+        }),
+        relativizeLinks(path)
+      )
+    );
+    return [self.outputPath, buffer(renderedHtml)];
   }
 }
+
+const relativizeLinks = curry((fromPath: string, html: string): string => {
+  return html.replace(
+    /((?:href|src)=")(\/[^"]+)/g,
+    (_, prefix, path) => prefix + relative(dirname(fromPath), path)
+  );
+}, "relativizeLinks");
 
 test("HtmlFile", {
   "replaces absolute hrefs with relative ones"() {
