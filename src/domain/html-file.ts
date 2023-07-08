@@ -9,7 +9,7 @@ import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
 } from "./project-global-info.js";
-import { evaluate, macros } from "./macros";
+import { expandAll } from "./macros";
 
 export type HtmlFile = {
   type: "html";
@@ -36,20 +36,18 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
   return self;
 
   function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
+    const context = {
+      content: rawHtml,
+      globalInfo,
+      outputPath: path,
+    };
     return [
       self.outputPath,
       buffer(
-        globalInfo.template
-          .replace(
-            macros,
-            evaluate({ content: rawHtml, globalInfo, outputPath: path })
-          )
-          // Relativize links
-          .replace(
-            /((?:href|src)=")(\/[^"]+)/g,
-            (_, prefix, path) =>
-              prefix + relative(dirname(self.outputPath), path)
-          )
+        expandAll(context, globalInfo.template).replace(
+          /((?:href|src)=")(\/[^"]+)/g,
+          (_, prefix, path) => prefix + relative(dirname(self.outputPath), path)
+        )
       ),
     ];
   }
