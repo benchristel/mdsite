@@ -5,7 +5,7 @@ import {
   dummyProjectGlobalInfo,
 } from "../project-global-info";
 import Logger, { mockLogger } from "../../lib/logger";
-import { title } from "../title";
+import { title as getTitle } from "../title";
 import { htmlToc } from "../toc";
 import { dirname } from "path";
 import { homeLink, nextLink, prevLink, upLink } from "../links";
@@ -51,33 +51,65 @@ test("expandAll", {
 });
 
 function evaluate(context: EvaluationContext): (macro: string) => string {
-  return (macro) => {
-    const tokens = getTokens(macro);
+  return (macroStr) => {
+    const tokens = getTokens(macroStr);
     const macroName = tokens[0];
     switch (macroName) {
       case "content":
-        return context.content.replace(macros, evaluate(context));
+        return content(context);
       case "title":
-        return title(context.outputPath, context.content);
+        return title(context);
       case "toc":
-        return htmlToc(context.globalInfo, dirname(context.outputPath));
+        return toc(context);
       case "next":
-        return nextLink(context.globalInfo, context.outputPath);
+        return next(context);
       case "prev":
-        return prevLink(context.globalInfo, context.outputPath);
+        return prev(context);
       case "up":
-        return upLink(context.outputPath);
+        return up(context);
       case "home":
-        return homeLink(context.outputPath);
+        return home(context);
       case "macro":
-        return macro.replace(/{{\s*macro\s+(.*)/, "{{$1");
+        return macro(macroStr);
       default:
         Logger.warn(
           `warning: encountered unknown macro '${macroName}' while compiling ${context.outputPath}`
         );
-        return macro;
+        return macroStr;
     }
   };
+}
+
+function content(context: EvaluationContext): string {
+  return context.content.replace(macros, evaluate(context));
+}
+
+function title(context: EvaluationContext): string {
+  return getTitle(context.outputPath, context.content);
+}
+
+function toc(context: EvaluationContext): string {
+  return htmlToc(context.globalInfo, dirname(context.outputPath));
+}
+
+function next(context: EvaluationContext): string {
+  return nextLink(context.globalInfo, context.outputPath);
+}
+
+function prev(context: EvaluationContext): string {
+  return prevLink(context.globalInfo, context.outputPath);
+}
+
+function up(context: EvaluationContext): string {
+  return upLink(context.outputPath);
+}
+
+function home(context: EvaluationContext): string {
+  return homeLink(context.outputPath);
+}
+
+function macro(macroStr: string): string {
+  return macroStr.replace(/{{\s*macro\s+(.*)/, "{{$1");
 }
 
 const dummyContext = {
