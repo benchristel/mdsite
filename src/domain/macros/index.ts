@@ -1,14 +1,14 @@
 import { test, expect, equals, not } from "@benchristel/taste";
-import { first, isEmpty } from "../lib/indexables";
+import { first, isEmpty } from "../../lib/indexables";
 import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
-} from "./project-global-info";
-import Logger, { mockLogger } from "../lib/logger";
-import { title } from "./title";
-import { htmlToc } from "./toc";
+} from "../project-global-info";
+import Logger, { mockLogger } from "../../lib/logger";
+import { title } from "../title";
+import { htmlToc } from "../toc";
 import { dirname } from "path";
-import { homeLink, nextLink, prevLink, upLink } from "./links";
+import { homeLink, nextLink, prevLink, upLink } from "../links";
 
 const bareArg = String.raw`[a-zA-Z0-9\/\-_\.]+`;
 const quotedArg = String.raw`"(?:\\.|[^"\\])*"`;

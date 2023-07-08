@@ -9,7 +9,7 @@ import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
 } from "./project-global-info.js";
-import { evaluate, macros } from "./macros.js";
+import { evaluate, macros } from "./macros";
 
 export type HtmlFile = {
   type: "html";
