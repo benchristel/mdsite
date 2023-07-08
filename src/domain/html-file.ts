@@ -26,15 +26,14 @@ export function MarkdownFile(path: string, markdown: string): HtmlFile {
   return HtmlFile(htmlPath, rawHtml);
 }
 
-export function HtmlFile(path: string, rawHtml: string): HtmlFile {
-  const self: HtmlFile = {
+export function HtmlFile(outputPath: string, rawHtml: string): HtmlFile {
+  return {
     type: "html",
     rawHtml,
-    title: title(path, rawHtml),
-    outputPath: path,
+    title: title(outputPath, rawHtml),
+    outputPath,
     render,
   };
-  return self;
 
   function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
     const renderedHtml = pass(
@@ -43,12 +42,12 @@ export function HtmlFile(path: string, rawHtml: string): HtmlFile {
         expandAll({
           content: rawHtml,
           globalInfo,
-          outputPath: path,
+          outputPath,
         }),
-        relativizeLinks(path)
+        relativizeLinks(outputPath)
       )
     );
-    return [self.outputPath, buffer(renderedHtml)];
+    return [outputPath, buffer(renderedHtml)];
   }
 }
 
