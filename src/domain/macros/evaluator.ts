@@ -31,12 +31,12 @@ function evaluate(context: EvaluationContext): (macro: string) => string {
 type Macro = (context: EvaluationContext) => string;
 
 function compileMacro(macroStr: string): Macro {
-  const [name] = getTokens(macroStr);
+  const [name, ...args] = getTokens(macroStr);
   const ctor = macroConstructors[name] ?? UndefinedMacro;
-  return ctor(macroStr);
+  return ctor(macroStr, args);
 }
 
-type MacroConstructor = (macroStr: string) => Macro;
+type MacroConstructor = (macroStr: string, args: string[]) => Macro;
 
 const macroConstructors: Record<string, MacroConstructor> = {
   content,
@@ -68,8 +68,9 @@ function title(): Macro {
   return (context) => getTitle(context.outputPath, context.content);
 }
 
-function toc(): Macro {
-  return (context) => htmlToc(context.globalInfo, dirname(context.outputPath));
+function toc(_: string, args: string[]): Macro {
+  return (context) =>
+    htmlToc(context.globalInfo, dirname(context.outputPath), args[0]);
 }
 
 function next(): Macro {

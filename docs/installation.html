@@ -13,12 +13,15 @@
 				<a href="tutorials/index.html" class="mdsite-next-link">Next</a>
 			</div>
 		</nav>
-		<hr/>
 
-		<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="index.html">@benchristel/mdsite</a></nav>
+		<div class="flex-row main">
+			<nav class="sidebar">
+				<ul><li><a href="installation.html">Installation</a></li><li><a href="tutorials/index.html">Tutorials</a><ul><li><a href="tutorials/hello-world.html">A Hello World Site</a></li><li><a href="tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li></ul>
+			</nav>
+			<article>
+				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="index.html">@benchristel/mdsite</a></nav>
 
-		<article>
-			<h1 id="installation">Installation</h1>
+				<h1 id="installation">Installation</h1>
 <p>You will need to install <a href="https://bun.sh">Bun</a> first. Then:</p>
 <pre><code>git clone https://github.com/benchristel/mdsite
 cd mdsite
@@ -28,9 +31,9 @@ bun install
 a line like the following to your <code>.bashrc</code>:</p>
 <pre><code>export PATH=&quot;$PATH:/path/to/mdsite&quot;
 </code></pre>
-		</article>
+			</article>
+		</div>
 
-		<hr/>
 		<nav class="navbar">
 			<div>
 				<a href="index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>

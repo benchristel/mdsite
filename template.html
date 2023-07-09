@@ -13,15 +13,18 @@
 				{{next}}
 			</div>
 		</nav>
-		<hr/>
 
-		{{breadcrumb}}
+		<div class="flex-row main">
+			<nav class="sidebar">
+				{{toc /}}
+			</nav>
+			<article>
+				{{breadcrumb}}
 
-		<article>
-			{{content}}
-		</article>
+				{{content}}
+			</article>
+		</div>
 
-		<hr/>
 		<nav class="navbar">
 			<div>
 				{{home}}{{up}}{{prev}}

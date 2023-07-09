@@ -13,12 +13,15 @@
 				
 			</div>
 		</nav>
-		<hr/>
 
-		<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Tutorials</a></nav>
+		<div class="flex-row main">
+			<nav class="sidebar">
+				<ul><li><a href="../installation.html">Installation</a></li><li><a href="index.html">Tutorials</a><ul><li><a href="hello-world.html">A Hello World Site</a></li><li><a href="custom-index-page.html">A Custom Index Page</a></li></ul></li></ul>
+			</nav>
+			<article>
+				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Tutorials</a></nav>
 
-		<article>
-			<h1 id="a-custom-index-page">A Custom Index Page</h1>
+				<h1 id="a-custom-index-page">A Custom Index Page</h1>
 <p>This tutorial assumes you&#39;ve completed <a href="./hello-world.html">the previous one</a>.</p>
 <p>When you visit <a href="http://localhost:3000">localhost:3000</a>, you see an index page
 that was generated automatically by <code>mdsite</code>. This page can be customized! This tutorial will
@@ -43,9 +46,9 @@ the index.html page, we lost that functionality. In this step, we&#39;ll add it 
 </code></pre>
 <p>Run <code>mdsite</code> again. You should now see your custom index page, with a link to the &quot;hello world&quot; page, when
 you visit <a href="http://localhost:3000">localhost:3000</a></p>
-		</article>
+			</article>
+		</div>
 
-		<hr/>
 		<nav class="navbar">
 			<div>
 				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="hello-world.html" class="mdsite-prev-link">Prev</a>
