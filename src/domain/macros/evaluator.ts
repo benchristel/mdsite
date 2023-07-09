@@ -70,7 +70,11 @@ function title(): Macro {
 
 function toc(_: string, args: string[]): Macro {
   return (context) =>
-    htmlToc(context.globalInfo, dirname(context.outputPath), args[0]);
+    htmlToc(
+      context.globalInfo.orderedLinkables,
+      dirname(context.outputPath),
+      args[0]
+    );
 }
 
 function next(): Macro {

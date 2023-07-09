@@ -1,7 +1,7 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings.js";
 import { relative } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
-import { ProjectGlobalInfo } from "./project-global-info.js";
+import { Linkable } from "./project-global-info.js";
 
 export type TreeOfContents = Array<Node>;
 
@@ -32,11 +32,11 @@ export function leaf(params: { path: string; title: string }): Leaf {
 }
 
 export function toc(
-  globalInfo: ProjectGlobalInfo,
+  orderedLinkables: Linkable[],
   root: string = "/"
 ): TreeOfContents {
   root = ensureTrailingSlash(root);
-  return Object.values(globalInfo.orderedLinkables)
+  return Object.values(orderedLinkables)
     .filter(
       ({ path }) =>
         path.startsWith(root) &&
@@ -49,18 +49,18 @@ export function toc(
         path.endsWith("/index.html")
           ? branch(
               { path, title },
-              ...toc(globalInfo, removeSuffix(path, "index.html"))
+              ...toc(orderedLinkables, removeSuffix(path, "index.html"))
             )
           : leaf({ path, title })
     );
 }
 
 export function htmlToc(
-  globalInfo: ProjectGlobalInfo,
+  orderedLinkables: Linkable[],
   linkOrigin: string,
   root: string = linkOrigin
 ): string {
-  const theToc = toc(globalInfo, root);
+  const theToc = toc(orderedLinkables, root);
   if (theToc.length === 0) {
     return "";
   }
@@ -73,10 +73,12 @@ function htmlForToc(toc: TreeOfContents, linkOrigin: string): string {
     "<ul>" +
     toc
       .map((node) => {
+        const cssClass =
+          linkOrigin === node.path ? ` class="mdsite-current-file"` : "";
         const subToc =
           node.type === "leaf" ? "" : htmlForToc(node.contents, linkOrigin);
         const relativePath = relative(linkOrigin, node.path);
-        return `<li><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
+        return `<li${cssClass}><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
       })
       .join("") +
     "</ul>"
