@@ -1,6 +1,8 @@
 import { marked } from "marked";
 
 import { test, expect, is } from "@benchristel/taste";
+import { markedHighlight } from "marked-highlight";
+import hljs from "highlight.js";
 
 export function htmlFromMarkdown(md: string): string {
   return marked.parse(md);
@@ -56,3 +58,12 @@ const wikiLink = {
 };
 
 marked.use({ extensions: [wikiLink] });
+marked.use(
+  markedHighlight({
+    langPrefix: "hljs language-",
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : "plaintext";
+      return hljs.highlight(code, { language }).value;
+    },
+  })
+);

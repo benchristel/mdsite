@@ -1,16 +1,11 @@
 # Installation
 
-You will need to install [Bun](https://bun.sh) first. Then:
+Install `@benchristel/mdsite` with your favorite JavaScript package manager.
 
-```
-git clone https://github.com/benchristel/mdsite
-cd mdsite
-bun install
+```bash
+bun i -g @benchristel/mdsite        # Install with Bun
+npm i -g @benchristel/mdsite        # ...or with NPM
+yarn global add @benchristel/mdsite # ...or with Yarn
 ```
 
-Put the `mdsite` directory on your `PATH` somehow, probably by adding
-a line like the following to your `.bashrc`:
-
-```
-export PATH="$PATH:/path/to/mdsite"
-```
+Installing with Bun is recommended. `mdsite` will run significantly faster if you use Bun.

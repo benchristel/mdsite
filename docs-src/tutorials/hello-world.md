@@ -42,8 +42,8 @@ You should see the `docs` directory that `mdsite` generated.
 
 Run:
 
-```
-bunx http-server -p 3000 docs
+```bash
+npx http-server -o -c-1 -p 3000 docs
 ```
 
 to serve your docs folder to your local network over HTTP.
@@ -51,3 +51,11 @@ to serve your docs folder to your local network over HTTP.
 You should now be able to visit [http://localhost:3000](http://localhost:3000)
 and see the homepage that `mdsite` built! It will have a link to your
 hello world page.
+
+## What Just Happened?
+
+By default, `mdsite` reads Markdown files from the `src` directory and generates HTML in a `docs` directory.
+
+In this tutorial, we created a single Markdown file `src/hello.md` with no mdsite-specific formatting. `mdsite` built us a small but complete website, including an index page with a link to our `hello` page.
+
+This demonstrates the power of `mdsite` to produce usable output with zero configuration. However, we've just scratched the surface of what `mdsite` can do. In future tutorials, we'll see how to theme our site with custom templates and CSS. We'll also learn how to add tables of contents and breadcrumbs like the ones on this page.

@@ -3,6 +3,7 @@
 	<head>
 		<title>A Hello World Site</title>
 		<link rel="stylesheet" href="../assets/style.css">
+		<link rel="stylesheet" href="../assets/syntax-highlighting.css">
 	</head>
 	<body>
 		<nav class="navbar">
@@ -16,7 +17,7 @@
 
 		<div class="flex-row main">
 			<nav class="sidebar">
-				<ul><li><a href="../installation.html">Installation</a></li><li><a href="index.html">Tutorials</a><ul><li class="mdsite-current-file"><a href="hello-world.html">A Hello World Site</a></li><li><a href="custom-index-page.html">A Custom Index Page</a></li></ul></li></ul>
+				<ul><li><a href="../installation.html">Installation</a></li><li><a href="index.html">Tutorials</a><ul><li class="mdsite-current-file"><a href="hello-world.html">A Hello World Site</a></li><li><a href="custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="../reference/index.html">Reference</a><ul><li><a href="../reference/cli.html">Command-Line Interface</a></li><li><a href="../reference/macros.html">List of Macros</a></li></ul></li></ul>
 			</nav>
 			<div class="page">
 				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Tutorials</a></nav>
@@ -24,34 +25,33 @@
 					<h1 id="a-hello-world-site">A Hello World Site</h1>
 <p>This tutorial assumes you&#39;ve <a href="../installation.html">installed mdsite</a>.</p>
 <h2 id="step-1-create-a-directory-for-your-project">Step 1: Create a directory for your project</h2>
-<pre><code class="language-bash">cd ~/Desktop
-mkdir mdsite-tutorial
-cd mdsite-tutorial
-</code></pre>
-<p>Optionally, initialize a git repository so you can version your site
+<pre><code class="hljs language-bash"><span class="hljs-built_in">cd</span> ~/Desktop
+<span class="hljs-built_in">mkdir</span> mdsite-tutorial
+<span class="hljs-built_in">cd</span> mdsite-tutorial
+</code></pre><p>Optionally, initialize a git repository so you can version your site
 and deploy it to <a href="https://docs.gitlab.com/ee/user/project/pages/">GitLab Pages</a>
 or <a href="https://pages.github.com/">GitHub Pages</a>:</p>
 <pre><code>git init
-</code></pre>
-<h2 id="step-2-create-a-src-directory-and-a-hellomd-file">Step 2: Create a <code>src/</code> directory and a <code>hello.md</code> file</h2>
-<pre><code class="language-bash">mkdir src
-echo &#39;# Hello, world!&#39; &gt; src/hello.md
-</code></pre>
-<h2 id="step-3-run-mdsite">Step 3: Run <code>mdsite</code></h2>
+</code></pre><h2 id="step-2-create-a-src-directory-and-a-hellomd-file">Step 2: Create a <code>src/</code> directory and a <code>hello.md</code> file</h2>
+<pre><code class="hljs language-bash"><span class="hljs-built_in">mkdir</span> src
+<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;# Hello, world!&#x27;</span> &gt; src/hello.md
+</code></pre><h2 id="step-3-run-mdsite">Step 3: Run <code>mdsite</code></h2>
 <p>While still in the directory that contains your <code>src</code> directory, run:</p>
-<pre><code class="language-bash">mdsite
-</code></pre>
-<p>You&#39;ll see a warning about <code>template.html</code> not existing; that&#39;s fine.</p>
+<pre><code class="hljs language-bash">mdsite
+</code></pre><p>You&#39;ll see a warning about <code>template.html</code> not existing; that&#39;s fine.</p>
 <p>To check that it worked, list the entries in your current directory with <code>ls</code>.
 You should see the <code>docs</code> directory that <code>mdsite</code> generated.</p>
 <h2 id="step-4-serve">Step 4: Serve</h2>
 <p>Run:</p>
-<pre><code>bunx http-server -p 3000 docs
-</code></pre>
-<p>to serve your docs folder to your local network over HTTP.</p>
+<pre><code class="hljs language-bash">npx http-server -o -c-1 -p 3000 docs
+</code></pre><p>to serve your docs folder to your local network over HTTP.</p>
 <p>You should now be able to visit <a href="http://localhost:3000">http://localhost:3000</a>
 and see the homepage that <code>mdsite</code> built! It will have a link to your
 hello world page.</p>
+<h2 id="what-just-happened">What Just Happened?</h2>
+<p>By default, <code>mdsite</code> reads Markdown files from the <code>src</code> directory and generates HTML in a <code>docs</code> directory.</p>
+<p>In this tutorial, we created a single Markdown file <code>src/hello.md</code> with no mdsite-specific formatting. <code>mdsite</code> built us a small but complete website, including an index page with a link to our <code>hello</code> page.</p>
+<p>This demonstrates the power of <code>mdsite</code> to produce usable output with zero configuration. However, we&#39;ve just scratched the surface of what <code>mdsite</code> can do. In future tutorials, we&#39;ll see how to theme our site with custom templates and CSS. We&#39;ll also learn how to add tables of contents and breadcrumbs like the ones on this page.</p>
 				</article>
 			</div>
 		</div>

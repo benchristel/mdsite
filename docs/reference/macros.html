@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>List of Macros</title>
+		<link rel="stylesheet" href="../assets/style.css">
+		<link rel="stylesheet" href="../assets/syntax-highlighting.css">
+	</head>
+	<body>
+		<nav class="navbar">
+			<div>
+				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="cli.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				
+			</div>
+		</nav>
+
+		<div class="flex-row main">
+			<nav class="sidebar">
+				<ul><li><a href="../installation.html">Installation</a></li><li><a href="../tutorials/index.html">Tutorials</a><ul><li><a href="../tutorials/hello-world.html">A Hello World Site</a></li><li><a href="../tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="index.html">Reference</a><ul><li><a href="cli.html">Command-Line Interface</a></li><li class="mdsite-current-file"><a href="macros.html">List of Macros</a></li></ul></li></ul>
+			</nav>
+			<div class="page">
+				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Reference</a></nav>
+				<article>
+					<h1 id="list-of-macros">List of Macros</h1>
+<ul>
+<li><a href="#macro-content"><code>{{content}}</code></a></li>
+<li><a href="#macro-title"><code>{{title}}</code></a></li>
+<li><a href="#macro-toc"><code>{{toc}}</code></a></li>
+<li><a href="#macro-next"><code>{{next}}</code></a></li>
+<li><a href="#macro-prev"><code>{{prev}}</code></a></li>
+<li><a href="#macro-up"><code>{{up}}</code></a></li>
+<li><a href="#macro-home"><code>{{home}}</code></a></li>
+<li><a href="#macro-breadcrumb"><code>{{breadcrumb}}</code></a></li>
+<li><a href="#macro-macro"><code>{{macro ...args}}</code></a></li>
+</ul>
+<h2 id="macro-content"><code>{{content}}</code></h2>
+<p>Expands to the HTMLified content of the current page. Macros in the HTML content are expanded.</p>
+<p>You should only use <code>{{content}}</code> in template files. Using it in content files will result
+in infinite recursion.</p>
+<h2 id="macro-title"><code>{{title}}</code></h2>
+<p>Expands to the text content of the first <code>&lt;h1&gt;</code> element on the page, or the filename if there
+is no <code>&lt;h1&gt;</code>.</p>
+<p><code>{{title}}</code> is mostly useful in the <code>&lt;title&gt;</code> element of template files. Note that <code>mdsite</code>
+reuses the <code>{{title}}</code> logic internally to generate the titles of navigation links, e.g. in <code>{{toc}}</code> and <code>{{breadcrumb}}</code>.</p>
+<h2 id="macro-toc"><code>{{toc}}</code></h2>
+<p>Generates a table of contents. With no arguments, it generates a TOC for the current file&#39;s directory and its subdirectories.</p>
+<p>You can optionally specify the directory whose table of contents you want to generate. This must be an absolute path, which <code>mdsite</code> will interpret, as always, as relative to the source root.</p>
+<p>For example, to generate the TOC for the whole site, you could use <code>{{toc /}}</code>.</p>
+<h2 id="macro-next"><code>{{next}}</code></h2>
+<p>Generates a link to the next page on the site. The order of pages is determined by <a href="./order">order.txt</a> files.</p>
+<h2 id="macro-prev"><code>{{prev}}</code></h2>
+<p>Generates a link to the previous page on the site. The order of pages is determined by <a href="./order">order.txt</a> files.</p>
+<h2 id="macro-up"><code>{{up}}</code></h2>
+<p>Generates a link to the parent of the current page.</p>
+<p>If the current page is a leaf (e.g. <code>foo.md</code>), its parent is the index page in the same directory.</p>
+<p>If the current page is an index (<code>index.md</code> or <code>index.html</code>), its parent is the index page one level up in the directory tree.</p>
+<h2 id="macro-home"><code>{{home}}</code></h2>
+<p>Generates a link to the root index page, <code>/index.html</code>.</p>
+<h2 id="macro-breadcrumb"><code>{{breadcrumb}}</code></h2>
+<p>Generates a breadcrumb that links to all ancestors of the current page.</p>
+<h2 id="macro-macro-args"><code>{{macro ...args}}</code></h2>
+<p>Expands to the literal <code>...args</code>. For example,
+<code>{{macro foo bar}}</code> expands to <code>{{foo bar}}</code></p>
+				</article>
+			</div>
+		</div>
+
+		<nav class="navbar">
+			<div>
+				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="cli.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				
+			</div>
+		</nav>
+		<div class="credits">
+			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
+		</div>
+	</body>
+</html>

@@ -3,6 +3,7 @@
 	<head>
 		<title>Installation</title>
 		<link rel="stylesheet" href="assets/style.css">
+		<link rel="stylesheet" href="assets/syntax-highlighting.css">
 	</head>
 	<body>
 		<nav class="navbar">
@@ -16,21 +17,17 @@
 
 		<div class="flex-row main">
 			<nav class="sidebar">
-				<ul><li class="mdsite-current-file"><a href="installation.html">Installation</a></li><li><a href="tutorials/index.html">Tutorials</a><ul><li><a href="tutorials/hello-world.html">A Hello World Site</a></li><li><a href="tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li></ul>
+				<ul><li class="mdsite-current-file"><a href="installation.html">Installation</a></li><li><a href="tutorials/index.html">Tutorials</a><ul><li><a href="tutorials/hello-world.html">A Hello World Site</a></li><li><a href="tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="reference/index.html">Reference</a><ul><li><a href="reference/cli.html">Command-Line Interface</a></li><li><a href="reference/macros.html">List of Macros</a></li></ul></li></ul>
 			</nav>
 			<div class="page">
 				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="index.html">@benchristel/mdsite</a></nav>
 				<article>
 					<h1 id="installation">Installation</h1>
-<p>You will need to install <a href="https://bun.sh">Bun</a> first. Then:</p>
-<pre><code>git clone https://github.com/benchristel/mdsite
-cd mdsite
-bun install
-</code></pre>
-<p>Put the <code>mdsite</code> directory on your <code>PATH</code> somehow, probably by adding
-a line like the following to your <code>.bashrc</code>:</p>
-<pre><code>export PATH=&quot;$PATH:/path/to/mdsite&quot;
-</code></pre>
+<p>Install <code>@benchristel/mdsite</code> with your favorite JavaScript package manager.</p>
+<pre><code class="hljs language-bash">bun i -g @benchristel/mdsite        <span class="hljs-comment"># Install with Bun</span>
+npm i -g @benchristel/mdsite        <span class="hljs-comment"># ...or with NPM</span>
+yarn global add @benchristel/mdsite <span class="hljs-comment"># ...or with Yarn</span>
+</code></pre><p>Installing with Bun is recommended. <code>mdsite</code> will run significantly faster if you use Bun.</p>
 				</article>
 			</div>
 		</div>

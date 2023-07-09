@@ -32,7 +32,7 @@ the index.html page, we lost that functionality. In this step, we'll add it back
 
 Use your editor to add a `{{macro toc}}` line at the end of index.html. The whole file should look like this:
 
-```
+```md
 this is the index page
 
 {{macro toc}}
