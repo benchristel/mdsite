@@ -27,7 +27,7 @@ reuses the `{{macro title}}` logic internally to generate the titles of navigati
 
 ## `{{macro toc}}`
 
-Generates a table of contents. With no arguments, it generates a TOC for the current file's directory and its subdirectories.
+Generates a table of contents. With no arguments, it generates a TOC for the current page's directory and its subdirectories.
 
 You can optionally specify the directory whose table of contents you want to generate. This must be an absolute path, which `mdsite` will interpret, as always, as relative to the source root.
 
