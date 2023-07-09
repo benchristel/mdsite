@@ -9,6 +9,7 @@ import { title as getTitle } from "../title";
 import { htmlToc } from "../toc";
 import { dirname } from "path";
 import { homeLink, nextLink, prevLink, upLink } from "../links";
+import { htmlBreadcrumb } from "../breadcrumbs";
 
 export type EvaluationContext = {
   outputPath: string;
@@ -45,6 +46,7 @@ const macroConstructors: Record<string, MacroConstructor> = {
   prev,
   up,
   home,
+  breadcrumb,
   macro,
 };
 
@@ -84,6 +86,10 @@ function up(): Macro {
 
 function home(): Macro {
   return (context) => homeLink(context.outputPath);
+}
+
+function breadcrumb(): Macro {
+  return (context) => htmlBreadcrumb(context.outputPath, context.globalInfo);
 }
 
 function macro(macroStr: string): Macro {

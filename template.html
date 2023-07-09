@@ -5,7 +5,7 @@
 		<link rel="stylesheet" href="/assets/style.css">
 	</head>
 	<body>
-		<nav>
+		<nav class="navbar">
 			<div>
 				{{home}}{{up}}{{prev}}
 			</div>
@@ -15,12 +15,14 @@
 		</nav>
 		<hr/>
 
+		{{breadcrumb}}
+
 		<article>
 			{{content}}
 		</article>
 
 		<hr/>
-		<nav>
+		<nav class="navbar">
 			<div>
 				{{home}}{{up}}{{prev}}
 			</div>

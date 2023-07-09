@@ -1,4 +1,4 @@
-# `mdsite` Documentation
+# @benchristel/mdsite
 
 `mdsite` is a modern generator for old-school static sites.
 It can turn any tree of markdown files into a website like this one (but you can style it however you want!)

@@ -1,7 +1,7 @@
 import { defaultTemplate } from "../policy/defaults.js";
 import { isAnything } from "../testing/matchers.js";
 import { HtmlFile } from "./html-file.js";
-import { Order, sortHtmlFiles } from "./order.js";
+import { sortHtmlFiles } from "./order.js";
 import { ProjectFile, ProjectFileSet } from "./project-file-set.js";
 import { test, expect, equals, which } from "@benchristel/taste";
 
@@ -32,17 +32,54 @@ export const dummyProjectGlobalInfo = {
   template: "dummy template",
 };
 
+export function indexLinkables(linkables: Linkable[]): {
+  index: Record<string, number>;
+  orderedLinkables: Linkable[];
+} {
+  const index: Record<string, number> = {};
+  linkables.forEach((linkable, i) => {
+    index[linkable.path] = i;
+  });
+  return {
+    orderedLinkables: linkables,
+    index,
+  };
+}
+
 export function ProjectGlobalInfo(
   files: ProjectFileSet,
   template: string
 ): ProjectGlobalInfo {
-  const order = Order(sortHtmlFiles(files));
+  const order = sortHtmlFiles(files);
   return {
-    orderedLinkables: order.items.map((path) => Linkable(files[path])),
-    index: order.index,
+    ...indexLinkables(order.map((path) => Linkable(files[path]))),
     template,
   };
 }
+
+test("indexLinkables", {
+  "given an empty array"() {
+    expect(indexLinkables([]), equals, { index: {}, orderedLinkables: [] });
+  },
+
+  "assigns the first item in the array an index of 0"() {
+    expect(indexLinkables([{ path: "foo" } as any]), equals, {
+      index: { foo: 0 },
+      orderedLinkables: [{ path: "foo" }],
+    });
+  },
+
+  "assigns the second item in the array an index of 1"() {
+    expect(
+      indexLinkables([{ path: "foo" } as any, { path: "bar" } as any]),
+      equals,
+      {
+        index: { foo: 0, bar: 1 },
+        orderedLinkables: [{ path: "foo" }, { path: "bar" }],
+      }
+    );
+  },
+});
 
 function Linkable(file: ProjectFile) {
   return {

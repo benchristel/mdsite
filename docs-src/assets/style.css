@@ -2,27 +2,37 @@ html {
   background: #fed;
 }
 
-nav {
+.navbar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-nav > div {
+.navbar > div {
   flex-grow: 0;
 }
 
-nav a {
+.navbar a {
   display: inline-block;
   padding: 0 0.5em 0.5ex;
 }
 
-nav a + a {
+.navbar a + a {
   border-left: 1px solid black;
 }
 
-nav a:hover {
+.navbar a:hover {
   background: #0001;
+}
+
+.mdsite-breadcrumb {
+  padding-left: 12px;
+}
+
+.mdsite-breadcrumb > a + a:before {
+  content: '▸';
+  padding: 0 0.5em;
+  display: inline-block;
 }
 
 article {

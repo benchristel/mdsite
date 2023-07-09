@@ -8,21 +8,6 @@ import { join } from "path";
 import { commonPrefix } from "../lib/strings.js";
 import { ensureTrailingSlash } from "../lib/paths.js";
 
-// TODO inline
-export type Order = {
-  items: Array<string>;
-  // index maps output paths to unique index numbers.
-  index: Record<string, number>;
-};
-
-export function Order(items: Array<string>): Order {
-  const index: Record<string, number> = {};
-  items.forEach((item, i) => {
-    index[item] = i;
-  });
-  return { items, index };
-}
-
 export function sortHtmlFiles(files: ProjectFileSet): Array<string> {
   return Object.values(files)
     .filter((f): f is HtmlFile => f.type === "html")
@@ -62,23 +47,6 @@ function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
     return 0;
   };
 }
-
-test("Order", {
-  "given an empty array"() {
-    expect(Order([]), equals, { index: {}, items: [] });
-  },
-
-  "assigns the first item in the array an index of 0"() {
-    expect(Order(["foo"]), equals, { index: { foo: 0 }, items: ["foo"] });
-  },
-
-  "assigns the second item in the array an index of 1"() {
-    expect(Order(["foo", "bar"]), equals, {
-      index: { foo: 0, bar: 1 },
-      items: ["foo", "bar"],
-    });
-  },
-});
 
 test("sortHtmlFiles", {
   "gets the output path of one file"() {
