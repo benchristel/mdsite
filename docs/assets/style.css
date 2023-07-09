@@ -37,7 +37,6 @@ nav a {
   background-image: url(white-noise.jpg);
   background-blend-mode: multiply;
   box-shadow: inset 0 1px #fff2, inset 0 -1px #0008, inset -1px 0 #fff2;
-  padding-left: 12px;
   color: #fff;
   text-shadow: 0 -1px #000, 0 1px #fff4;
   --link-color: #bfd;
@@ -51,7 +50,25 @@ nav a {
 }
 
 .sidebar ul {
+  padding-left: 0;
+}
+
+.sidebar li {
+  list-style-type: none;
+}
+
+.sidebar a {
+  display: block;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.sidebar ul a {
   padding-left: 12px;
+}
+
+.sidebar ul ul a {
+  padding-left: 24px;
 }
 
 .navbar {
@@ -132,4 +149,14 @@ a {
 
 a:visited {
   color: var(--visited-link-color);
+}
+
+.mdsite-current-file > a {
+  background: #575;
+  color: #fff;
+  text-shadow: 1px 0 #fff4, 0 -1px #0004, 1px -1px #0004;
+}
+
+.mdsite-current-file li {
+  background: transparent;
 }
