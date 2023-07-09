@@ -1,5 +1,5 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings.js";
-import { relative } from "path";
+import { dirname, relative } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
 import { Linkable } from "./project-global-info.js";
 
@@ -58,7 +58,7 @@ export function toc(
 export function htmlToc(
   orderedLinkables: Linkable[],
   linkOrigin: string,
-  root: string = linkOrigin
+  root: string = dirname(linkOrigin)
 ): string {
   const theToc = toc(orderedLinkables, root);
   if (theToc.length === 0) {
@@ -77,7 +77,7 @@ function htmlForToc(toc: TreeOfContents, linkOrigin: string): string {
           linkOrigin === node.path ? ` class="mdsite-current-file"` : "";
         const subToc =
           node.type === "leaf" ? "" : htmlForToc(node.contents, linkOrigin);
-        const relativePath = relative(linkOrigin, node.path);
+        const relativePath = relative(dirname(linkOrigin), node.path);
         return `<li${cssClass}><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
       })
       .join("") +

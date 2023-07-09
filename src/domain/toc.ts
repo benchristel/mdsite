@@ -1,10 +1,6 @@
 export { htmlToc } from "./toc.impl.js";
 import { test, expect, is, equals } from "@benchristel/taste";
-import { ProjectFile, ProjectFileSet } from "./project-file-set.js";
 import { toc, htmlToc, leaf, branch } from "./toc.impl.js";
-import { FileSet } from "../lib/files.js";
-import { mapEntries } from "../lib/objects.js";
-import { addSyntheticFiles } from "./synthetic-files.js";
 import { Linkable } from "./project-global-info.js";
 
 {
@@ -145,7 +141,7 @@ test("toc", {
 
 test("htmlToc", {
   "given an empty set of files"() {
-    expect(htmlToc([], "/"), is, "");
+    expect(htmlToc([], "/index.html"), is, "");
   },
 
   "given a tree with one file"() {
@@ -153,7 +149,7 @@ test("htmlToc", {
 
     const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
 
-    expect(htmlToc(files, "/"), is, expected);
+    expect(htmlToc(files, "/index.html"), is, expected);
   },
 
   "generates a list of multiple links"() {
@@ -164,7 +160,7 @@ test("htmlToc", {
 
     const expected = `<ul><li><a href="bar.html">Bar</a></li><li><a href="foo.html">Foo</a></li></ul>`;
 
-    expect(htmlToc(files, "/"), is, expected);
+    expect(htmlToc(files, "/index.html"), is, expected);
   },
 
   "creates relative links, starting from the linkOrigin"() {
@@ -172,7 +168,7 @@ test("htmlToc", {
 
     const expected = `<ul><li><a href="../../../foo.html">Foo</a></li></ul>`;
 
-    expect(htmlToc(files, "/one/two/three", "/"), is, expected);
+    expect(htmlToc(files, "/one/two/three/foo.html", "/"), is, expected);
   },
 
   recurses() {
@@ -183,13 +179,6 @@ test("htmlToc", {
 
     const expected = `<ul><li><a href="bar/index.html">Bar</a><ul><li><a href="bar/baz.html">Baz</a></li></ul></li></ul>`;
 
-    expect(htmlToc(files, "/"), is, expected);
+    expect(htmlToc(files, "/index.html"), is, expected);
   },
 });
-
-function parseProjectFiles(files: FileSet): ProjectFileSet {
-  return mapEntries(addSyntheticFiles(files), ([srcPath, srcContents]) => {
-    const projectFile = ProjectFile(srcPath, srcContents);
-    return [projectFile.outputPath, projectFile];
-  });
-}
