@@ -60,4 +60,5 @@ Generates a breadcrumb that links to all ancestors of the current page.
 ## `{{macro macro ...args}}`
 
 Expands to the literal `...args`. For example,
-`{{macro macro foo bar}}` expands to `{{macro foo bar}}`
+`{{macro macro foo bar}}` expands to `{{macro foo bar}}`. Quotes are preserved,
+so <code>{{macro macro foo "bar"}}</code> expands to <code>{{macro foo "bar"}}</code>

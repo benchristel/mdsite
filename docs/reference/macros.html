@@ -61,7 +61,8 @@ reuses the <code>{{title}}</code> logic internally to generate the titles of nav
 <p>Generates a breadcrumb that links to all ancestors of the current page.</p>
 <h2 id="macro-macro-args"><code>{{macro ...args}}</code></h2>
 <p>Expands to the literal <code>...args</code>. For example,
-<code>{{macro foo bar}}</code> expands to <code>{{foo bar}}</code></p>
+<code>{{macro foo bar}}</code> expands to <code>{{foo bar}}</code>. Quotes are preserved,
+so <code>{{macro foo "bar"}}</code> expands to <code>{{foo "bar"}}</code></p>
 				</article>
 			</div>
 		</div>

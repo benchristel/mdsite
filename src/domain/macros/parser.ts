@@ -4,7 +4,8 @@ import { first, isEmpty } from "../../lib/indexables";
 const bareArg = String.raw`[a-zA-Z0-9\/\-_\.]+`;
 const quotedArg = String.raw`"(?:\\.|[^"\\])*"`;
 const arg = String.raw`(?:${bareArg}|${quotedArg})`;
-export const macros = new RegExp(String.raw`{{\s*[a-z]+(\s+${arg})*\s*}}`, "g");
+export const macroPattern = String.raw`{{\s*[a-z]+(\s+${arg})*\s*}}`;
+export const macros = new RegExp(macroPattern, "g");
 
 const findAllMacros = (s: string) => [...s.matchAll(macros)].map(first);
 

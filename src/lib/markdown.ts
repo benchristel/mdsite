@@ -3,6 +3,7 @@ import { marked } from "marked";
 import { test, expect, is } from "@benchristel/taste";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
+import { macroPattern } from "../domain/macros/parser";
 
 export function htmlFromMarkdown(md: string): string {
   return marked.parse(md);
@@ -57,7 +58,30 @@ const wikiLink = {
   },
 };
 
-marked.use({ extensions: [wikiLink] });
+const macroRegex = new RegExp("^" + macroPattern);
+const macro = {
+  name: "macro",
+  level: "inline",
+  start(src: string) {
+    return src.match(/{{/)?.index;
+  },
+  tokenizer(src: string) {
+    const match = macroRegex.exec(src);
+    if (match) {
+      return {
+        type: "macro",
+        raw: match[0],
+        text: match[0],
+        tokens: [],
+      };
+    }
+  },
+  renderer(token: any) {
+    return token.text;
+  },
+};
+
+marked.use({ extensions: [wikiLink, macro] });
 marked.use(
   markedHighlight({
     langPrefix: "hljs language-",
