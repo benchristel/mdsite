@@ -25,7 +25,7 @@ async function build(args: BuildArgs) {
     readTemplateFile(args.templateFile),
   ] as const;
   return Promise.all(inputs)
-    .then(([content, template]) => buildProject(content, template.toString()))
+    .then(([content, template]) => buildProject(content, template))
     .then((output) => writeDeep(args.outputDir, output));
 }
 
@@ -39,12 +39,14 @@ async function readFilesFromInputDirectory(inputDir: string) {
 }
 
 async function readTemplateFile(templateFilePath: string) {
-  return readFile(templateFilePath).catch(() => {
-    console.warn(
-      `Warning: could not read template file '${templateFilePath}'. Using the default template.`
-    );
-    return defaultTemplate;
-  });
+  return readFile(templateFilePath)
+    .catch(() => {
+      console.warn(
+        `Warning: could not read template file '${templateFilePath}'. Using the default template.`
+      );
+      return defaultTemplate;
+    })
+    .then(String);
 }
 
 async function order(args: OrderArgs) {
