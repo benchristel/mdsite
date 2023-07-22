@@ -3,8 +3,8 @@ import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
   indexLinkables,
-} from "./project-global-info";
-import { contains } from "../lib/strings";
+} from "./project-global-info.js";
+import { contains } from "../lib/strings.js";
 import { dirname, join, relative } from "path";
 
 export function htmlBreadcrumb(

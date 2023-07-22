@@ -1,6 +1,6 @@
 import { test, expect, is } from "@benchristel/taste";
-import { dummyProjectGlobalInfo, indexLinkables, } from "./project-global-info";
-import { contains } from "../lib/strings";
+import { dummyProjectGlobalInfo, indexLinkables, } from "./project-global-info.js";
+import { contains } from "../lib/strings.js";
 import { dirname, join, relative } from "path";
 export function htmlBreadcrumb(outputPath, globalInfo) {
     const crumbs = [];

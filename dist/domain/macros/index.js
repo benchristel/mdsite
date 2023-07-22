@@ -1,6 +1,6 @@
-export { expandAll } from "./evaluator";
-import { dummyProjectGlobalInfo, } from "../project-global-info";
-import { expandAll } from "./evaluator";
+export { expandAll } from "./evaluator.js";
+import { dummyProjectGlobalInfo, } from "../project-global-info.js";
+import { expandAll } from "./evaluator.js";
 import { test, expect, is } from "@benchristel/taste";
 {
     expandAll;

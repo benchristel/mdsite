@@ -1,11 +1,11 @@
-import { macros, getTokens } from "./parser";
+import { macros, getTokens } from "./parser.js";
 import { test, expect, equals, curry } from "@benchristel/taste";
-import { dummyProjectGlobalInfo, } from "../project-global-info";
-import Logger, { mockLogger } from "../../lib/logger";
-import { title as getTitle } from "../title";
-import { htmlToc } from "../toc";
-import { homeLink, nextLink, prevLink, upLink } from "../links";
-import { htmlBreadcrumb } from "../breadcrumbs";
+import { dummyProjectGlobalInfo, } from "../project-global-info.js";
+import Logger, { mockLogger } from "../../lib/logger.js";
+import { title as getTitle } from "../title.js";
+import { htmlToc } from "../toc.js";
+import { homeLink, nextLink, prevLink, upLink } from "../links.js";
+import { htmlBreadcrumb } from "../breadcrumbs.js";
 export const expandAll = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
 }, "expandAll");

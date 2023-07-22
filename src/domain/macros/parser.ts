@@ -1,5 +1,5 @@
 import { test, expect, equals, not } from "@benchristel/taste";
-import { first, isEmpty } from "../../lib/indexables";
+import { first, isEmpty } from "../../lib/indexables.js";
 
 const bareArg = String.raw`[a-zA-Z0-9\/\-_\.]+`;
 const quotedArg = String.raw`"(?:\\.|[^"\\])*"`;

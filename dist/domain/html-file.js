@@ -6,7 +6,7 @@ import { title } from "./title.js";
 import { test, expect, equals, is, curry } from "@benchristel/taste";
 import { dirname, relative } from "path";
 import { dummyProjectGlobalInfo, } from "./project-global-info.js";
-import { expandAll } from "./macros";
+import { expandAll } from "./macros/index.js";
 import { pass, pipe } from "../lib/functional.js";
 export function MarkdownFile(path, markdown) {
     const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());

@@ -2,7 +2,7 @@ import { marked } from "marked";
 import { test, expect, is } from "@benchristel/taste";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
-import { macroPattern } from "../domain/macros/parser";
+import { macroPattern } from "../domain/macros/parser.js";
 export function htmlFromMarkdown(md) {
     return marked.parse(md);
 }

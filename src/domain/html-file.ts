@@ -9,7 +9,7 @@ import {
   ProjectGlobalInfo,
   dummyProjectGlobalInfo,
 } from "./project-global-info.js";
-import { expandAll } from "./macros";
+import { expandAll } from "./macros/index.js";
 import { pass, pipe } from "../lib/functional.js";
 
 export type HtmlFile = {
