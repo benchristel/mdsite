@@ -28,7 +28,7 @@ HTML boilerplate. Here is the default template:
 `mdsite` to insert some data into the page.
 
 - `{{macro content}}` inserts the content of the source file.
-- `{{title}}` inserts the content of the first `<h1>` element on the page,
+- `{{macro title}}` inserts the content of the first `<h1>` element on the page,
   or the filename if there is no `<h1>`.
 
 ## Custom Templates
