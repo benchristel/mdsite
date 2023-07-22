@@ -1,2 +1,3 @@
 installation.html
 tutorials
+explanations

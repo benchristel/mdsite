@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>How mdsite Works</title>
+		<link rel="stylesheet" href="../assets/style.css">
+		<link rel="stylesheet" href="../assets/syntax-highlighting.css">
+	</head>
+	<body>
+		<nav class="navbar">
+			<div>
+				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				<a href="../reference/index.html" class="mdsite-next-link">Next</a>
+			</div>
+		</nav>
+
+		<div class="flex-row main">
+			<nav class="sidebar">
+				<ul><li><a href="../installation.html">Installation</a></li><li><a href="../tutorials/index.html">Tutorials</a><ul><li><a href="../tutorials/hello-world.html">A Hello World Site</a></li><li><a href="../tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="index.html">Explanations</a><ul><li class="mdsite-current-file"><a href="how-it-works.html">How mdsite Works</a></li></ul></li><li><a href="../reference/index.html">Reference</a><ul><li><a href="../reference/cli.html">Command-Line Interface</a></li><li><a href="../reference/macros.html">List of Macros</a></li></ul></li></ul>
+			</nav>
+			<div class="page">
+				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Explanations</a></nav>
+				<article>
+					<h1 id="how-mdsite-works">How <code>mdsite</code> Works</h1>
+<p><code>mdsite</code> can be thought of as a recursive copy command (like <code>cp -r</code>) that does
+some processing of the file contents as they&#39;re copied from <code>INPUTDIR</code> to <code>OUTPUTDIR</code>.
+Most file types (<code>.js</code>, <code>.css</code>, <code>.jpg</code>, <code>.png</code>, etc.) are simply copied with no processing.</p>
+<p>Files in <code>INPUTDIR</code> that have an <code>.md</code> or <code>.html</code> extension <em>will</em> be processed.
+If the file is markdown, it gets compiled to HTML. Then the HTML is inserted into
+a <em>template</em>, which by default just wraps the content in bare-bones
+HTML boilerplate. Here is the default template:</p>
+<pre><code class="hljs language-html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>{{title}}<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+    {{content}}
+    <span class="hljs-tag">&lt;<span class="hljs-name">nav</span>&gt;</span>
+      {{home}} | {{up}} | {{prev}} | {{next}}
+    <span class="hljs-tag">&lt;/<span class="hljs-name">nav</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre><p><code>{{title}}</code> and <code>{{content}}</code> are <em>macros</em>. They instruct
+<code>mdsite</code> to insert some data into the page.</p>
+<ul>
+<li><code>{{content}}</code> inserts the content of the source file.</li>
+<li><code>How mdsite Works</code> inserts the content of the first <code>&lt;h1&gt;</code> element on the page,
+or the filename if there is no <code>&lt;h1&gt;</code>.</li>
+</ul>
+<h2 id="custom-templates">Custom Templates</h2>
+<p>You can customize the HTML template for your pages by creating a <code>template.html</code> file
+in the directory where you run <code>mdsite</code>.</p>
+<h2 id="macros">Macros</h2>
+<p>The available macros are:</p>
+<ul>
+<li><code>{{content}}</code> inserts the content of the source file.</li>
+<li><code>{{title}}</code> inserts the content of the first <code>&lt;h1&gt;</code> element on the page,
+or the filename if there is no <code>&lt;h1&gt;</code>.</li>
+<li><code>{{toc}}</code> inserts a table of contents for the current directory and
+subdirectories.</li>
+<li><code>{{next}}</code> creates a link to the next page. The order of pages is determined by the
+set of <code>order.txt</code> files (see below).</li>
+<li><code>{{prev}}</code> creates a link to the previous page. The order of pages is determined by the
+set of <code>order.txt</code> files (see below).</li>
+<li><code>{{up}}</code> creates a link that goes one level up in the hierarchy. If used on a &quot;leaf&quot; page,
+it goes to the sibling <code>./index.html</code> file; if used on an index page, it goes to <code>../index.html</code>.</li>
+<li><code>{{home}}</code> links to the root <code>/index.html</code> file.</li>
+</ul>
+<p>You can use most of these macros anywhere—in your template file, or in HTML or markdown content.
+The exception to this is <code>{{content}}</code>, which should only be used in the template file.</p>
+<p>All of the generated links are relative, making it safe to deploy your site to
+a subdirectory of your domain.</p>
+<h2 id="table-of-contents-macro-toc-and-ordertxt">Table of Contents, <code>{{toc}}</code> and order.txt</h2>
+<p><code>{{toc}}</code> is a macro which inserts a table of contents formatted as a nested
+list. <code>{{toc}}</code> recursively lists the files and directories within the current file&#39;s
+parent directory.</p>
+<p>By default, entries in the table of contents are ordered lexicographically by
+title. You can customize the ordering of the entries in a directory by creating
+an <code>order.txt</code> file in that directory. The <code>order.txt</code> file simply lists the
+entries (files or directories) in the order you want them
+displayed, one per line. E.g.</p>
+<pre><code>foo.md
+bar.md
+baz.md
+quux
+kludge
+</code></pre><p>Any files you don&#39;t list in <code>order.txt</code> will be ordered by title, after the
+listed files.</p>
+<p>Each <code>order.txt</code> file can only affect the order of its sibling
+files/directories; <code>order.txt</code> can&#39;t reach into subdirectories. Any lines in
+<code>order.txt</code> that contain a slash are ignored.</p>
+<p>To populate your INPUTDIR with <code>order.txt</code> files, you can run
+<code>mdsite order [-i INPUTDIR]</code>. This does the following:</p>
+<ul>
+<li>Creates an <code>order.txt</code> in each directory that lacks one.</li>
+<li>Appends any missing files and folders to each <code>order.txt</code>, below an
+<code>!unspecified</code> line which causes them to be ignored when sorting
+files.</li>
+</ul>
+<p>Running <code>mdsite order</code> won&#39;t mess with the filenames you&#39;ve listed
+manually, and won&#39;t affect the overall order of the pages on your site.</p>
+				</article>
+			</div>
+		</div>
+
+		<nav class="navbar">
+			<div>
+				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
+			</div>
+			<div>
+				<a href="../reference/index.html" class="mdsite-next-link">Next</a>
+			</div>
+		</nav>
+		<div class="credits">
+			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
+		</div>
+	</body>
+</html>

@@ -7,3 +7,12 @@
 .hljs-string {
   color: #502;
 }
+
+.hljs-tag, .hljs-meta {
+  color: #42f;
+}
+
+.hljs-keyword {
+  font-weight: bold;
+  color: #000;
+}
