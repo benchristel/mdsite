@@ -5,13 +5,6 @@ import { trimMargin } from "../testing/formatting.js";
 import { join } from "path";
 import { commonPrefix } from "../lib/strings.js";
 import { ensureTrailingSlash } from "../lib/paths.js";
-export function Order(items) {
-    const index = {};
-    items.forEach((item, i) => {
-        index[item] = i;
-    });
-    return { items, index };
-}
 export function sortHtmlFiles(files) {
     return Object.values(files)
         .filter((f) => f.type === "html")
@@ -50,20 +43,6 @@ function byOrderTxtRank(files) {
         return 0;
     };
 }
-test("Order", {
-    "given an empty array"() {
-        expect(Order([]), equals, { index: {}, items: [] });
-    },
-    "assigns the first item in the array an index of 0"() {
-        expect(Order(["foo"]), equals, { index: { foo: 0 }, items: ["foo"] });
-    },
-    "assigns the second item in the array an index of 1"() {
-        expect(Order(["foo", "bar"]), equals, {
-            index: { foo: 0, bar: 1 },
-            items: ["foo", "bar"],
-        });
-    },
-});
 test("sortHtmlFiles", {
     "gets the output path of one file"() {
         const files = {

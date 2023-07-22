@@ -28,19 +28,31 @@ export function run(argv) {
 }
 function build(args) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { inputDir, outputDir, templateFile } = args;
-        const [input, template] = yield Promise.all([
-            listDeep(inputDir).catch(() => {
-                throw Error(`ERROR: could not read from input directory '${inputDir}'.` +
-                    `\nhint: create the '${inputDir}' directory, or specify a different one with -i INPUTDIR`);
-            }),
-            readFile(templateFile).catch(() => {
-                console.warn(`Warning: could not read template file '${templateFile}'. Using the default template.`);
-                return defaultTemplate;
-            }),
-        ]);
-        const output = buildProject(input, template.toString());
-        yield writeDeep(outputDir, output);
+        const inputs = [
+            readFilesFromInputDirectory(args.inputDir),
+            readTemplateFile(args.templateFile),
+        ];
+        return Promise.all(inputs)
+            .then(([content, template]) => buildProject(content, template))
+            .then((output) => writeDeep(args.outputDir, output));
+    });
+}
+function readFilesFromInputDirectory(inputDir) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return listDeep(inputDir).catch(() => {
+            throw Error(`ERROR: could not read from input directory '${inputDir}'.` +
+                `\nhint: create the '${inputDir}' directory, or specify a different one with -i INPUTDIR`);
+        });
+    });
+}
+function readTemplateFile(templateFilePath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return readFile(templateFilePath)
+            .catch(() => {
+            console.warn(`Warning: could not read template file '${templateFilePath}'. Using the default template.`);
+            return defaultTemplate;
+        })
+            .then(String);
     });
 }
 function order(args) {

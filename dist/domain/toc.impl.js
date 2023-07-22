@@ -1,5 +1,5 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings.js";
-import { relative } from "path";
+import { dirname, relative } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
 export function branch(params, ...contents) {
     return Object.assign({ type: "branch", contents }, params);
@@ -7,19 +7,19 @@ export function branch(params, ...contents) {
 export function leaf(params) {
     return Object.assign({ type: "leaf" }, params);
 }
-export function toc(globalInfo, root = "/") {
+export function toc(orderedLinkables, root = "/") {
     root = ensureTrailingSlash(root);
-    return Object.values(globalInfo.orderedLinkables)
+    return Object.values(orderedLinkables)
         .filter(({ path }) => path.startsWith(root) &&
         path.endsWith(".html") &&
         path !== root + "index.html" &&
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html")))
         .map(({ path, title }) => path.endsWith("/index.html")
-        ? branch({ path, title }, ...toc(globalInfo, removeSuffix(path, "index.html")))
+        ? branch({ path, title }, ...toc(orderedLinkables, removeSuffix(path, "index.html")))
         : leaf({ path, title }));
 }
-export function htmlToc(globalInfo, linkOrigin, root = linkOrigin) {
-    const theToc = toc(globalInfo, root);
+export function htmlToc(orderedLinkables, linkOrigin, root = dirname(linkOrigin)) {
+    const theToc = toc(orderedLinkables, root);
     if (theToc.length === 0) {
         return "";
     }
@@ -29,9 +29,10 @@ function htmlForToc(toc, linkOrigin) {
     return ("<ul>" +
         toc
             .map((node) => {
+            const cssClass = linkOrigin === node.path ? ` class="mdsite-current-file"` : "";
             const subToc = node.type === "leaf" ? "" : htmlForToc(node.contents, linkOrigin);
-            const relativePath = relative(linkOrigin, node.path);
-            return `<li><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
+            const relativePath = relative(dirname(linkOrigin), node.path);
+            return `<li${cssClass}><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
         })
             .join("") +
         "</ul>");

@@ -3,42 +3,36 @@ import { htmlFromMarkdown } from "../lib/markdown.js";
 import { removeSuffix } from "../lib/strings.js";
 import { trimMargin } from "../testing/formatting.js";
 import { title } from "./title.js";
-import { test, expect, equals, is } from "@benchristel/taste";
-import { htmlToc } from "./toc.js";
+import { test, expect, equals, is, curry } from "@benchristel/taste";
 import { dirname, relative } from "path";
 import { dummyProjectGlobalInfo, } from "./project-global-info.js";
-import { homeLink, nextLink, prevLink, upLink } from "./links.js";
+import { expandAll } from "./macros";
+import { pass, pipe } from "../lib/functional.js";
 export function MarkdownFile(path, markdown) {
     const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
     const htmlPath = removeSuffix(path, ".md") + ".html";
     return HtmlFile(htmlPath, rawHtml);
 }
-export function HtmlFile(path, rawHtml) {
-    const self = {
+export function HtmlFile(outputPath, rawHtml) {
+    return {
         type: "html",
         rawHtml,
-        title: title(path, rawHtml),
-        outputPath: path,
+        title: title(outputPath, rawHtml),
+        outputPath,
         render,
     };
-    return self;
     function render(globalInfo) {
-        return [
-            self.outputPath,
-            buffer(globalInfo.template
-                .replace("{{content}}", self.rawHtml)
-                .replace(/{{title}}/g, self.title)
-                .replace(/{{toc}}/g, () => htmlToc(globalInfo, dirname(self.outputPath)))
-                .replace(/{{next}}/g, () => nextLink(globalInfo, self.outputPath))
-                .replace(/{{prev}}/g, () => prevLink(globalInfo, self.outputPath))
-                .replace(/{{up}}/g, () => upLink(self.outputPath))
-                .replace(/{{home}}/g, () => homeLink(self.outputPath))
-                .replace(/{{macro ([^}]+)}}/g, "{{$1}}")
-                // Relativize links
-                .replace(/((?:href|src)=")(\/[^"]+)/g, (_, prefix, path) => prefix + relative(dirname(self.outputPath), path))),
-        ];
+        const renderedHtml = pass(globalInfo.template, pipe(expandAll({
+            content: rawHtml,
+            globalInfo,
+            outputPath,
+        }), relativizeLinks(outputPath)));
+        return [outputPath, buffer(renderedHtml)];
     }
 }
+const relativizeLinks = curry((fromPath, html) => {
+    return html.replace(/((?:href|src)=")(\/[^"]+)/g, (_, prefix, path) => prefix + relative(dirname(fromPath), path));
+}, "relativizeLinks");
 test("HtmlFile", {
     "replaces absolute hrefs with relative ones"() {
         const file = HtmlFile("/foo/bar.html", `<a href="/baz/kludge.html"></a>`);
