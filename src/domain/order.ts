@@ -1,4 +1,4 @@
-import { test, expect, equals } from "@benchristel/taste";
+import { test, expect, is, equals } from "@benchristel/taste";
 import { ProjectFileSet } from "./project-file-set.js";
 import { HtmlFile } from "./html-file.js";
 import { Comparator } from "../lib/sorting.js";
@@ -21,12 +21,13 @@ function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
       commonPrefix(a.outputPath, b.outputPath).replace(/\/[^\/]*$/, "")
     );
     const orderFile = files[join(prefix, "order.txt")];
-    if (orderFile?.type === "order") {
-      const aName = a.outputPath.slice(prefix.length).split("/")[0];
-      const bName = b.outputPath.slice(prefix.length).split("/")[0];
-      if (aName === "index.html") return -1;
-      if (bName === "index.html") return 1;
+    const aName = a.outputPath.slice(prefix.length).split("/")[0];
+    const bName = b.outputPath.slice(prefix.length).split("/")[0];
 
+    if (aName === "index.html") return -1;
+    if (bName === "index.html") return 1;
+
+    if (orderFile?.type === "order") {
       const aIndex = orderFile.filenames.indexOf(aName);
       const bIndex = orderFile.filenames.indexOf(bName);
       if (aIndex !== -1 && bIndex !== -1) {
@@ -38,15 +39,59 @@ function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
       }
     }
 
-    if (a.title > b.title) {
+    const aTitle = titleForOutputPath(join(prefix, aName), files) ?? "";
+    const bTitle = titleForOutputPath(join(prefix, bName), files) ?? "";
+
+    if (aTitle > bTitle) {
       return 1;
-    } else if (a.title < b.title) {
+    } else if (aTitle < bTitle) {
       return -1;
     }
 
     return 0;
   };
 }
+
+function titleForOutputPath(
+  path: string,
+  files: ProjectFileSet
+): string | null {
+  const file = files[path] ?? files[join(path, "index.html")];
+  switch (file?.type) {
+    case "html":
+      return file.title;
+    default:
+      return null;
+  }
+}
+
+test("titleForOutputPath", {
+  "returns null when the requested path does not exist"() {
+    const files = {};
+    expect(titleForOutputPath("/foo.html", files), is, null);
+  },
+
+  "returns the title of an HTML file with no <h1>"() {
+    const files = {
+      "/foo.html": HtmlFile("/foo.html", ""),
+    };
+    expect(titleForOutputPath("/foo.html", files), is, "foo.html");
+  },
+
+  "returns the title of an HTML file with an <h1>"() {
+    const files = {
+      "/foo.html": HtmlFile("/foo.html", "<h1>The Title</h1>"),
+    };
+    expect(titleForOutputPath("/foo.html", files), is, "The Title");
+  },
+
+  "returns the title of an index file given its directory"() {
+    const files = {
+      "/index.html": HtmlFile("/index.html", "<h1>The Title</h1>"),
+    };
+    expect(titleForOutputPath("/", files), is, "The Title");
+  },
+});
 
 test("sortHtmlFiles", {
   "gets the output path of one file"() {
@@ -55,9 +100,7 @@ test("sortHtmlFiles", {
     };
     expect(sortHtmlFiles(files), equals, ["/foo.html"]);
   },
-});
 
-test("sortProjectFiles", {
   "returns an empty array given no files"() {
     const files = {};
     expect(sortHtmlFiles(files), equals, []);
@@ -82,6 +125,19 @@ test("sortProjectFiles", {
       "/bbb.html",
       "/ccc.html",
       "/ddd.html",
+    ]);
+  },
+
+  "keeps siblings together"() {
+    const files = {
+      "/aaa/index.html": HtmlFile("/aaa/index.html", "<h1>A</h1>"),
+      "/aaa/zzz.html": HtmlFile("/aaa/zzz.html", "<h1>Z</h1>"),
+      "/bbb.html": HtmlFile("/bbb.html", "<h1>B</h1>"),
+    };
+    expect(sortHtmlFiles(files), equals, [
+      "/aaa/index.html",
+      "/aaa/zzz.html",
+      "/bbb.html",
     ]);
   },
 

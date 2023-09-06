@@ -1,6 +1,8 @@
 import { OpaqueFile } from "./opaque-file.js";
 import { HtmlFile, MarkdownFile } from "./html-file.js";
 import { OrderFile } from "./order-file.js";
+import { test, expect, is } from "@benchristel/taste";
+import { join } from "path";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
