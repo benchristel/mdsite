@@ -2,7 +2,7 @@ import { test, expect, is, equals } from "@benchristel/taste";
 import { HtmlFile } from "./html-file.js";
 import { OrderFile } from "./order-file.js";
 import { trimMargin } from "../testing/formatting.js";
-import { join } from "path";
+import { basename, dirname, join } from "path";
 import { commonPrefix } from "../lib/strings.js";
 import { ensureTrailingSlash } from "../lib/paths.js";
 export function sortHtmlFiles(files) {
@@ -11,6 +11,54 @@ export function sortHtmlFiles(files) {
         .sort(byOrderTxtRank(files))
         .map((f) => f.outputPath);
 }
+function orderTxtRank(f, files) {
+    const filename = basename(f.outputPath);
+    const orderFile = files[join(dirname(f.outputPath), "order.txt")];
+    const orderFileIndex = (orderFile === null || orderFile === void 0 ? void 0 : orderFile.type) === "order" ? orderFile.filenames.indexOf(filename) : Infinity;
+    // index.html files should come before any of their siblings,
+    // so we "promote" them to the top.
+    const indexPromotion = filename === "index.html" ? 0 : 1;
+    return [indexPromotion, orderFileIndex, f.title, filename];
+}
+test("orderTxtRank", {
+    "is [0, Infinity, <title>, <filename>] given /index.html"() {
+        const files = {
+            "/index.html": HtmlFile("/index.html", "<h1>Hi</h1>"),
+        };
+        const rank = orderTxtRank(files["/index.html"], files);
+        expect(rank, equals, [0, Infinity, "Hi", "index.html"]);
+    },
+    "is [1, Infinity, <title>, <filename>] given a non-index file"() {
+        const files = {
+            "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
+        };
+        const rank = orderTxtRank(files["/foo.html"], files);
+        expect(rank, equals, [1, Infinity, "Foo", "foo.html"]);
+    },
+    "defaults the title if the file contains none"() {
+        const files = {
+            "/foo.html": HtmlFile("/foo.html", "no title here"),
+        };
+        const rank = orderTxtRank(files["/foo.html"], files);
+        expect(rank, equals, [1, Infinity, "foo.html", "foo.html"]);
+    },
+    "is [1, 0, <title>, <filename>] given a file listed first in order.txt"() {
+        const files = {
+            "/order.txt": OrderFile("/order.txt", "foo.html"),
+            "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
+        };
+        const rank = orderTxtRank(files["/foo.html"], files);
+        expect(rank, equals, [1, 0, "Foo", "foo.html"]);
+    },
+    "is [1, 1, <title>, <filename>] given a file listed second in order.txt"() {
+        const files = {
+            "/order.txt": OrderFile("/order.txt", "a.html\nfoo.html"),
+            "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
+        };
+        const rank = orderTxtRank(files["/foo.html"], files);
+        expect(rank, equals, [1, 1, "Foo", "foo.html"]);
+    },
+});
 function byOrderTxtRank(files) {
     return (a, b) => {
         var _a, _b;
