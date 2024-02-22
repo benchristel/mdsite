@@ -4,7 +4,7 @@
       {
         "match": "docs-src",
         "cmd": "yarn docs"
-      },
+      }
     ]
   }
 }

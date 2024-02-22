@@ -1,42 +1,33 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>{{title}}</title>
-		<link rel="stylesheet" href="/assets/style.css">
-		<link rel="stylesheet" href="/assets/syntax-highlighting.css">
-	</head>
-	<body>
-		<nav class="navbar">
-			<div>
-				{{home}}{{up}}{{prev}}
-			</div>
-			<div>
-				{{next}}
-			</div>
-		</nav>
+  <head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <link rel="stylesheet" href="/assets/syntax-highlighting.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div>{{home}}{{up}}{{prev}}</div>
+      <div>{{next}}</div>
+    </nav>
 
-		<div class="flex-row main">
-			<nav class="sidebar">
-				{{toc /}}
-			</nav>
-			<div class="page">
-				{{breadcrumb}}
-				<article>
-					{{content}}
-				</article>
-			</div>
-		</div>
+    <div class="flex-row main">
+      <nav class="sidebar">{{toc /}}</nav>
+      <div class="page">
+        {{breadcrumb}}
+        <article>{{content}}</article>
+      </div>
+    </div>
 
-		<nav class="navbar">
-			<div>
-				{{home}}{{up}}{{prev}}
-			</div>
-			<div>
-				{{next}}
-			</div>
-		</nav>
-		<div class="credits">
-			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
-		</div>
-	</body>
+    <nav class="navbar">
+      <div>{{home}}{{up}}{{prev}}</div>
+      <div>{{next}}</div>
+    </nav>
+    <div class="credits">
+      <a href="https://github.com/benchristel">Ben Christel</a> made this with
+      <a href="https://github.com/benchristel/mdsite"
+        ><strong><code>mdsite</code></strong></a
+      >.
+    </div>
+  </body>
 </html>
