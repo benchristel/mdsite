@@ -58,7 +58,7 @@ function readTemplateFile(templateFilePath) {
 function order(args) {
     return __awaiter(this, void 0, void 0, function* () {
         const { inputDir } = args;
-        const input = yield listDeep(inputDir);
+        const input = yield readFilesFromInputDirectory(inputDir);
         const output = buildProject(input, "");
         const orderFiles = Object.entries(output)
             .filter(([path]) => isOrderFile(path))

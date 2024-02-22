@@ -52,7 +52,7 @@ async function readTemplateFile(templateFilePath: string) {
 async function order(args: OrderArgs) {
   const { inputDir } = args;
 
-  const input = await listDeep(inputDir);
+  const input = await readFilesFromInputDirectory(inputDir);
   const output = buildProject(input, "");
   const orderFiles = Object.entries(output)
     .filter(([path]) => isOrderFile(path))
