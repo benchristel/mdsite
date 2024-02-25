@@ -1,5 +1,5 @@
-import { macros, getTokens } from "./parser.js";
 import { curry } from "@benchristel/taste";
+import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
 import { title as getTitle } from "../title.js";
 import { htmlToc } from "../toc.js";

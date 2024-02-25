@@ -1,17 +1,11 @@
-import { macros, getTokens } from "./parser.js";
 import { curry } from "@benchristel/taste";
-import { ProjectGlobalInfo } from "../project-global-info.js";
+import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
 import { title as getTitle } from "../title.js";
 import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
-
-export type EvaluationContext = {
-  outputPath: string;
-  content: string;
-  globalInfo: ProjectGlobalInfo;
-};
+import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
 
 export const expandAll = curry(
   (context: EvaluationContext, htmlTemplate: string): string => {
@@ -26,15 +20,11 @@ export function evaluate(
   return (macroStr) => compileMacro(macroStr)(context);
 }
 
-type Macro = (context: EvaluationContext) => string;
-
 function compileMacro(macroStr: string): Macro {
   const [name, ...args] = getTokens(macroStr);
   const ctor = macroConstructors[name] ?? UndefinedMacro;
   return ctor(macroStr, args);
 }
-
-type MacroConstructor = (macroStr: string, args: string[]) => Macro;
 
 const macroConstructors: Record<string, MacroConstructor> = {
   content,
