@@ -11,11 +11,17 @@ import { ensureTrailingSlash } from "../lib/paths.js";
 export function sortHtmlFiles(files: ProjectFileSet): Array<string> {
   return Object.values(files)
     .filter((f): f is HtmlFile => f.type === "html")
-    .sort(byOrderTxtRank(files))
-    .map((f) => f.outputPath);
+    .map(
+      (f) => [f, orderTxtRank(f, files)] as [HtmlFile, Array<string | number>]
+    )
+    .sort(([_, rankA], [__, rankB]) => byRank(rankA, rankB))
+    .map(([f]) => f.outputPath);
 }
 
-function orderTxtRank(f: HtmlFile, files: ProjectFileSet) {
+function orderTxtRank(
+  f: HtmlFile,
+  files: ProjectFileSet
+): Array<string | number> {
   let d = f.outputPath;
 
   let rank: Array<string | number> = [];
@@ -23,19 +29,13 @@ function orderTxtRank(f: HtmlFile, files: ProjectFileSet) {
     let filename = basename(d);
     d = dirname(d);
 
-    const orderFile = files[join(d, "order.txt")];
-    const orderFileIndex =
-      orderFile?.type === "order"
-        ? orderFile.filenames.indexOf(filename)
-        : Infinity;
-
     // index.html files should come before any of their siblings,
     // so we "promote" them to the top.
     const indexPromotion = filename === "index.html" ? "index" : "not-index";
 
     rank = [
       indexPromotion,
-      orderFileIndex,
+      orderFileIndex(d, filename, files),
       titleForOutputPath(join(d, filename), files),
       filename,
       ...rank,
@@ -43,6 +43,31 @@ function orderTxtRank(f: HtmlFile, files: ProjectFileSet) {
   } while (d !== "/");
 
   return rank;
+}
+
+function orderFileIndex(dir: string, filename: string, files: ProjectFileSet) {
+  const orderFile = files[join(dir, "order.txt")];
+  const orderFileIndex =
+    orderFile?.type === "order"
+      ? orderFile.filenames.indexOf(filename)
+      : Infinity;
+
+  if (orderFileIndex === -1) {
+    return Infinity;
+  } else {
+    return orderFileIndex;
+  }
+}
+
+function byRank(
+  rankA: Array<string | number>,
+  rankB: Array<string | number>
+): -1 | 0 | 1 {
+  for (let i = 0; i < rankA.length && i < rankB.length; i++) {
+    if (rankA[i] < rankB[i]) return -1;
+    if (rankA[i] > rankB[i]) return 1;
+  }
+  return 0;
 }
 
 test("orderTxtRank", {
@@ -96,6 +121,17 @@ test("orderTxtRank", {
     const rank = orderTxtRank(files["/foo.html"], files);
 
     expect(rank, equals, ["not-index", 1, "Foo", "foo.html"]);
+  },
+
+  "gives a file not listed in order.txt an index of Infinity"() {
+    const files = {
+      "/order.txt": OrderFile("/order.txt", ""),
+      "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
+    };
+
+    const rank = orderTxtRank(files["/foo.html"], files);
+
+    expect(rank, equals, ["not-index", Infinity, "Foo", "foo.html"]);
   },
 
   "ranks files by parent directory first"() {
