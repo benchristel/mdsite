@@ -1,28 +1,21 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>A Hello World Site</title>
-		<link rel="stylesheet" href="../assets/style.css">
-		<link rel="stylesheet" href="../assets/syntax-highlighting.css">
-	</head>
-	<body>
-		<nav class="navbar">
-			<div>
-				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
-			</div>
-			<div>
-				<a href="custom-index-page.html" class="mdsite-next-link">Next</a>
-			</div>
-		</nav>
+  <head>
+    <title>A Hello World Site</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+    <link rel="stylesheet" href="../assets/syntax-highlighting.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div><a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a></div>
+      <div><a href="custom-index-page.html" class="mdsite-next-link">Next</a></div>
+    </nav>
 
-		<div class="flex-row main">
-			<nav class="sidebar">
-				<ul><li><a href="../installation.html">Installation</a></li><li><a href="index.html">Tutorials</a><ul><li class="mdsite-current-file"><a href="hello-world.html">A Hello World Site</a></li><li><a href="custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="../explanations/index.html">Explanations</a><ul><li><a href="../explanations/how-it-works.html">How mdsite Works</a></li></ul></li><li><a href="../reference/index.html">Reference</a><ul><li><a href="../reference/cli.html">Command-Line Interface</a></li><li><a href="../reference/macros.html">List of Macros</a></li></ul></li></ul>
-			</nav>
-			<div class="page">
-				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Tutorials</a></nav>
-				<article>
-					<h1 id="a-hello-world-site">A Hello World Site</h1>
+    <div class="flex-row main">
+      <nav class="sidebar"><ul><li><a href="../installation.html">Installation</a></li><li><a href="index.html">Tutorials</a><ul><li class="mdsite-current-file"><a href="hello-world.html">A Hello World Site</a></li><li><a href="custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="../explanations/index.html">Explanations</a><ul><li><a href="../explanations/how-it-works.html">How mdsite Works</a></li></ul></li><li><a href="../reference/index.html">Reference</a><ul><li><a href="../reference/cli.html">Command-Line Interface</a></li><li><a href="../reference/macros.html">List of Macros</a></li></ul></li></ul></nav>
+      <div class="page">
+        <nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Tutorials</a></nav>
+        <article><h1 id="a-hello-world-site">A Hello World Site</h1>
 <p>This tutorial assumes you&#39;ve <a href="../installation.html">installed mdsite</a>.</p>
 <h2 id="step-1-create-a-directory-for-your-project">Step 1: Create a directory for your project</h2>
 <pre><code class="hljs language-bash"><span class="hljs-built_in">cd</span> ~/Desktop
@@ -51,21 +44,19 @@ hello world page.</p>
 <h2 id="what-just-happened">What Just Happened?</h2>
 <p>By default, <code>mdsite</code> reads Markdown files from the <code>src</code> directory and generates HTML in a <code>docs</code> directory.</p>
 <p>In this tutorial, we created a single Markdown file <code>src/hello.md</code> with no mdsite-specific formatting. <code>mdsite</code> built us a small but complete website, including an index page with a link to our <code>hello</code> page.</p>
-<p>This demonstrates the power of <code>mdsite</code> to produce usable output with zero configuration. However, we&#39;ve just scratched the surface of what <code>mdsite</code> can do. In future tutorials, we&#39;ll see how to theme our site with custom templates and CSS. We&#39;ll also learn how to add tables of contents and breadcrumbs like the ones on this page.</p>
-				</article>
-			</div>
-		</div>
+<p>This demonstrates the power of <code>mdsite</code> to produce usable output with zero configuration. However, we&#39;ve just scratched the surface of what <code>mdsite</code> can do. In future tutorials, we&#39;ll see how to theme our site with custom templates and CSS. We&#39;ll also learn how to add tables of contents and breadcrumbs like the ones on this page.</p></article>
+      </div>
+    </div>
 
-		<nav class="navbar">
-			<div>
-				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
-			</div>
-			<div>
-				<a href="custom-index-page.html" class="mdsite-next-link">Next</a>
-			</div>
-		</nav>
-		<div class="credits">
-			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
-		</div>
-	</body>
+    <nav class="navbar">
+      <div><a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a></div>
+      <div><a href="custom-index-page.html" class="mdsite-next-link">Next</a></div>
+    </nav>
+    <div class="credits">
+      <a href="https://github.com/benchristel">Ben Christel</a> made this with
+      <a href="https://github.com/benchristel/mdsite"
+        ><strong><code>mdsite</code></strong></a
+      >.
+    </div>
+  </body>
 </html>

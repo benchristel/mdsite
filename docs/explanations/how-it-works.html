@@ -1,28 +1,21 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>How mdsite Works</title>
-		<link rel="stylesheet" href="../assets/style.css">
-		<link rel="stylesheet" href="../assets/syntax-highlighting.css">
-	</head>
-	<body>
-		<nav class="navbar">
-			<div>
-				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
-			</div>
-			<div>
-				<a href="../reference/index.html" class="mdsite-next-link">Next</a>
-			</div>
-		</nav>
+  <head>
+    <title>How mdsite Works</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+    <link rel="stylesheet" href="../assets/syntax-highlighting.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div><a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a></div>
+      <div><a href="../reference/index.html" class="mdsite-next-link">Next</a></div>
+    </nav>
 
-		<div class="flex-row main">
-			<nav class="sidebar">
-				<ul><li><a href="../installation.html">Installation</a></li><li><a href="../tutorials/index.html">Tutorials</a><ul><li><a href="../tutorials/hello-world.html">A Hello World Site</a></li><li><a href="../tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="index.html">Explanations</a><ul><li class="mdsite-current-file"><a href="how-it-works.html">How mdsite Works</a></li></ul></li><li><a href="../reference/index.html">Reference</a><ul><li><a href="../reference/cli.html">Command-Line Interface</a></li><li><a href="../reference/macros.html">List of Macros</a></li></ul></li></ul>
-			</nav>
-			<div class="page">
-				<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Explanations</a></nav>
-				<article>
-					<h1 id="how-mdsite-works">How <code>mdsite</code> Works</h1>
+    <div class="flex-row main">
+      <nav class="sidebar"><ul><li><a href="../installation.html">Installation</a></li><li><a href="../tutorials/index.html">Tutorials</a><ul><li><a href="../tutorials/hello-world.html">A Hello World Site</a></li><li><a href="../tutorials/custom-index-page.html">A Custom Index Page</a></li></ul></li><li><a href="index.html">Explanations</a><ul><li class="mdsite-current-file"><a href="how-it-works.html">How mdsite Works</a></li></ul></li><li><a href="../reference/index.html">Reference</a><ul><li><a href="../reference/cli.html">Command-Line Interface</a></li><li><a href="../reference/macros.html">List of Macros</a></li></ul></li></ul></nav>
+      <div class="page">
+        <nav aria-label="Breadcrumb" class="mdsite-breadcrumb"><a href="../index.html">@benchristel/mdsite</a><a href="index.html">Explanations</a></nav>
+        <article><h1 id="how-mdsite-works">How <code>mdsite</code> Works</h1>
 <p><code>mdsite</code> can be thought of as a recursive copy command (like <code>cp -r</code>) that does
 some processing of the file contents as they&#39;re copied from <code>INPUTDIR</code> to <code>OUTPUTDIR</code>.
 Most file types (<code>.js</code>, <code>.css</code>, <code>.jpg</code>, <code>.png</code>, etc.) are simply copied with no processing.</p>
@@ -100,21 +93,19 @@ files/directories; <code>order.txt</code> can&#39;t reach into subdirectories. A
 files.</li>
 </ul>
 <p>Running <code>mdsite order</code> won&#39;t mess with the filenames you&#39;ve listed
-manually, and won&#39;t affect the overall order of the pages on your site.</p>
-				</article>
-			</div>
-		</div>
+manually, and won&#39;t affect the overall order of the pages on your site.</p></article>
+      </div>
+    </div>
 
-		<nav class="navbar">
-			<div>
-				<a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a>
-			</div>
-			<div>
-				<a href="../reference/index.html" class="mdsite-next-link">Next</a>
-			</div>
-		</nav>
-		<div class="credits">
-			<a href="https://github.com/benchristel">Ben Christel</a> made this with <a href="https://github.com/benchristel/mdsite"><strong><code>mdsite</code></strong></a>.
-		</div>
-	</body>
+    <nav class="navbar">
+      <div><a href="../index.html">Home</a><a href="index.html">Up</a><a href="index.html" class="mdsite-prev-link">Prev</a></div>
+      <div><a href="../reference/index.html" class="mdsite-next-link">Next</a></div>
+    </nav>
+    <div class="credits">
+      <a href="https://github.com/benchristel">Ben Christel</a> made this with
+      <a href="https://github.com/benchristel/mdsite"
+        ><strong><code>mdsite</code></strong></a
+      >.
+    </div>
+  </body>
 </html>
