@@ -9,23 +9,23 @@ import { pass, pipe } from "../lib/functional.js";
 export function MarkdownFile(path, markdown) {
     const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
     const htmlPath = removeSuffix(path, ".md") + ".html";
-    return HtmlFile(htmlPath, rawHtml);
+    return new HtmlFile(htmlPath, rawHtml);
 }
-export function HtmlFile(outputPath, rawHtml) {
-    return {
-        type: "html",
-        rawHtml,
-        title: title(outputPath, rawHtml),
-        outputPath,
-        render,
-    };
-    function render(globalInfo) {
-        const renderedHtml = pass(globalInfo.template, pipe(expandAll({
-            content: rawHtml,
-            globalInfo,
-            outputPath,
-        }), relativizeLinks(outputPath)));
-        return [outputPath, buffer(renderedHtml)];
+export class HtmlFile {
+    constructor(outputPath, rawHtml) {
+        this.type = "html";
+        this.render = (globalInfo) => {
+            const { rawHtml: content, outputPath } = this;
+            const renderedHtml = pass(globalInfo.template, pipe(expandAll({
+                content,
+                globalInfo,
+                outputPath,
+            }), relativizeLinks(this.outputPath)));
+            return [this.outputPath, buffer(renderedHtml)];
+        };
+        this.rawHtml = rawHtml;
+        this.title = title(outputPath, rawHtml);
+        this.outputPath = outputPath;
     }
 }
 const relativizeLinks = curry((fromPath, html) => {

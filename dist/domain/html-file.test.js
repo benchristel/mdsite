@@ -4,22 +4,22 @@ import { dummyProjectGlobalInfo } from "./project-global-info";
 import { trimMargin } from "../testing/formatting";
 test("HtmlFile", {
     "replaces absolute hrefs with relative ones"() {
-        const file = HtmlFile("/foo/bar.html", `<a href="/baz/kludge.html"></a>`);
+        const file = new HtmlFile("/foo/bar.html", `<a href="/baz/kludge.html"></a>`);
         const [_, rendered] = file.render(Object.assign(Object.assign({}, dummyProjectGlobalInfo), { template: "{{content}}" }));
         expect(String(rendered), is, `<a href="../baz/kludge.html"></a>`);
     },
     "relativizes multiple hrefs"() {
-        const file = HtmlFile("/foo/bar.html", `<a href="/a/b.html"></a><a href="/foo/d.html"></a>`);
+        const file = new HtmlFile("/foo/bar.html", `<a href="/a/b.html"></a><a href="/foo/d.html"></a>`);
         const [_, rendered] = file.render(Object.assign(Object.assign({}, dummyProjectGlobalInfo), { template: "{{content}}" }));
         expect(String(rendered), is, `<a href="../a/b.html"></a><a href="d.html"></a>`);
     },
     "relativizes links in the template"() {
-        const file = HtmlFile("/foo/bar.html", "");
+        const file = new HtmlFile("/foo/bar.html", "");
         const [_, rendered] = file.render(Object.assign(Object.assign({}, dummyProjectGlobalInfo), { template: `<link rel="stylesheet" href="/assets/style.css">` }));
         expect(String(rendered), is, `<link rel="stylesheet" href="../assets/style.css">`);
     },
     "relativizes script src attributes"() {
-        const file = HtmlFile("/foo/bar.html", "");
+        const file = new HtmlFile("/foo/bar.html", "");
         const [_, rendered] = file.render(Object.assign(Object.assign({}, dummyProjectGlobalInfo), { template: `<script type="module" src="/js/main.js"></script>` }));
         expect(String(rendered), is, `<script type="module" src="../js/main.js"></script>`);
     },

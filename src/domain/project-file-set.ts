@@ -10,7 +10,7 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   if (path.endsWith(".md")) {
     return MarkdownFile(path, contents.toString());
   } else if (path.endsWith(".html")) {
-    return HtmlFile(path, contents.toString());
+    return new HtmlFile(path, contents.toString());
   } else if (path.endsWith("/order.txt")) {
     return OrderFile(path, contents.toString());
   } else {

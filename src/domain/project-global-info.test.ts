@@ -15,7 +15,7 @@ test("ProjectGlobalInfo", {
 
   "given one file"() {
     const files = {
-      "/a.html": HtmlFile("/a.html", ""),
+      "/a.html": new HtmlFile("/a.html", ""),
     };
     expect(ProjectGlobalInfo(files, ""), equals, {
       orderedLinkables: [{ path: "/a.html", title: "a.html" }],
@@ -35,10 +35,10 @@ test("ProjectGlobalInfo", {
 
   "given several files"() {
     const files = {
-      "/b.html": HtmlFile("/b.html", ""),
-      "/d.html": HtmlFile("/d.html", ""),
-      "/c.html": HtmlFile("/c.html", ""),
-      "/a.html": HtmlFile("/a.html", ""),
+      "/b.html": new HtmlFile("/b.html", ""),
+      "/d.html": new HtmlFile("/d.html", ""),
+      "/c.html": new HtmlFile("/c.html", ""),
+      "/a.html": new HtmlFile("/a.html", ""),
     };
     expect(ProjectGlobalInfo(files, ""), equals, {
       orderedLinkables: [

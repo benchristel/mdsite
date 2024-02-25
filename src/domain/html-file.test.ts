@@ -5,7 +5,10 @@ import { trimMargin } from "../testing/formatting";
 
 test("HtmlFile", {
   "replaces absolute hrefs with relative ones"() {
-    const file = HtmlFile("/foo/bar.html", `<a href="/baz/kludge.html"></a>`);
+    const file = new HtmlFile(
+      "/foo/bar.html",
+      `<a href="/baz/kludge.html"></a>`
+    );
     const [_, rendered] = file.render({
       ...dummyProjectGlobalInfo,
       template: "{{content}}",
@@ -14,7 +17,7 @@ test("HtmlFile", {
   },
 
   "relativizes multiple hrefs"() {
-    const file = HtmlFile(
+    const file = new HtmlFile(
       "/foo/bar.html",
       `<a href="/a/b.html"></a><a href="/foo/d.html"></a>`
     );
@@ -30,7 +33,7 @@ test("HtmlFile", {
   },
 
   "relativizes links in the template"() {
-    const file = HtmlFile("/foo/bar.html", "");
+    const file = new HtmlFile("/foo/bar.html", "");
     const [_, rendered] = file.render({
       ...dummyProjectGlobalInfo,
       template: `<link rel="stylesheet" href="/assets/style.css">`,
@@ -43,7 +46,7 @@ test("HtmlFile", {
   },
 
   "relativizes script src attributes"() {
-    const file = HtmlFile("/foo/bar.html", "");
+    const file = new HtmlFile("/foo/bar.html", "");
     const [_, rendered] = file.render({
       ...dummyProjectGlobalInfo,
       template: `<script type="module" src="/js/main.js"></script>`,

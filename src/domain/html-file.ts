@@ -8,43 +8,39 @@ import { ProjectGlobalInfo } from "./project-global-info.js";
 import { expandAll } from "./macros/index.js";
 import { pass, pipe } from "../lib/functional.js";
 
-export type HtmlFile = {
-  type: "html";
-  rawHtml: string;
-  title: string;
-  outputPath: string;
-  render: (globalInfo: ProjectGlobalInfo) => [string, Buffer];
-};
-
 export function MarkdownFile(path: string, markdown: string): HtmlFile {
   const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
   const htmlPath = removeSuffix(path, ".md") + ".html";
-  return HtmlFile(htmlPath, rawHtml);
+  return new HtmlFile(htmlPath, rawHtml);
 }
 
-export function HtmlFile(outputPath: string, rawHtml: string): HtmlFile {
-  return {
-    type: "html",
-    rawHtml,
-    title: title(outputPath, rawHtml),
-    outputPath,
-    render,
-  };
+export class HtmlFile implements HtmlFile {
+  readonly type = "html";
+  readonly rawHtml: string;
+  readonly title: string;
+  readonly outputPath: string;
 
-  function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
+  constructor(outputPath: string, rawHtml: string) {
+    this.rawHtml = rawHtml;
+    this.title = title(outputPath, rawHtml);
+    this.outputPath = outputPath;
+  }
+
+  render = (globalInfo: ProjectGlobalInfo): [string, Buffer] => {
+    const { rawHtml: content, outputPath } = this;
     const renderedHtml = pass(
       globalInfo.template,
       pipe(
         expandAll({
-          content: rawHtml,
+          content,
           globalInfo,
           outputPath,
         }),
-        relativizeLinks(outputPath)
+        relativizeLinks(this.outputPath)
       )
     );
-    return [outputPath, buffer(renderedHtml)];
-  }
+    return [this.outputPath, buffer(renderedHtml)];
+  };
 }
 
 const relativizeLinks = curry((fromPath: string, html: string): string => {
