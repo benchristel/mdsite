@@ -29,6 +29,17 @@ async function build(args: BuildArgs) {
     .then((output) => writeDeep(args.outputDir, output));
 }
 
+async function order(args: OrderArgs) {
+  const { inputDir } = args;
+
+  const input = await readFilesFromInputDirectory(inputDir);
+  const output = buildProject(input, "");
+  const orderFiles = Object.entries(output)
+    .filter(([path]) => isOrderFile(path))
+    .reduce(intoObject, {});
+  await writeDeep(inputDir, orderFiles);
+}
+
 async function readFilesFromInputDirectory(inputDir: string) {
   return listDeep(inputDir).catch(() => {
     throw Error(
@@ -47,15 +58,4 @@ async function readTemplateFile(templateFilePath: string) {
       return defaultTemplate;
     })
     .then(String);
-}
-
-async function order(args: OrderArgs) {
-  const { inputDir } = args;
-
-  const input = await readFilesFromInputDirectory(inputDir);
-  const output = buildProject(input, "");
-  const orderFiles = Object.entries(output)
-    .filter(([path]) => isOrderFile(path))
-    .reduce(intoObject, {});
-  await writeDeep(inputDir, orderFiles);
 }

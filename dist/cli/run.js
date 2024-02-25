@@ -37,6 +37,17 @@ function build(args) {
             .then((output) => writeDeep(args.outputDir, output));
     });
 }
+function order(args) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { inputDir } = args;
+        const input = yield readFilesFromInputDirectory(inputDir);
+        const output = buildProject(input, "");
+        const orderFiles = Object.entries(output)
+            .filter(([path]) => isOrderFile(path))
+            .reduce(intoObject, {});
+        yield writeDeep(inputDir, orderFiles);
+    });
+}
 function readFilesFromInputDirectory(inputDir) {
     return __awaiter(this, void 0, void 0, function* () {
         return listDeep(inputDir).catch(() => {
@@ -53,16 +64,5 @@ function readTemplateFile(templateFilePath) {
             return defaultTemplate;
         })
             .then(String);
-    });
-}
-function order(args) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { inputDir } = args;
-        const input = yield readFilesFromInputDirectory(inputDir);
-        const output = buildProject(input, "");
-        const orderFiles = Object.entries(output)
-            .filter(([path]) => isOrderFile(path))
-            .reduce(intoObject, {});
-        yield writeDeep(inputDir, orderFiles);
     });
 }

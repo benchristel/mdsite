@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/marked": "^4.0.8",
     "@types/node": "^18.15.11",
+    "glob": "^10.3.10",
     "husky": "^8.0.3",
     "prettier": "^2.8.7",
     "typescript": "^5.0.4"
