@@ -1,5 +1,4 @@
 import { test, expect, equals, which } from "@benchristel/taste";
-export { buildProject } from "./project.js";
 import { isAnything } from "../testing/matchers.js";
 import { contains } from "../lib/strings.js";
 import { buffer } from "../lib/buffer.js";

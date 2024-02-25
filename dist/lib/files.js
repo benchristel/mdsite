@@ -7,99 +7,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export { listDeep, writeDeep } from "./files.impl.js";
-import { listDeep, writeDeep } from "./files.impl.js";
-import { TmpDir } from "../testing/tmp-dir.js";
-import { test, expect, equals, is } from "@benchristel/taste";
-import { valuesToStrings } from "./objects.js";
-import { buffer } from "./buffer.js";
-{
-    listDeep;
-    writeDeep;
+import { join, relative, dirname } from "path";
+import * as fs from "fs/promises";
+export function listDeep(dir, root = dir) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let fileSet = {};
+        const entries = yield fs.readdir(dir, { withFileTypes: true });
+        const promises = entries.map((entry) => {
+            const path = join(dir, entry.name);
+            const pathFromRoot = "/" + relative(root, path);
+            if (entry.isFile()) {
+                return fs.readFile(path).then((contents) => {
+                    fileSet[pathFromRoot] = contents;
+                });
+            }
+            else if (entry.isDirectory()) {
+                return listDeep(path, root).then((listing) => {
+                    fileSet = Object.assign(Object.assign({}, fileSet), listing);
+                });
+            }
+            else {
+                return Promise.resolve();
+            }
+        });
+        yield Promise.all(promises);
+        return fileSet;
+    });
 }
-test("listDeep", {
-    "on an empty directory"() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmpDir = TmpDir();
-            const listing = yield tmpDir.path().then(listDeep);
-            expect(listing, equals, {});
+export function writeDeep(dir, fileSet) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const promises = Object.entries(fileSet).map(([path, contents]) => {
+            return fs
+                .mkdir(join(dir, dirname(path)), { recursive: true })
+                .then(() => fs.writeFile(join(dir, path), contents));
         });
-    },
-    "on a dirctory with one file"() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmpDir = TmpDir();
-            yield tmpDir.write("/foo.txt", "Hello");
-            const listing = yield tmpDir.path().then(listDeep).then(valuesToStrings);
-            expect(listing, equals, {
-                "/foo.txt": "Hello",
-            });
-        });
-    },
-    "on multiple files"() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmpDir = TmpDir();
-            yield tmpDir.write("/foo.txt", "this is foo");
-            yield tmpDir.write("/bar.txt", "this is bar");
-            yield tmpDir.write("/baz.txt", "this is baz");
-            const listing = yield tmpDir.path().then(listDeep).then(valuesToStrings);
-            expect(listing, equals, {
-                "/foo.txt": "this is foo",
-                "/bar.txt": "this is bar",
-                "/baz.txt": "this is baz",
-            });
-        });
-    },
-    "on subdirectories"() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmpDir = TmpDir();
-            yield tmpDir.write("/foo/one.txt", "1");
-            yield tmpDir.write("/bar/baz/two.txt", "2");
-            yield tmpDir.write("/three.txt", "3");
-            const listing = yield tmpDir.path().then(listDeep).then(valuesToStrings);
-            expect(listing, equals, {
-                "/foo/one.txt": "1",
-                "/bar/baz/two.txt": "2",
-                "/three.txt": "3",
-            });
-        });
-    },
-    "on subdirectories with multiple files"() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const tmpDir = TmpDir();
-            yield tmpDir.write("/food/recipes/chili.txt", "chili");
-            yield tmpDir.write("/food/recipes/lentils.txt", "lentils");
-            yield tmpDir.write("/food/index.txt", "food index");
-            yield tmpDir.write("/food/restaurants/darbar.txt", "darbar");
-            yield tmpDir.write("/food/restaurants/da.txt", "da");
-            yield tmpDir.write("/index.txt", "top index");
-            const listing = yield tmpDir.path().then(listDeep).then(valuesToStrings);
-            expect(listing, equals, {
-                "/food/recipes/chili.txt": "chili",
-                "/food/recipes/lentils.txt": "lentils",
-                "/food/index.txt": "food index",
-                "/food/restaurants/da.txt": "da",
-                "/food/restaurants/darbar.txt": "darbar",
-                "/index.txt": "top index",
-            });
-        });
-    },
-});
-test("writeDeep", {
-    "writes a fileset to disk"() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const fileSet = {
-                "/food/recipes/chili.txt": buffer("chili"),
-                "/food/recipes/lentils.txt": buffer("lentils"),
-                "/food/index.txt": buffer("food index"),
-                "/index.txt": buffer("top index"),
-            };
-            const tmpDir = TmpDir();
-            const path = yield tmpDir.path();
-            yield writeDeep(path, fileSet);
-            expect(yield tmpDir.read("index.txt"), is, "top index");
-            expect(yield tmpDir.read("food/index.txt"), is, "food index");
-            expect(yield tmpDir.read("food/recipes/chili.txt"), is, "chili");
-            expect(yield tmpDir.read("food/recipes/lentils.txt"), is, "lentils");
-        });
-    },
-});
+        yield Promise.all(promises);
+    });
+}
