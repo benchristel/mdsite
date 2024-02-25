@@ -1,57 +1,26 @@
-export { buildProject } from "./project.impl.js";
-import { buildProject } from "./project.impl.js";
-import { test, expect, equals, which } from "@benchristel/taste";
-import { trimMargin } from "../testing/formatting.js";
-import { isAnything } from "../testing/matchers.js";
-import { contains } from "../lib/strings.js";
-import { buffer } from "../lib/buffer.js";
-import { valuesToStrings } from "../lib/objects.js";
+import { FileSet } from "../lib/files.js";
+import { mapEntries } from "../lib/objects.js";
+import { pathAndBufferToProjectFile } from "./project-file-set.js";
+import { addSyntheticFiles } from "./synthetic-files.js";
+import { ProjectGlobalInfo } from "./project-global-info.js";
 
-test("buildProject", {
-  "converts a markdown file to an HTML file"() {
-    const input = {
-      "/index.md": buffer("# Hello"),
-    };
+export function buildProject(files: FileSet, template: string): FileSet {
+  // Step 1: We create "synthetic files" that aren't in the source tree, but
+  // appear in or affect the output. These currently include index.html files,
+  // and in the future might include order.txt files as well.
+  files = addSyntheticFiles(files);
 
-    const template = "- {{content}} -";
+  // Step 2: Each file figures out what it can about itself using only
+  // information local to that file.
+  const projectFiles = mapEntries(files, pathAndBufferToProjectFile);
 
-    const expected = {
-      "/index.html": `- <h1 id="hello">Hello</h1> -`,
-      "/order.txt": which(isAnything),
-    };
+  // Step 3: We synthesize the local information to get global information
+  // about the project: e.g. what order the pages go in.
+  const globalInfo = ProjectGlobalInfo(projectFiles, template);
 
-    expect(valuesToStrings(buildProject(input, template)), equals, expected);
-  },
-
-  "does nothing to a .txt file"() {
-    const input = {
-      "/foo.txt": buffer("# Hello"),
-    };
-
-    const expected = {
-      "/foo.txt": "# Hello",
-      "/index.html": which(isAnything),
-      "/order.txt": which(isAnything),
-    };
-
-    expect(valuesToStrings(buildProject(input, "")), equals, expected);
-  },
-
-  "creates a default index.html file with a table of contents"() {
-    const input = {
-      "/foo.md": buffer("# This Is Foo"),
-    };
-
-    const expected = {
-      "/foo.html": which(contains("This Is Foo")),
-      "/index.html": which(contains(`<a href="foo.html">This Is Foo</a>`)),
-      "/order.txt": which(isAnything),
-    };
-
-    expect(
-      valuesToStrings(buildProject(input, "{{content}}")),
-      equals,
-      expected
-    );
-  },
-});
+  // Step 4: We feed that global information about the project back into each
+  // file, enabling it to render its FINAL FORM!
+  return mapEntries(projectFiles, ([_, projectFile]) => {
+    return projectFile.render(globalInfo);
+  });
+}

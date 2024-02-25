@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { buildProject } from "../domain/project.js";
+import { buildProject } from "../domain/project.test.js";
 import { listDeep, writeDeep } from "../lib/files.js";
 import { parseArgs } from "./args.js";
 import { intoObject } from "../lib/objects.js";

@@ -1,4 +1,4 @@
-import { buildProject } from "../domain/project.js";
+import { buildProject } from "../domain/project.test.js";
 import { listDeep, writeDeep } from "../lib/files.js";
 import { parseArgs, BuildArgs, OrderArgs } from "./args.js";
 import { intoObject } from "../lib/objects.js";
