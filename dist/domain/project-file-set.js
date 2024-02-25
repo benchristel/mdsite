@@ -1,6 +1,7 @@
 import { OpaqueFile } from "./opaque-file.js";
-import { HtmlFile, MarkdownFile } from "./html-file.js";
+import { HtmlFile } from "./html-file.js";
 import { OrderFile } from "./order-file.js";
+import { MarkdownFile } from "./markdown-file.js";
 export function ProjectFile(path, contents) {
     if (path.endsWith(".md")) {
         return MarkdownFile(path, contents.toString());

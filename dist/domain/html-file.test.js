@@ -1,5 +1,6 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { HtmlFile, MarkdownFile, replaceMarkdownHrefs } from "./html-file";
+import { HtmlFile } from "./html-file";
+import { MarkdownFile, replaceMarkdownHrefs } from "./markdown-file";
 import { dummyProjectGlobalInfo } from "./project-global-info";
 import { trimMargin } from "../testing/formatting";
 test("HtmlFile", {
