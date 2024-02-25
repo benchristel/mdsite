@@ -16,19 +16,33 @@ export function sortHtmlFiles(files: ProjectFileSet): Array<string> {
 }
 
 function orderTxtRank(f: HtmlFile, files: ProjectFileSet) {
-  const filename = basename(f.outputPath);
+  let d = f.outputPath;
 
-  const orderFile = files[join(dirname(f.outputPath), "order.txt")];
-  const orderFileIndex =
-    orderFile?.type === "order"
-      ? orderFile.filenames.indexOf(filename)
-      : Infinity;
+  let rank: Array<string | number> = [];
+  do {
+    let filename = basename(d);
+    d = dirname(d);
 
-  // index.html files should come before any of their siblings,
-  // so we "promote" them to the top.
-  const indexPromotion = filename === "index.html" ? "index" : "not-index";
+    const orderFile = files[join(d, "order.txt")];
+    const orderFileIndex =
+      orderFile?.type === "order"
+        ? orderFile.filenames.indexOf(filename)
+        : Infinity;
 
-  return [indexPromotion, orderFileIndex, f.title, filename];
+    // index.html files should come before any of their siblings,
+    // so we "promote" them to the top.
+    const indexPromotion = filename === "index.html" ? "index" : "not-index";
+
+    rank = [
+      indexPromotion,
+      orderFileIndex,
+      titleForOutputPath(join(d, filename), files),
+      filename,
+      ...rank,
+    ];
+  } while (d !== "/");
+
+  return rank;
 }
 
 test("orderTxtRank", {
@@ -83,6 +97,25 @@ test("orderTxtRank", {
 
     expect(rank, equals, ["not-index", 1, "Foo", "foo.html"]);
   },
+
+  "ranks files by parent directory first"() {
+    const files = {
+      "/a/foo.html": HtmlFile("/a/foo.html", "<h1>Foo</h1>"),
+    };
+
+    const rank = orderTxtRank(files["/a/foo.html"], files);
+
+    expect(rank, equals, [
+      "not-index",
+      Infinity,
+      "a",
+      "a",
+      "not-index",
+      Infinity,
+      "Foo",
+      "foo.html",
+    ]);
+  },
 });
 
 function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
@@ -122,23 +155,20 @@ function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
   };
 }
 
-function titleForOutputPath(
-  path: string,
-  files: ProjectFileSet
-): string | null {
+function titleForOutputPath(path: string, files: ProjectFileSet): string {
   const file = files[path] ?? files[join(path, "index.html")];
   switch (file?.type) {
     case "html":
       return file.title;
     default:
-      return null;
+      return basename(path);
   }
 }
 
 test("titleForOutputPath", {
-  "returns null when the requested path does not exist"() {
+  "returns the basename of the path string when the requested file does not exist"() {
     const files = {};
-    expect(titleForOutputPath("/foo.html", files), is, null);
+    expect(titleForOutputPath("/foo.html", files), is, "foo.html");
   },
 
   "returns the title of an HTML file with no <h1>"() {

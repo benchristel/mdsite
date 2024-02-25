@@ -12,15 +12,27 @@ export function sortHtmlFiles(files) {
         .map((f) => f.outputPath);
 }
 function orderTxtRank(f, files) {
-    const filename = basename(f.outputPath);
-    const orderFile = files[join(dirname(f.outputPath), "order.txt")];
-    const orderFileIndex = (orderFile === null || orderFile === void 0 ? void 0 : orderFile.type) === "order"
-        ? orderFile.filenames.indexOf(filename)
-        : Infinity;
-    // index.html files should come before any of their siblings,
-    // so we "promote" them to the top.
-    const indexPromotion = filename === "index.html" ? "index" : "not-index";
-    return [indexPromotion, orderFileIndex, f.title, filename];
+    let d = f.outputPath;
+    let rank = [];
+    do {
+        let filename = basename(d);
+        d = dirname(d);
+        const orderFile = files[join(d, "order.txt")];
+        const orderFileIndex = (orderFile === null || orderFile === void 0 ? void 0 : orderFile.type) === "order"
+            ? orderFile.filenames.indexOf(filename)
+            : Infinity;
+        // index.html files should come before any of their siblings,
+        // so we "promote" them to the top.
+        const indexPromotion = filename === "index.html" ? "index" : "not-index";
+        rank = [
+            indexPromotion,
+            orderFileIndex,
+            titleForOutputPath(join(d, filename), files),
+            filename,
+            ...rank,
+        ];
+    } while (d !== "/");
+    return rank;
 }
 test("orderTxtRank", {
     "is [index, Infinity, <title>, <filename>] given /index.html"() {
@@ -59,6 +71,22 @@ test("orderTxtRank", {
         };
         const rank = orderTxtRank(files["/foo.html"], files);
         expect(rank, equals, ["not-index", 1, "Foo", "foo.html"]);
+    },
+    "ranks files by parent directory first"() {
+        const files = {
+            "/a/foo.html": HtmlFile("/a/foo.html", "<h1>Foo</h1>"),
+        };
+        const rank = orderTxtRank(files["/a/foo.html"], files);
+        expect(rank, equals, [
+            "not-index",
+            Infinity,
+            "a",
+            "a",
+            "not-index",
+            Infinity,
+            "Foo",
+            "foo.html",
+        ]);
     },
 });
 function byOrderTxtRank(files) {
@@ -103,13 +131,13 @@ function titleForOutputPath(path, files) {
         case "html":
             return file.title;
         default:
-            return null;
+            return basename(path);
     }
 }
 test("titleForOutputPath", {
-    "returns null when the requested path does not exist"() {
+    "returns the basename of the path string when the requested file does not exist"() {
         const files = {};
-        expect(titleForOutputPath("/foo.html", files), is, null);
+        expect(titleForOutputPath("/foo.html", files), is, "foo.html");
     },
     "returns the title of an HTML file with no <h1>"() {
         const files = {
