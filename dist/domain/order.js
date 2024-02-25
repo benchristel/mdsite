@@ -36,12 +36,7 @@ function orderFileIndex(dir, filename, files) {
     const orderFileIndex = (orderFile === null || orderFile === void 0 ? void 0 : orderFile.type) === "order"
         ? orderFile.filenames.indexOf(filename)
         : Infinity;
-    if (orderFileIndex === -1) {
-        return Infinity;
-    }
-    else {
-        return orderFileIndex;
-    }
+    return orderFileIndex < 0 ? Infinity : orderFileIndex;
 }
 function byRank(rankA, rankB) {
     for (let i = 0; i < rankA.length && i < rankB.length; i++) {

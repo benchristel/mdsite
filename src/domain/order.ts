@@ -49,11 +49,7 @@ function orderFileIndex(dir: string, filename: string, files: ProjectFileSet) {
       ? orderFile.filenames.indexOf(filename)
       : Infinity;
 
-  if (orderFileIndex === -1) {
-    return Infinity;
-  } else {
-    return orderFileIndex;
-  }
+  return orderFileIndex < 0 ? Infinity : orderFileIndex;
 }
 
 function byRank(rankA: Rank, rankB: Rank): -1 | 0 | 1 {
