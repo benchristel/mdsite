@@ -18,11 +18,10 @@ function orderTxtRank(f, files) {
     do {
         let filename = basename(d);
         d = dirname(d);
-        // index.html files should come before any of their siblings,
-        // so we "promote" them to the top.
-        const indexPromotion = filename === "index.html" ? "index" : "not-index";
         rank = [
-            indexPromotion,
+            // index.html files should come before any of their siblings,
+            // so we "promote" them to the top.
+            indexPromotion(filename),
             orderFileIndex(d, filename, files),
             titleForOutputPath(join(d, filename), files),
             filename,
@@ -30,6 +29,9 @@ function orderTxtRank(f, files) {
         ];
     } while (d !== "/");
     return rank;
+}
+function indexPromotion(filename) {
+    return filename === "index.html" ? "index" : "not-index";
 }
 function orderFileIndex(dir, filename, files) {
     const orderFile = files[join(dir, "order.txt")];

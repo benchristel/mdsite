@@ -26,12 +26,10 @@ function orderTxtRank(f: HtmlFile, files: ProjectFileSet): Rank {
     let filename = basename(d);
     d = dirname(d);
 
-    // index.html files should come before any of their siblings,
-    // so we "promote" them to the top.
-    const indexPromotion = filename === "index.html" ? "index" : "not-index";
-
     rank = [
-      indexPromotion,
+      // index.html files should come before any of their siblings,
+      // so we "promote" them to the top.
+      indexPromotion(filename),
       orderFileIndex(d, filename, files),
       titleForOutputPath(join(d, filename), files),
       filename,
@@ -40,6 +38,10 @@ function orderTxtRank(f: HtmlFile, files: ProjectFileSet): Rank {
   } while (d !== "/");
 
   return rank;
+}
+
+function indexPromotion(filename: string): "index" | "not-index" {
+  return filename === "index.html" ? "index" : "not-index";
 }
 
 function orderFileIndex(dir: string, filename: string, files: ProjectFileSet) {
