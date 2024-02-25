@@ -1,5 +1,5 @@
-import { ProjectFileSet } from "./project-file-set.js";
-import { HtmlFile } from "./html-file.js";
+import { ProjectFileSet } from "./files/project-file-set.js";
+import { HtmlFile } from "./files/html-file.js";
 import { basename, dirname, join } from "path";
 
 type Rank = Array<string | number>;

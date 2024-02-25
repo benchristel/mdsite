@@ -1,6 +1,6 @@
 import { FileSet } from "../lib/files.js";
 import { mapEntries } from "../lib/objects.js";
-import { pathAndBufferToProjectFile } from "./project-file-set.js";
+import { pathAndBufferToProjectFile } from "./files/project-file-set.js";
 import { addSyntheticFiles } from "./synthetic-files.js";
 import { ProjectGlobalInfo } from "./project-global-info.js";
 

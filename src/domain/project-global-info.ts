@@ -1,5 +1,5 @@
 import { sortHtmlFiles } from "./order.js";
-import type { ProjectFile, ProjectFileSet } from "./project-file-set.js";
+import type { ProjectFile, ProjectFileSet } from "./files/project-file-set.js";
 
 export type ProjectGlobalInfo = {
   // orderedLinkables contains the information about each HTML page needed

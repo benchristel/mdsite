@@ -12,7 +12,7 @@ import { listDeep, writeDeep } from "../lib/files.js";
 import { parseArgs } from "./args.js";
 import { intoObject } from "../lib/objects.js";
 import { unreachable } from "../lib/unreachable.js";
-import { isOrderFile } from "../domain/order-file.js";
+import { isOrderFile } from "../domain/files/order-file.js";
 import { readFile } from "fs/promises";
 import { defaultTemplate } from "../policy/defaults.js";
 export function run(argv) {

@@ -1,6 +1,6 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { HtmlFile } from "./html-file.js";
-import { OrderFile } from "./order-file.js";
+import { HtmlFile } from "./files/html-file.js";
+import { OrderFile } from "./files/order-file.js";
 import { trimMargin } from "../testing/formatting.js";
 import { orderTxtRank, sortHtmlFiles, titleForOutputPath } from "./order.js";
 test("orderTxtRank", {

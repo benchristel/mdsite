@@ -1,5 +1,5 @@
-import { htmlFromMarkdown } from "../lib/markdown";
-import { removeSuffix } from "../lib/strings";
+import { htmlFromMarkdown } from "../../lib/markdown";
+import { removeSuffix } from "../../lib/strings";
 import { HtmlFile } from "./html-file";
 
 export function MarkdownFile(path: string, markdown: string): HtmlFile {

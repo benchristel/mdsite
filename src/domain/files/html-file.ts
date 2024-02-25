@@ -1,10 +1,10 @@
-import { buffer } from "../lib/buffer.js";
+import { buffer } from "../../lib/buffer.js";
 import { title } from "./title.js";
 import { curry } from "@benchristel/taste";
 import { dirname, relative } from "path";
-import { ProjectGlobalInfo } from "./project-global-info.js";
-import { expandAll } from "./macros/index.js";
-import { pass, pipe } from "../lib/functional.js";
+import type { ProjectGlobalInfo } from "../project-global-info.js";
+import { expandAll } from "../macros/index.js";
+import { pass, pipe } from "../../lib/functional.js";
 
 export class HtmlFile implements HtmlFile {
   readonly type = "html";

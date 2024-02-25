@@ -1,7 +1,7 @@
 import { test, expect, equals, which } from "@benchristel/taste";
 import { ProjectGlobalInfo, indexLinkables } from "./project-global-info";
 import { isAnything } from "../testing/matchers";
-import { HtmlFile } from "./html-file";
+import { HtmlFile } from "./files/html-file";
 
 test("ProjectGlobalInfo", {
   "is empty given no files"() {

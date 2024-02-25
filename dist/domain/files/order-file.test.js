@@ -1,6 +1,6 @@
 import { test, expect, equals, not } from "@benchristel/taste";
-import { trimMargin } from "../testing/formatting.js";
-import { OrderFile, isOrderFile } from "./files/order-file.js";
+import { trimMargin } from "../../testing/formatting.js";
+import { OrderFile, isOrderFile } from "./order-file.js";
 test("OrderFile", {
     "parses a blank file"() {
         const orderFile = OrderFile("/order.txt", "");

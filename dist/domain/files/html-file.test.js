@@ -1,8 +1,8 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { HtmlFile } from "./files/html-file";
+import { HtmlFile } from "./html-file";
 import { MarkdownFile, replaceMarkdownHrefs } from "./markdown-file";
-import { dummyProjectGlobalInfo } from "./project-global-info";
-import { trimMargin } from "../testing/formatting";
+import { dummyProjectGlobalInfo } from "../project-global-info";
+import { trimMargin } from "../../testing/formatting";
 test("HtmlFile", {
     "replaces absolute hrefs with relative ones"() {
         const file = new HtmlFile("/foo/bar.html", `<a href="/baz/kludge.html"></a>`);

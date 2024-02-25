@@ -1,5 +1,5 @@
 import { test, expect, equals, not } from "@benchristel/taste";
-import { trimMargin } from "../testing/formatting.js";
+import { trimMargin } from "../../testing/formatting.js";
 import { OrderFile, isOrderFile } from "./order-file.js";
 
 test("OrderFile", {

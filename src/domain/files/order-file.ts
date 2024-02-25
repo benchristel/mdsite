@@ -1,11 +1,11 @@
 import { basename, dirname } from "path";
-import { buffer } from "../lib/buffer.js";
-import { ensureTrailingSlash } from "../lib/paths.js";
 import { not } from "@benchristel/taste";
-import { isBlank } from "../testing/formatting.js";
-import { ProjectGlobalInfo } from "./project-global-info.js";
-import { diff } from "../lib/sets.js";
-import { line } from "../lib/strings.js";
+import { buffer } from "../../lib/buffer.js";
+import { ensureTrailingSlash } from "../../lib/paths.js";
+import { isBlank } from "../../testing/formatting.js";
+import type { ProjectGlobalInfo } from "../project-global-info.js";
+import { diff } from "../../lib/sets.js";
+import { line } from "../../lib/strings.js";
 
 export type OrderFile = {
   type: "order";
