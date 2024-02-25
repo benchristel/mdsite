@@ -1,10 +1,7 @@
 import { macros, getTokens } from "./parser.js";
-import { test, expect, equals, curry } from "@benchristel/taste";
-import {
-  ProjectGlobalInfo,
-  dummyProjectGlobalInfo,
-} from "../project-global-info.js";
-import Logger, { mockLogger } from "../../lib/logger.js";
+import { curry } from "@benchristel/taste";
+import { ProjectGlobalInfo } from "../project-global-info.js";
+import Logger from "../../lib/logger.js";
 import { title as getTitle } from "../title.js";
 import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
@@ -23,7 +20,9 @@ export const expandAll = curry(
   "expandAll"
 );
 
-function evaluate(context: EvaluationContext): (macro: string) => string {
+export function evaluate(
+  context: EvaluationContext
+): (macro: string) => string {
   return (macroStr) => compileMacro(macroStr)(context);
 }
 
@@ -95,72 +94,3 @@ function breadcrumb(): Macro {
 function macro(macroStr: string): Macro {
   return () => macroStr.replace(/{{\s*macro\s+(.*)/, "{{$1");
 }
-
-const dummyContext = {
-  outputPath: "",
-  content: "",
-  globalInfo: dummyProjectGlobalInfo,
-};
-
-test("evaluating macros", {
-  "logs a warning if the macro is unrecognized"() {
-    const { warnings } = mockLogger(() => {
-      const context = { ...dummyContext, outputPath: "/my/file.html" };
-      evaluate(context)("{{foo}}");
-    });
-
-    expect(warnings, equals, [
-      [
-        "warning: encountered unknown macro 'foo' while compiling /my/file.html",
-      ],
-    ]);
-  },
-
-  "evalutes {{content}}"() {
-    mockLogger(() => {
-      const context = { ...dummyContext, content: "wow" };
-      const result = evaluate(context)("{{content}}");
-      expect(result, equals, "wow");
-    });
-  },
-
-  "gets {{title}} from an <h1> element"() {
-    mockLogger(() => {
-      const context = { ...dummyContext, content: "<h1>The Title</h1>" };
-      const result = evaluate(context)("{{title}}");
-      expect(result, equals, "The Title");
-    });
-  },
-
-  "defaults {{title}} to the filename"() {
-    mockLogger(() => {
-      const context = { ...dummyContext, outputPath: "/foo/bar.html" };
-      const result = evaluate(context)("{{title}}");
-      expect(result, equals, "bar.html");
-    });
-  },
-
-  "evaluates {{title}} in the content"() {
-    mockLogger(() => {
-      const context = {
-        ...dummyContext,
-        content: "hello {{title}}",
-        outputPath: "/foo/bar.html",
-      };
-      const result = evaluate(context)("{{content}}");
-      expect(result, equals, "hello bar.html");
-    });
-  },
-
-  "evaluates {{macro}}"() {
-    mockLogger(() => {
-      const context = {
-        ...dummyContext,
-        content: "{{macro foo bar}}",
-        outputPath: "/foo/bar.html",
-      };
-      const result = evaluate(context)("{{content}}");
-      expect(result, equals, "{{foo bar}}");
-    });
-  },
-});
