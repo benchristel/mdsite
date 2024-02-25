@@ -26,30 +26,30 @@ function orderTxtRank(f: HtmlFile, files: ProjectFileSet) {
 
   // index.html files should come before any of their siblings,
   // so we "promote" them to the top.
-  const indexPromotion = filename === "index.html" ? 0 : 1;
+  const indexPromotion = filename === "index.html" ? "index" : "not-index";
 
   return [indexPromotion, orderFileIndex, f.title, filename];
 }
 
 test("orderTxtRank", {
-  "is [0, Infinity, <title>, <filename>] given /index.html"() {
+  "is [index, Infinity, <title>, <filename>] given /index.html"() {
     const files = {
       "/index.html": HtmlFile("/index.html", "<h1>Hi</h1>"),
     };
 
     const rank = orderTxtRank(files["/index.html"], files);
 
-    expect(rank, equals, [0, Infinity, "Hi", "index.html"]);
+    expect(rank, equals, ["index", Infinity, "Hi", "index.html"]);
   },
 
-  "is [1, Infinity, <title>, <filename>] given a non-index file"() {
+  "is [not-index, Infinity, <title>, <filename>] given a non-index file"() {
     const files = {
       "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
     const rank = orderTxtRank(files["/foo.html"], files);
 
-    expect(rank, equals, [1, Infinity, "Foo", "foo.html"]);
+    expect(rank, equals, ["not-index", Infinity, "Foo", "foo.html"]);
   },
 
   "defaults the title if the file contains none"() {
@@ -59,10 +59,10 @@ test("orderTxtRank", {
 
     const rank = orderTxtRank(files["/foo.html"], files);
 
-    expect(rank, equals, [1, Infinity, "foo.html", "foo.html"]);
+    expect(rank, equals, ["not-index", Infinity, "foo.html", "foo.html"]);
   },
 
-  "is [1, 0, <title>, <filename>] given a file listed first in order.txt"() {
+  "gives a file listed first in order.txt an index of 0"() {
     const files = {
       "/order.txt": OrderFile("/order.txt", "foo.html"),
       "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
@@ -70,10 +70,10 @@ test("orderTxtRank", {
 
     const rank = orderTxtRank(files["/foo.html"], files);
 
-    expect(rank, equals, [1, 0, "Foo", "foo.html"]);
+    expect(rank, equals, ["not-index", 0, "Foo", "foo.html"]);
   },
 
-  "is [1, 1, <title>, <filename>] given a file listed second in order.txt"() {
+  "gives a file listed second in order.txt an index of 1"() {
     const files = {
       "/order.txt": OrderFile("/order.txt", "a.html\nfoo.html"),
       "/foo.html": HtmlFile("/foo.html", "<h1>Foo</h1>"),
@@ -81,7 +81,7 @@ test("orderTxtRank", {
 
     const rank = orderTxtRank(files["/foo.html"], files);
 
-    expect(rank, equals, [1, 1, "Foo", "foo.html"]);
+    expect(rank, equals, ["not-index", 1, "Foo", "foo.html"]);
   },
 });
 
