@@ -3,8 +3,6 @@ import { HtmlFile } from "./html-file.js";
 import { OrderFile } from "./order-file.js";
 import { trimMargin } from "../testing/formatting.js";
 import { basename, dirname, join } from "path";
-import { commonPrefix } from "../lib/strings.js";
-import { ensureTrailingSlash } from "../lib/paths.js";
 export function sortHtmlFiles(files) {
     return Object.values(files)
         .filter((f) => f.type === "html")
@@ -107,41 +105,6 @@ test("orderTxtRank", {
         ]);
     },
 });
-function byOrderTxtRank(files) {
-    return (a, b) => {
-        var _a, _b;
-        const prefix = ensureTrailingSlash(commonPrefix(a.outputPath, b.outputPath).replace(/\/[^\/]*$/, ""));
-        const orderFile = files[join(prefix, "order.txt")];
-        const aName = a.outputPath.slice(prefix.length).split("/")[0];
-        const bName = b.outputPath.slice(prefix.length).split("/")[0];
-        if (aName === "index.html")
-            return -1;
-        if (bName === "index.html")
-            return 1;
-        if ((orderFile === null || orderFile === void 0 ? void 0 : orderFile.type) === "order") {
-            const aIndex = orderFile.filenames.indexOf(aName);
-            const bIndex = orderFile.filenames.indexOf(bName);
-            if (aIndex !== -1 && bIndex !== -1) {
-                return aIndex > bIndex ? 1 : -1;
-            }
-            else if (bIndex !== -1) {
-                return 1;
-            }
-            else if (aIndex !== -1) {
-                return -1;
-            }
-        }
-        const aTitle = (_a = titleForOutputPath(join(prefix, aName), files)) !== null && _a !== void 0 ? _a : "";
-        const bTitle = (_b = titleForOutputPath(join(prefix, bName), files)) !== null && _b !== void 0 ? _b : "";
-        if (aTitle > bTitle) {
-            return 1;
-        }
-        else if (aTitle < bTitle) {
-            return -1;
-        }
-        return 0;
-    };
-}
 function titleForOutputPath(path, files) {
     var _a;
     const file = (_a = files[path]) !== null && _a !== void 0 ? _a : files[join(path, "index.html")];

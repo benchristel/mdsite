@@ -1,12 +1,9 @@
 import { test, expect, is, equals } from "@benchristel/taste";
 import { ProjectFileSet } from "./project-file-set.js";
 import { HtmlFile } from "./html-file.js";
-import { Comparator } from "../lib/sorting.js";
 import { OrderFile } from "./order-file.js";
 import { trimMargin } from "../testing/formatting.js";
 import { basename, dirname, join } from "path";
-import { commonPrefix } from "../lib/strings.js";
-import { ensureTrailingSlash } from "../lib/paths.js";
 
 type Rank = Array<string | number>;
 
@@ -144,43 +141,6 @@ test("orderTxtRank", {
     ]);
   },
 });
-
-function byOrderTxtRank(files: ProjectFileSet): Comparator<HtmlFile> {
-  return (a: HtmlFile, b: HtmlFile): 1 | 0 | -1 => {
-    const prefix = ensureTrailingSlash(
-      commonPrefix(a.outputPath, b.outputPath).replace(/\/[^\/]*$/, "")
-    );
-    const orderFile = files[join(prefix, "order.txt")];
-    const aName = a.outputPath.slice(prefix.length).split("/")[0];
-    const bName = b.outputPath.slice(prefix.length).split("/")[0];
-
-    if (aName === "index.html") return -1;
-    if (bName === "index.html") return 1;
-
-    if (orderFile?.type === "order") {
-      const aIndex = orderFile.filenames.indexOf(aName);
-      const bIndex = orderFile.filenames.indexOf(bName);
-      if (aIndex !== -1 && bIndex !== -1) {
-        return aIndex > bIndex ? 1 : -1;
-      } else if (bIndex !== -1) {
-        return 1;
-      } else if (aIndex !== -1) {
-        return -1;
-      }
-    }
-
-    const aTitle = titleForOutputPath(join(prefix, aName), files) ?? "";
-    const bTitle = titleForOutputPath(join(prefix, bName), files) ?? "";
-
-    if (aTitle > bTitle) {
-      return 1;
-    } else if (aTitle < bTitle) {
-      return -1;
-    }
-
-    return 0;
-  };
-}
 
 function titleForOutputPath(path: string, files: ProjectFileSet): string {
   const file = files[path] ?? files[join(path, "index.html")];
