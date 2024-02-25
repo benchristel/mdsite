@@ -1,6 +1,5 @@
 import { dirname, join, relative } from "path";
 import { ProjectGlobalInfo } from "./project-global-info.js";
-import { expect, is, test } from "@benchristel/taste";
 
 export function nextLink(globalInfo: ProjectGlobalInfo, origin: string) {
   const { index, orderedLinkables } = globalInfo;
@@ -26,6 +25,11 @@ export function upLink(origin: string) {
   return relativeLink(origin, parentOf(origin), "Up");
 }
 
+export function homeLink(origin: string) {
+  const href = relative(dirname(origin), "/index.html");
+  return `<a href="${href}">Home</a>`;
+}
+
 export function relativeLink(from: string, to: string, text: string) {
   return `<a href="${relative(dirname(from), to)}">${text}</a>`;
 }
@@ -38,9 +42,4 @@ export function parentOf(path: string): string {
   } else {
     return join(dirname(path), "index.html");
   }
-}
-
-export function homeLink(origin: string) {
-  const href = relative(dirname(origin), "/index.html");
-  return `<a href="${href}">Home</a>`;
 }

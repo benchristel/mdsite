@@ -20,6 +20,10 @@ export function prevLink(globalInfo, origin) {
 export function upLink(origin) {
     return relativeLink(origin, parentOf(origin), "Up");
 }
+export function homeLink(origin) {
+    const href = relative(dirname(origin), "/index.html");
+    return `<a href="${href}">Home</a>`;
+}
 export function relativeLink(from, to, text) {
     return `<a href="${relative(dirname(from), to)}">${text}</a>`;
 }
@@ -33,8 +37,4 @@ export function parentOf(path) {
     else {
         return join(dirname(path), "index.html");
     }
-}
-export function homeLink(origin) {
-    const href = relative(dirname(origin), "/index.html");
-    return `<a href="${href}">Home</a>`;
 }
