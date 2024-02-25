@@ -1,7 +1,7 @@
 import { test, expect, is } from "@benchristel/taste";
 import { dummyProjectGlobalInfo, indexLinkables, } from "./project-global-info.js";
 import { contains } from "../lib/strings.js";
-import { htmlBreadcrumb, parentOf } from "./breadcrumbs.js";
+import { htmlBreadcrumb } from "./breadcrumbs.js";
 test("htmlBreadcrumb", {
     "is empty on the top-level index page"() {
         const outputPath = "/index.html";
@@ -25,19 +25,5 @@ test("htmlBreadcrumb", {
         ]));
         expect(htmlBreadcrumb(outputPath, globalInfo), contains, `<a href="../index.html">The Index Page</a>` +
             `<a href="index.html">A Nice Tree</a>`);
-    },
-});
-test("parentOf", {
-    "given /index.html"() {
-        expect(parentOf("/index.html"), is, "/index.html");
-    },
-    "given /foo/index.html"() {
-        expect(parentOf("/foo/index.html"), is, "/index.html");
-    },
-    "given /foo/bar/index.html"() {
-        expect(parentOf("/foo/bar/index.html"), is, "/foo/index.html");
-    },
-    "given /foo/bar/baz.html"() {
-        expect(parentOf("/foo/bar/baz.html"), is, "/foo/bar/index.html");
     },
 });

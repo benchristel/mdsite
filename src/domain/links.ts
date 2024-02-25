@@ -1,4 +1,4 @@
-import { dirname, relative } from "path";
+import { dirname, join, relative } from "path";
 import { ProjectGlobalInfo } from "./project-global-info.js";
 import { expect, is, test } from "@benchristel/taste";
 
@@ -23,34 +23,24 @@ export function prevLink(globalInfo: ProjectGlobalInfo, origin: string) {
 }
 
 export function upLink(origin: string) {
-  const href = ((): string => {
-    switch (true) {
-      case origin === "/index.html":
-        return "index.html";
-      case origin.endsWith("/index.html"):
-        return "../index.html";
-      default:
-        return "index.html";
-    }
-  })();
-  return `<a href="${href}">Up</a>`;
+  return relativeLink(origin, parentOf(origin), "Up");
+}
+
+export function relativeLink(from: string, to: string, text: string) {
+  return `<a href="${relative(dirname(from), to)}">${text}</a>`;
+}
+
+export function parentOf(path: string): string {
+  if (path === "/index.html") {
+    return "/index.html";
+  } else if (path.endsWith("/index.html")) {
+    return join(dirname(dirname(path)), "index.html");
+  } else {
+    return join(dirname(path), "index.html");
+  }
 }
 
 export function homeLink(origin: string) {
   const href = relative(dirname(origin), "/index.html");
   return `<a href="${href}">Home</a>`;
 }
-
-test("upLink", {
-  "given /index.html"() {
-    expect(upLink("/index.html"), is, `<a href="index.html">Up</a>`);
-  },
-
-  "given a subdirectory's index.html"() {
-    expect(upLink("/foo/index.html"), is, `<a href="../index.html">Up</a>`);
-  },
-
-  "given any other path"() {
-    expect(upLink("/foo.html"), is, `<a href="index.html">Up</a>`);
-  },
-});

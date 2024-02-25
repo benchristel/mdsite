@@ -1,5 +1,5 @@
+import { parentOf, relativeLink } from "./links.js";
 import { ProjectGlobalInfo } from "./project-global-info.js";
-import { dirname, join, relative } from "path";
 
 export function htmlBreadcrumb(
   outputPath: string,
@@ -21,17 +21,9 @@ function htmlCrumb(
   to: string,
   globalInfo: ProjectGlobalInfo
 ): string {
-  return `<a href="${relative(dirname(from), to)}">${
+  return relativeLink(
+    from,
+    to,
     globalInfo.orderedLinkables[globalInfo.index[to]].title
-  }</a>`;
-}
-
-export function parentOf(path: string): string {
-  if (path === "/index.html") {
-    return "/index.html";
-  } else if (path.endsWith("/index.html")) {
-    return join(dirname(dirname(path)), "index.html");
-  } else {
-    return join(dirname(path), "index.html");
-  }
+  );
 }

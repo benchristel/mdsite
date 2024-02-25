@@ -1,4 +1,4 @@
-import { dirname, join, relative } from "path";
+import { parentOf, relativeLink } from "./links.js";
 export function htmlBreadcrumb(outputPath, globalInfo) {
     const crumbs = [];
     let path = outputPath;
@@ -11,16 +11,5 @@ export function htmlBreadcrumb(outputPath, globalInfo) {
         .join("")}</nav>`;
 }
 function htmlCrumb(from, to, globalInfo) {
-    return `<a href="${relative(dirname(from), to)}">${globalInfo.orderedLinkables[globalInfo.index[to]].title}</a>`;
-}
-export function parentOf(path) {
-    if (path === "/index.html") {
-        return "/index.html";
-    }
-    else if (path.endsWith("/index.html")) {
-        return join(dirname(dirname(path)), "index.html");
-    }
-    else {
-        return join(dirname(path), "index.html");
-    }
+    return relativeLink(from, to, globalInfo.orderedLinkables[globalInfo.index[to]].title);
 }
