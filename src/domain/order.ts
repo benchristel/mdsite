@@ -21,20 +21,19 @@ export function sortHtmlFiles(files: ProjectFileSet): Array<string> {
 function orderTxtRank(f: HtmlFile, files: ProjectFileSet): Rank {
   let d = f.outputPath;
 
-  let rank: Rank = [];
+  const rank: Rank = [];
   do {
     let filename = basename(d);
     d = dirname(d);
 
-    rank = [
+    rank.unshift(
       // index.html files should come before any of their siblings,
       // so we "promote" them to the top.
       indexPromotion(filename),
       orderFileIndex(d, filename, files),
       titleForOutputPath(join(d, filename), files),
-      filename,
-      ...rank,
-    ];
+      filename
+    );
   } while (d !== "/");
 
   return rank;

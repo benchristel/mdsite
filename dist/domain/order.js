@@ -14,19 +14,14 @@ export function sortHtmlFiles(files) {
 }
 function orderTxtRank(f, files) {
     let d = f.outputPath;
-    let rank = [];
+    const rank = [];
     do {
         let filename = basename(d);
         d = dirname(d);
-        rank = [
-            // index.html files should come before any of their siblings,
-            // so we "promote" them to the top.
-            indexPromotion(filename),
-            orderFileIndex(d, filename, files),
-            titleForOutputPath(join(d, filename), files),
-            filename,
-            ...rank,
-        ];
+        rank.unshift(
+        // index.html files should come before any of their siblings,
+        // so we "promote" them to the top.
+        indexPromotion(filename), orderFileIndex(d, filename, files), titleForOutputPath(join(d, filename), files), filename);
     } while (d !== "/");
     return rank;
 }
