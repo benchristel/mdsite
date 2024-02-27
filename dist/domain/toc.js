@@ -9,7 +9,7 @@ export function leaf(params) {
 }
 export function toc(orderedLinkables, root = "/") {
     root = ensureTrailingSlash(root);
-    return Object.values(orderedLinkables)
+    return orderedLinkables
         .filter(({ path }) => path.startsWith(root) &&
         path.endsWith(".html") &&
         path !== root + "index.html" &&

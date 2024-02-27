@@ -36,7 +36,7 @@ export function toc(
   root: string = "/"
 ): TreeOfContents {
   root = ensureTrailingSlash(root);
-  return Object.values(orderedLinkables)
+  return orderedLinkables
     .filter(
       ({ path }) =>
         path.startsWith(root) &&
