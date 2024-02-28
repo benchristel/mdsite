@@ -6,14 +6,14 @@ import {
   pathAndBufferToProjectFile,
 } from "./files/project-file-set.js";
 import { addSyntheticFiles } from "./synthetic-files.js";
-import { Linkable, indexLinkables } from "./project-global-info.js";
+import type { Linkable, ProjectGlobalInfo } from "./project-global-info.js";
 import { sortHtmlFiles } from "./order.js";
 
 export function buildProject(files: FileSet, template: string): FileSet {
   return new Project(files, template).build();
 }
 
-class Project {
+export class Project implements ProjectGlobalInfo {
   files: ProjectFileSet;
   template: string;
   #orderedLinkables: Linkable[] | undefined;
@@ -42,6 +42,20 @@ class Project {
   get index(): Record<string, number> {
     return (this.#index ??= indexLinkables(this.orderedLinkables).index);
   }
+}
+
+export function indexLinkables(linkables: Linkable[]): {
+  index: Record<string, number>;
+  orderedLinkables: Linkable[];
+} {
+  const index: Record<string, number> = {};
+  linkables.forEach((linkable, i) => {
+    index[linkable.path] = i;
+  });
+  return {
+    orderedLinkables: linkables,
+    index,
+  };
 }
 
 function Linkable(file: ProjectFile) {

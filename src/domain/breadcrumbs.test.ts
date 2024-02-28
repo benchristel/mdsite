@@ -1,10 +1,8 @@
 import { test, expect, is } from "@benchristel/taste";
-import {
-  dummyProjectGlobalInfo,
-  indexLinkables,
-} from "./project-global-info.js";
+import { dummyProjectGlobalInfo } from "./project-global-info.js";
 import { contains } from "../lib/strings.js";
 import { htmlBreadcrumb } from "./breadcrumbs.js";
+import { indexLinkables } from "./project.js";
 
 test("htmlBreadcrumb", {
   "is empty on the top-level index page"() {

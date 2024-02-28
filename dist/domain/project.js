@@ -13,12 +13,11 @@ var _Project_orderedLinkables, _Project_index;
 import { mapEntries } from "../lib/objects.js";
 import { pathAndBufferToProjectFile, } from "./files/project-file-set.js";
 import { addSyntheticFiles } from "./synthetic-files.js";
-import { indexLinkables } from "./project-global-info.js";
 import { sortHtmlFiles } from "./order.js";
 export function buildProject(files, template) {
     return new Project(files, template).build();
 }
-class Project {
+export class Project {
     constructor(files, template) {
         _Project_orderedLinkables.set(this, void 0);
         _Project_index.set(this, void 0);
@@ -32,14 +31,24 @@ class Project {
     }
     get orderedLinkables() {
         var _a;
-        return __classPrivateFieldSet(this, _Project_orderedLinkables, (_a = __classPrivateFieldGet(this, _Project_orderedLinkables, "f")) !== null && _a !== void 0 ? _a : sortHtmlFiles(this.files).map(path => Linkable(this.files[path])), "f");
+        return (__classPrivateFieldSet(this, _Project_orderedLinkables, (_a = __classPrivateFieldGet(this, _Project_orderedLinkables, "f")) !== null && _a !== void 0 ? _a : sortHtmlFiles(this.files).map((path) => Linkable(this.files[path])), "f"));
     }
     get index() {
         var _a;
-        return __classPrivateFieldSet(this, _Project_index, (_a = __classPrivateFieldGet(this, _Project_index, "f")) !== null && _a !== void 0 ? _a : indexLinkables(this.orderedLinkables).index, "f");
+        return (__classPrivateFieldSet(this, _Project_index, (_a = __classPrivateFieldGet(this, _Project_index, "f")) !== null && _a !== void 0 ? _a : indexLinkables(this.orderedLinkables).index, "f"));
     }
 }
 _Project_orderedLinkables = new WeakMap(), _Project_index = new WeakMap();
+export function indexLinkables(linkables) {
+    const index = {};
+    linkables.forEach((linkable, i) => {
+        index[linkable.path] = i;
+    });
+    return {
+        orderedLinkables: linkables,
+        index,
+    };
+}
 function Linkable(file) {
     return {
         path: file.outputPath,
