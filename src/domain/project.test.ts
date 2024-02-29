@@ -55,9 +55,9 @@ test("buildProject", {
 });
 
 test("Project", {
-  "is empty given no files"() {
+  "has a synthetic index.html given no files"() {
     const files = {};
-    const project = new Project(files, "");
+    const project = new Project(files);
     expect(project.orderedLinkables, equals, [
       { path: "/index.html", title: "Homepage" },
     ]);
@@ -70,7 +70,7 @@ test("Project", {
     const files = {
       "/a.html": buffer(""),
     };
-    const project = new Project(files, "");
+    const project = new Project(files);
 
     expect(project.orderedLinkables, equals, [
       { path: "/index.html", title: "Homepage" },
@@ -92,7 +92,7 @@ test("Project", {
       "/a.html": buffer(""),
     };
 
-    const project = new Project(files, "");
+    const project = new Project(files);
 
     expect(project.orderedLinkables, equals, [
       { path: "/index.html", title: "Homepage" },

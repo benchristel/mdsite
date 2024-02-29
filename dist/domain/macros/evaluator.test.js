@@ -1,7 +1,7 @@
 import { test, expect, is, equals } from "@benchristel/taste";
 import { mockLogger } from "../../lib/logger.js";
-import { dummyProjectGlobalInfo } from "../project-global-info.js";
 import { evaluate, expandAll } from "./evaluator.js";
+import { Project } from "../project.js";
 test("expandAll", {
     "does nothing to the empty string"() {
         const htmlTemplate = "";
@@ -76,5 +76,5 @@ test("evaluating macros", {
 const dummyContext = {
     outputPath: "",
     content: "",
-    globalInfo: dummyProjectGlobalInfo,
+    globalInfo: new Project({}),
 };

@@ -18,9 +18,3 @@ export type Linkable = {
   path: string;
   title: string;
 };
-
-export const dummyProjectGlobalInfo = {
-  orderedLinkables: [],
-  index: {},
-  template: "dummy template",
-};

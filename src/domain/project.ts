@@ -19,7 +19,7 @@ export class Project implements ProjectGlobalInfo {
   #orderedLinkables: Linkable[] | undefined;
   #index: Record<string, number> | undefined;
 
-  constructor(files: FileSet, template: string) {
+  constructor(files: FileSet, template: string = "dummy template") {
     this.files = mapEntries(
       addSyntheticFiles(files),
       pathAndBufferToProjectFile

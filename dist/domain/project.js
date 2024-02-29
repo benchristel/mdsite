@@ -18,7 +18,7 @@ export function buildProject(files, template) {
     return new Project(files, template).build();
 }
 export class Project {
-    constructor(files, template) {
+    constructor(files, template = "dummy template") {
         _Project_orderedLinkables.set(this, void 0);
         _Project_index.set(this, void 0);
         this.files = mapEntries(addSyntheticFiles(files), pathAndBufferToProjectFile);
