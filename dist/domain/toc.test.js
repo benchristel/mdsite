@@ -5,12 +5,16 @@ test("toc", {
         expect(toc([]), equals, []);
     },
     "excludes the root index.html file"() {
-        const files = [{ type: "html", path: "/index.html", title: "whatever" }];
+        const files = [
+            { type: "html", path: "/index.html", title: "whatever" },
+        ];
         expect(toc(files), equals, []);
     },
     "excludes the index.html under the given root"() {
-        const files = [{ type: "html", path: "/foo/index.html", title: "whatever" }];
-        expect(toc(files, "/foo"), equals, []);
+        const files = [
+            { type: "html", path: "/foo/index.html", title: "whatever" },
+        ];
+        expect(toc(files, { root: "/foo" }), equals, []);
     },
     "given several files"() {
         const files = [
@@ -24,7 +28,9 @@ test("toc", {
         expect(toc(files), equals, expected);
     },
     "given an index.html file in a subdirectory"() {
-        const files = [{ type: "html", path: "/sub/index.html", title: "sub" }];
+        const files = [
+            { type: "html", path: "/sub/index.html", title: "sub" },
+        ];
         const expected = [branch({ path: "/sub/index.html", title: "sub" })];
         expect(toc(files), equals, expected);
     },
@@ -93,7 +99,9 @@ test("htmlToc", {
         expect(htmlToc([], "/index.html"), is, "");
     },
     "given a tree with one file"() {
-        const files = [{ type: "html", path: "/foo.html", title: "This Is Foo" }];
+        const files = [
+            { type: "html", path: "/foo.html", title: "This Is Foo" },
+        ];
         const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
         expect(htmlToc(files, "/index.html"), is, expected);
     },
@@ -108,7 +116,7 @@ test("htmlToc", {
     "creates relative links, starting from the linkOrigin"() {
         const files = [{ type: "html", path: "/foo.html", title: "Foo" }];
         const expected = `<ul><li><a href="../../../foo.html">Foo</a></li></ul>`;
-        expect(htmlToc(files, "/one/two/three/foo.html", "/"), is, expected);
+        expect(htmlToc(files, "/one/two/three/foo.html", { root: "/" }), is, expected);
     },
     recurses() {
         const files = [

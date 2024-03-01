@@ -31,7 +31,9 @@ export class Project {
     }
     get orderedLinkables() {
         var _a;
-        return __classPrivateFieldSet(this, _Project_orderedLinkables, (_a = __classPrivateFieldGet(this, _Project_orderedLinkables, "f")) !== null && _a !== void 0 ? _a : sortEntries(this.files).filter(e => e.type === "html"), "f");
+        return (__classPrivateFieldSet(this, _Project_orderedLinkables, (_a = __classPrivateFieldGet(this, _Project_orderedLinkables, "f")) !== null && _a !== void 0 ? _a : sortEntries(this.files)
+            .filter((e) => e.type === "html")
+            .map(Linkable), "f"));
     }
     get orderedEntries() {
         return sortEntries(this.files);
@@ -51,4 +53,7 @@ export function indexLinkables(linkables) {
         orderedLinkables: linkables,
         index,
     };
+}
+function Linkable({ path, title }) {
+    return { path, title };
 }

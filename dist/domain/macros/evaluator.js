@@ -44,7 +44,10 @@ function title() {
 }
 function toc(_, rawArgs) {
     const { root, includeLatent } = parseTocArgs(rawArgs);
-    return (context) => htmlToc(context.globalInfo.orderedEntries, context.outputPath, { root, includeLatent });
+    return (context) => htmlToc(context.globalInfo.orderedEntries, context.outputPath, {
+        root,
+        includeLatent,
+    });
 }
 function next() {
     return (context) => nextLink(context.globalInfo, context.outputPath);

@@ -2,7 +2,7 @@ import { test, expect, is, equals } from "@benchristel/taste";
 import { HtmlFile } from "./files/html-file.js";
 import { OrderFile } from "./files/order-file.js";
 import { trimMargin } from "../testing/formatting.js";
-import { isLatent, orderTxtRank, sortHtmlFiles, titleForOutputPath } from "./order.js";
+import { isLatent, orderTxtRank, sortHtmlFiles, titleForOutputPath, } from "./order.js";
 test("orderTxtRank", {
     "is [index, Infinity, <title>, <filename>] given /index.html"() {
         const files = {

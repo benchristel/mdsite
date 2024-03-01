@@ -1,6 +1,8 @@
 import { test, expect, equals, not } from "@benchristel/taste";
 import { trimMargin } from "../../testing/formatting.js";
 import { OrderFile, isOrderFile } from "./order-file.js";
+import { Project } from "../project.js";
+import { buffer } from "../../lib/buffer.js";
 
 test("OrderFile", {
   "parses a blank file"() {
@@ -72,23 +74,19 @@ test("OrderFile", {
 
   "does not list index.html in the !unspecified section"() {
     const orderFile = OrderFile("/order.txt", "");
-    const globalProjectInfo = {
-      index: {},
-      template: "",
-      orderedLinkables: [
-        { path: "/a", title: "" },
-        { path: "/b", title: "" },
-        { path: "/index.html", title: "" },
-      ],
-    };
+    const project = new Project({
+      "/a.html": buffer(""),
+      "/b.html": buffer(""),
+      "/index.html": buffer(""),
+    });
     expect(
-      String(orderFile.render(globalProjectInfo)[1]),
+      String(orderFile.render(project)[1]),
       equals,
       trimMargin`
       
       !unspecified
-      a
-      b
+      a.html
+      b.html
       
     `
     );

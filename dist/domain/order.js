@@ -27,7 +27,7 @@ function latentEntries(files) {
     return ret;
 }
 export function isLatent(path, files) {
-    const exists = files.some(f => f === path || f.startsWith(ensureTrailingSlash(path)));
+    const exists = files.some((f) => f === path || f.startsWith(ensureTrailingSlash(path)));
     return !exists;
 }
 export function sortHtmlFiles(files) {
