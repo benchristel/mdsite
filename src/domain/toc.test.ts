@@ -1,5 +1,6 @@
 import { test, expect, is, equals } from "@benchristel/taste";
 import { toc, htmlToc, leaf, branch } from "./toc.js";
+import { Entry } from "./order.js";
 
 test("toc", {
   "given an empty set of files"() {
@@ -7,19 +8,23 @@ test("toc", {
   },
 
   "excludes the root index.html file"() {
-    const files = [{ path: "/index.html", title: "whatever" }];
+    const files: Entry[] = [
+      { type: "html", path: "/index.html", title: "whatever" },
+    ];
     expect(toc(files), equals, []);
   },
 
   "excludes the index.html under the given root"() {
-    const files = [{ path: "/foo/index.html", title: "whatever" }];
-    expect(toc(files, "/foo"), equals, []);
+    const files: Entry[] = [
+      { type: "html", path: "/foo/index.html", title: "whatever" },
+    ];
+    expect(toc(files, { root: "/foo" }), equals, []);
   },
 
   "given several files"() {
-    const files = [
-      { path: "/aaa.html", title: "aaa.html" },
-      { path: "/bbb.html", title: "bbb.html" },
+    const files: Entry[] = [
+      { type: "html", path: "/aaa.html", title: "aaa.html" },
+      { type: "html", path: "/bbb.html", title: "bbb.html" },
     ];
     const expected = [
       leaf({ path: "/aaa.html", title: "aaa.html" }),
@@ -29,16 +34,18 @@ test("toc", {
   },
 
   "given an index.html file in a subdirectory"() {
-    const files = [{ path: "/sub/index.html", title: "sub" }];
+    const files: Entry[] = [
+      { type: "html", path: "/sub/index.html", title: "sub" },
+    ];
     const expected = [branch({ path: "/sub/index.html", title: "sub" })];
     expect(toc(files), equals, expected);
   },
 
   "given a subdirectory with several files"() {
-    const files = [
-      { path: "/sub/index.html", title: "sub" },
-      { path: "/sub/aaa.html", title: "aaa.html" },
-      { path: "/sub/bbb.html", title: "bbb.html" },
+    const files: Entry[] = [
+      { type: "html", path: "/sub/index.html", title: "sub" },
+      { type: "html", path: "/sub/aaa.html", title: "aaa.html" },
+      { type: "html", path: "/sub/bbb.html", title: "bbb.html" },
     ];
     const expected = [
       branch(
@@ -51,12 +58,12 @@ test("toc", {
   },
 
   "given a sub-subdirectory"() {
-    const files = [
-      { path: "/sub/index.html", title: "sub" },
-      { path: "/sub/marine/index.html", title: "marine" },
-      { path: "/sub/marine/aaa.html", title: "aaa.html" },
-      { path: "/sub/marine/bbb.html", title: "bbb.html" },
-      { path: "/sub/marine/ccc.html", title: "ccc.html" },
+    const files: Entry[] = [
+      { type: "html", path: "/sub/index.html", title: "sub" },
+      { type: "html", path: "/sub/marine/index.html", title: "marine" },
+      { type: "html", path: "/sub/marine/aaa.html", title: "aaa.html" },
+      { type: "html", path: "/sub/marine/bbb.html", title: "bbb.html" },
+      { type: "html", path: "/sub/marine/ccc.html", title: "ccc.html" },
     ];
     const expected = [
       branch(
@@ -73,11 +80,11 @@ test("toc", {
   },
 
   "keeps files in order"() {
-    const files = [
-      { path: "/bbb.html", title: "1" },
-      { path: "/ddd.html", title: "2" },
-      { path: "/aaa.html", title: "3" },
-      { path: "/ccc.html", title: "4" },
+    const files: Entry[] = [
+      { type: "html", path: "/bbb.html", title: "1" },
+      { type: "html", path: "/ddd.html", title: "2" },
+      { type: "html", path: "/aaa.html", title: "3" },
+      { type: "html", path: "/ccc.html", title: "4" },
     ];
     const expected = [
       leaf({ path: "/bbb.html", title: "1" }),
@@ -89,16 +96,16 @@ test("toc", {
   },
 
   "keeps directories in order"() {
-    const files = [
-      { path: "/index.html", title: "Homepage" },
-      { path: "/aaa/index.html", title: "aaa" },
-      { path: "/aaa/foo.html", title: "foo.html" },
-      { path: "/bbb/index.html", title: "bbb" },
-      { path: "/bbb/foo.html", title: "foo.html" },
-      { path: "/ccc/index.html", title: "ccc" },
-      { path: "/ccc/foo.html", title: "foo.html" },
-      { path: "/ddd/index.html", title: "ddd" },
-      { path: "/ddd/foo.html", title: "foo.html" },
+    const files: Entry[] = [
+      { type: "html", path: "/index.html", title: "Homepage" },
+      { type: "html", path: "/aaa/index.html", title: "aaa" },
+      { type: "html", path: "/aaa/foo.html", title: "foo.html" },
+      { type: "html", path: "/bbb/index.html", title: "bbb" },
+      { type: "html", path: "/bbb/foo.html", title: "foo.html" },
+      { type: "html", path: "/ccc/index.html", title: "ccc" },
+      { type: "html", path: "/ccc/foo.html", title: "foo.html" },
+      { type: "html", path: "/ddd/index.html", title: "ddd" },
+      { type: "html", path: "/ddd/foo.html", title: "foo.html" },
     ];
     const expected = [
       branch(
@@ -128,7 +135,9 @@ test("htmlToc", {
   },
 
   "given a tree with one file"() {
-    const files = [{ path: "/foo.html", title: "This Is Foo" }];
+    const files: Entry[] = [
+      { type: "html", path: "/foo.html", title: "This Is Foo" },
+    ];
 
     const expected = `<ul><li><a href="foo.html">This Is Foo</a></li></ul>`;
 
@@ -136,9 +145,9 @@ test("htmlToc", {
   },
 
   "generates a list of multiple links"() {
-    const files = [
-      { path: "/bar.html", title: "Bar" },
-      { path: "/foo.html", title: "Foo" },
+    const files: Entry[] = [
+      { type: "html", path: "/bar.html", title: "Bar" },
+      { type: "html", path: "/foo.html", title: "Foo" },
     ];
 
     const expected = `<ul><li><a href="bar.html">Bar</a></li><li><a href="foo.html">Foo</a></li></ul>`;
@@ -147,17 +156,21 @@ test("htmlToc", {
   },
 
   "creates relative links, starting from the linkOrigin"() {
-    const files = [{ path: "/foo.html", title: "Foo" }];
+    const files: Entry[] = [{ type: "html", path: "/foo.html", title: "Foo" }];
 
     const expected = `<ul><li><a href="../../../foo.html">Foo</a></li></ul>`;
 
-    expect(htmlToc(files, "/one/two/three/foo.html", "/"), is, expected);
+    expect(
+      htmlToc(files, "/one/two/three/foo.html", { root: "/" }),
+      is,
+      expected
+    );
   },
 
   recurses() {
-    const files = [
-      { path: "/bar/index.html", title: "Bar" },
-      { path: "/bar/baz.html", title: "Baz" },
+    const files: Entry[] = [
+      { type: "html", path: "/bar/index.html", title: "Bar" },
+      { type: "html", path: "/bar/baz.html", title: "Baz" },
     ];
 
     const expected = `<ul><li><a href="bar/index.html">Bar</a><ul><li><a href="bar/baz.html">Baz</a></li></ul></li></ul>`;

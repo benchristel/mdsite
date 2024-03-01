@@ -1,4 +1,35 @@
 import { basename, dirname, join } from "path";
+import { ensureTrailingSlash } from "../lib/paths.js";
+export function sortEntries(files) {
+    return Object.values(files)
+        .filter((f) => f.type === "html")
+        .map(toEntry)
+        .concat(latentEntries(files))
+        .map((f) => [f, orderTxtRank({ outputPath: f.path }, files)])
+        .sort(([_, rankA], [__, rankB]) => byRank(rankA, rankB))
+        .map(([f]) => f);
+}
+function toEntry(f) {
+    return { type: "html", path: f.outputPath, title: f.title };
+}
+function latentEntries(files) {
+    const projectFilePaths = Object.keys(files);
+    const orderFiles = Object.values(files).filter((f) => f.type === "order");
+    const ret = [];
+    for (const { outputPath: orderFilePath, filenames } of orderFiles) {
+        for (const filename of filenames) {
+            const path = join(dirname(orderFilePath), filename);
+            if (isLatent(path, projectFilePaths)) {
+                ret.push({ type: "latent-entry", path, title: filename });
+            }
+        }
+    }
+    return ret;
+}
+export function isLatent(path, files) {
+    const exists = files.some(f => f === path || f.startsWith(ensureTrailingSlash(path)));
+    return !exists;
+}
 export function sortHtmlFiles(files) {
     return Object.values(files)
         .filter((f) => f.type === "html")

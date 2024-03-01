@@ -1,13 +1,12 @@
 import { FileSet } from "../lib/files.js";
 import { mapEntries } from "../lib/objects.js";
 import {
-  ProjectFile,
   ProjectFileSet,
   pathAndBufferToProjectFile,
 } from "./files/project-file-set.js";
 import { addSyntheticFiles } from "./synthetic-files.js";
 import type { Linkable, ProjectGlobalInfo } from "./project-global-info.js";
-import { sortHtmlFiles } from "./order.js";
+import { Entry, sortEntries } from "./order.js";
 
 export function buildProject(files: FileSet, template: string): FileSet {
   return new Project(files, template).build();
@@ -34,9 +33,13 @@ export class Project implements ProjectGlobalInfo {
   }
 
   get orderedLinkables(): Linkable[] {
-    return (this.#orderedLinkables ??= sortHtmlFiles(this.files).map((path) =>
-      Linkable(this.files[path])
-    ));
+    return (this.#orderedLinkables ??= sortEntries(this.files)
+      .filter((e) => e.type === "html")
+      .map(Linkable));
+  }
+
+  get orderedEntries(): Entry[] {
+    return sortEntries(this.files);
   }
 
   get index(): Record<string, number> {
@@ -58,9 +61,6 @@ export function indexLinkables(linkables: Linkable[]): {
   };
 }
 
-function Linkable(file: ProjectFile) {
-  return {
-    path: file.outputPath,
-    title: file.type === "html" ? file.title : "",
-  };
+function Linkable({ path, title }: Entry) {
+  return { path, title };
 }

@@ -13,7 +13,7 @@ var _Project_orderedLinkables, _Project_index;
 import { mapEntries } from "../lib/objects.js";
 import { pathAndBufferToProjectFile, } from "./files/project-file-set.js";
 import { addSyntheticFiles } from "./synthetic-files.js";
-import { sortHtmlFiles } from "./order.js";
+import { sortEntries } from "./order.js";
 export function buildProject(files, template) {
     return new Project(files, template).build();
 }
@@ -31,7 +31,10 @@ export class Project {
     }
     get orderedLinkables() {
         var _a;
-        return (__classPrivateFieldSet(this, _Project_orderedLinkables, (_a = __classPrivateFieldGet(this, _Project_orderedLinkables, "f")) !== null && _a !== void 0 ? _a : sortHtmlFiles(this.files).map((path) => Linkable(this.files[path])), "f"));
+        return __classPrivateFieldSet(this, _Project_orderedLinkables, (_a = __classPrivateFieldGet(this, _Project_orderedLinkables, "f")) !== null && _a !== void 0 ? _a : sortEntries(this.files).filter(e => e.type === "html"), "f");
+    }
+    get orderedEntries() {
+        return sortEntries(this.files);
     }
     get index() {
         var _a;
@@ -47,11 +50,5 @@ export function indexLinkables(linkables) {
     return {
         orderedLinkables: linkables,
         index,
-    };
-}
-function Linkable(file) {
-    return {
-        path: file.outputPath,
-        title: file.type === "html" ? file.title : "",
     };
 }

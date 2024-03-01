@@ -1,4 +1,7 @@
+import { Entry } from "./order";
+
 export interface ProjectGlobalInfo {
+  orderedEntries: Array<Entry>;
   // orderedLinkables contains the information about each HTML page needed
   // to construct a user-friendly link to it. The array is in "page order",
   // i.e. the order in which you'd visit the pages if you repeatedly clicked

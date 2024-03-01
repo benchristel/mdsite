@@ -2,7 +2,12 @@ import { test, expect, is, equals } from "@benchristel/taste";
 import { HtmlFile } from "./files/html-file.js";
 import { OrderFile } from "./files/order-file.js";
 import { trimMargin } from "../testing/formatting.js";
-import { orderTxtRank, sortHtmlFiles, titleForOutputPath } from "./order.js";
+import {
+  isLatent,
+  orderTxtRank,
+  sortHtmlFiles,
+  titleForOutputPath,
+} from "./order.js";
 
 test("orderTxtRank", {
   "is [index, Infinity, <title>, <filename>] given /index.html"() {
@@ -85,6 +90,26 @@ test("orderTxtRank", {
       "Foo",
       "foo.html",
     ]);
+  },
+});
+
+test("isLatent", {
+  "is true given a path not in the list"() {
+    const path = "/foo.html";
+    const files: string[] = [];
+    expect(isLatent(path, files), is, true);
+  },
+
+  "is false given a path in the list"() {
+    const path = "/foo.html";
+    const files: string[] = ["/foo.html"];
+    expect(isLatent(path, files), is, false);
+  },
+
+  "is false given an extant directory"() {
+    const path = "/foo";
+    const files: string[] = ["/foo/bar.md"];
+    expect(isLatent(path, files), is, false);
   },
 });
 

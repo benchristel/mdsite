@@ -1,11 +1,12 @@
 import { contains, removePrefix, removeSuffix } from "../lib/strings.js";
 import { dirname, relative } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
-import { Linkable } from "./project-global-info.js";
+import { Entry } from "./order.js";
+import { unreachable } from "../lib/unreachable.js";
 
 export type TreeOfContents = Array<Node>;
 
-export type Node = Branch | Leaf;
+export type Node = Branch | Leaf | Bud;
 
 export type Branch = {
   type: "branch";
@@ -16,6 +17,13 @@ export type Branch = {
 
 export type Leaf = {
   type: "leaf";
+  path: string;
+  title: string;
+};
+
+export type Bud = {
+  // a latent leaf
+  type: "bud";
   path: string;
   title: string;
 };
@@ -31,12 +39,23 @@ export function leaf(params: { path: string; title: string }): Leaf {
   return { type: "leaf", ...params };
 }
 
+export function bud({ path, title }: { path: string; title: string }): Bud {
+  return { type: "bud", path, title };
+}
+
+export type TocOptions = {
+  root?: string;
+  includeLatent?: boolean;
+};
+
 export function toc(
-  orderedLinkables: Linkable[],
-  root: string = "/"
+  entries: Entry[],
+  options: TocOptions = {}
 ): TreeOfContents {
-  root = ensureTrailingSlash(root);
-  return orderedLinkables
+  const { root: rawRoot = "/", includeLatent = false } = options;
+  const root = ensureTrailingSlash(rawRoot);
+  return entries
+    .filter((e) => e.type !== "latent-entry" || includeLatent)
     .filter(
       ({ path }) =>
         path.startsWith(root) &&
@@ -45,22 +64,28 @@ export function toc(
         !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
     )
     .map(
-      ({ path, title }): Node =>
-        path.endsWith("/index.html")
+      ({ type, path, title }): Node =>
+        type === "latent-entry"
+          ? bud({ path, title })
+          : path.endsWith("/index.html")
           ? branch(
               { path, title },
-              ...toc(orderedLinkables, removeSuffix(path, "index.html"))
+              ...toc(entries, {
+                root: removeSuffix(path, "index.html"),
+                includeLatent,
+              })
             )
           : leaf({ path, title })
     );
 }
 
 export function htmlToc(
-  orderedLinkables: Linkable[],
+  entries: Entry[],
   linkOrigin: string,
-  root: string = dirname(linkOrigin)
+  options: TocOptions = {}
 ): string {
-  const theToc = toc(orderedLinkables, root);
+  const { root = dirname(linkOrigin), includeLatent = false } = options;
+  const theToc = toc(entries, { root, includeLatent });
   if (theToc.length === 0) {
     return "";
   }
@@ -70,17 +95,25 @@ export function htmlToc(
 
 function htmlForToc(toc: TreeOfContents, linkOrigin: string): string {
   return (
-    "<ul>" +
-    toc
-      .map((node) => {
-        const cssClass =
-          linkOrigin === node.path ? ` class="mdsite-current-file"` : "";
-        const subToc =
-          node.type === "leaf" ? "" : htmlForToc(node.contents, linkOrigin);
-        const relativePath = relative(dirname(linkOrigin), node.path);
-        return `<li${cssClass}><a href="${relativePath}">${node.title}</a>${subToc}</li>`;
-      })
-      .join("") +
-    "</ul>"
+    "<ul>" + toc.map((node) => htmlTocNode(node, linkOrigin)).join("") + "</ul>"
   );
+}
+
+function htmlTocNode(node: Node, linkOrigin: string): string {
+  const relativePath = relative(dirname(linkOrigin), node.path);
+  const cssClass =
+    linkOrigin === node.path ? ` class="mdsite-current-file"` : "";
+
+  switch (node.type) {
+    case "branch":
+      return `<li${cssClass}><a href="${relativePath}">${
+        node.title
+      }</a>${htmlForToc(node.contents, linkOrigin)}</li>`;
+    case "leaf":
+      return `<li${cssClass}><a href="${relativePath}">${node.title}</a></li>`;
+    case "bud":
+      return `<li${cssClass}>${node.title}</li>`;
+    default:
+      throw unreachable("unrecognized node type", node);
+  }
 }

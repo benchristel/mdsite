@@ -5,6 +5,7 @@ import { title as getTitle } from "../files/title.js";
 import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
+import { parseTocArgs } from "./toc.js";
 export const expandAll = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
 }, "expandAll");
@@ -41,8 +42,9 @@ function content() {
 function title() {
     return (context) => getTitle(context.outputPath, context.content);
 }
-function toc(_, args) {
-    return (context) => htmlToc(context.globalInfo.orderedLinkables, context.outputPath, args[0]);
+function toc(_, rawArgs) {
+    const { root, includeLatent } = parseTocArgs(rawArgs);
+    return (context) => htmlToc(context.globalInfo.orderedEntries, context.outputPath, { root, includeLatent });
 }
 function next() {
     return (context) => nextLink(context.globalInfo, context.outputPath);
