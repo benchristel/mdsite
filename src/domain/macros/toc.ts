@@ -1,5 +1,5 @@
 import yargsParser from "yargs-parser";
-import { TocOptions } from "../toc";
+import { TocOptions } from "../toc.js";
 
 export function parseTocArgs(raw: string[]): TocOptions {
   const args = yargsParser(raw, { boolean: ["include-latent"] });

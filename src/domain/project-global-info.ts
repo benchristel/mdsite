@@ -1,4 +1,4 @@
-import { Entry } from "./order";
+import { Entry } from "./order.js";
 
 export interface ProjectGlobalInfo {
   orderedEntries: Array<Entry>;

@@ -1,5 +1,5 @@
 import { test, expect, equals } from "@benchristel/taste";
-import { diff } from "./sets";
+import { diff } from "./sets.js";
 function empty() {
     return setOf();
 }

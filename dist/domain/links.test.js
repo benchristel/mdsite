@@ -1,5 +1,5 @@
 import { test, expect, is } from "@benchristel/taste";
-import { parentOf, upLink } from "./links";
+import { parentOf, upLink } from "./links.js";
 test("upLink", {
     "given /index.html"() {
         expect(upLink("/index.html"), is, `<a href="index.html">Up</a>`);

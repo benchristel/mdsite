@@ -1,4 +1,4 @@
-import type { ProjectGlobalInfo } from "../project-global-info";
+import type { ProjectGlobalInfo } from "../project-global-info.js";
 
 export type Macro = (context: EvaluationContext) => string;
 

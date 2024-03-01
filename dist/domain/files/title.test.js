@@ -1,5 +1,5 @@
 import { test, expect, is } from "@benchristel/taste";
-import { title } from "./title";
+import { title } from "./title.js";
 test("title", {
     "extracts the title from an h1 tag"() {
         expect(title("", "<h1>foo</h1>"), is, "foo");

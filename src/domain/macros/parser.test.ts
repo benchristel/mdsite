@@ -1,6 +1,6 @@
 import { test, expect, equals, not } from "@benchristel/taste";
-import { getTokens, macros } from "./parser";
-import { first, isEmpty } from "../../lib/indexables";
+import { getTokens, macros } from "./parser.js";
+import { first, isEmpty } from "../../lib/indexables.js";
 
 const findAllMacros = (s: string) => [...s.matchAll(macros)].map(first);
 

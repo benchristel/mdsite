@@ -1,6 +1,6 @@
-import { htmlFromMarkdown } from "../../lib/markdown";
-import { removeSuffix } from "../../lib/strings";
-import { HtmlFile } from "./html-file";
+import { htmlFromMarkdown } from "../../lib/markdown.js";
+import { removeSuffix } from "../../lib/strings.js";
+import { HtmlFile } from "./html-file.js";
 export function MarkdownFile(path, markdown) {
     const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
     const htmlPath = removeSuffix(path, ".md") + ".html";

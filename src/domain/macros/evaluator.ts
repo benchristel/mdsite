@@ -6,7 +6,6 @@ import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
-import yargsParser from "yargs-parser";
 import { parseTocArgs } from "./toc.js";
 
 export const expandAll = curry(

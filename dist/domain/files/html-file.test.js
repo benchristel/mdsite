@@ -1,8 +1,8 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { HtmlFile } from "./html-file";
-import { MarkdownFile, replaceMarkdownHrefs } from "./markdown-file";
-import { trimMargin } from "../../testing/formatting";
-import { Project } from "../project";
+import { HtmlFile } from "./html-file.js";
+import { MarkdownFile, replaceMarkdownHrefs } from "./markdown-file.js";
+import { trimMargin } from "../../testing/formatting.js";
+import { Project } from "../project.js";
 test("HtmlFile", {
     "replaces absolute hrefs with relative ones"() {
         const project = new Project({}, "{{content}}");

@@ -1,5 +1,5 @@
 import { test, expect, is } from "@benchristel/taste";
-import { htmlFromMarkdown } from "./markdown";
+import { htmlFromMarkdown } from "./markdown.js";
 test("htmlFromMarkdown", {
     "renders an empty document"() {
         expect(htmlFromMarkdown(""), is, "");
