@@ -2,10 +2,9 @@ import { curry } from "@benchristel/taste";
 import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
 import { title as getTitle } from "../files/title.js";
-import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
-import { parseTocArgs } from "./toc.js";
+import { toc } from "./toc.js";
 export const expandAll = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
 }, "expandAll");
@@ -41,13 +40,6 @@ function content() {
 }
 function title() {
     return (context) => getTitle(context.outputPath, context.content);
-}
-function toc(_, rawArgs) {
-    const { root, includeLatent } = parseTocArgs(rawArgs);
-    return (context) => htmlToc(context.globalInfo.orderedEntries, context.outputPath, {
-        root,
-        includeLatent,
-    });
 }
 function next() {
     return (context) => nextLink(context.globalInfo, context.outputPath);

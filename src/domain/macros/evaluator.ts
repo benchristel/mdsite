@@ -6,7 +6,7 @@ import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
-import { parseTocArgs } from "./toc.js";
+import { parseTocArgs, toc } from "./toc.js";
 
 export const expandAll = curry(
   (context: EvaluationContext, htmlTemplate: string): string => {
@@ -55,15 +55,6 @@ function content(): Macro {
 
 function title(): Macro {
   return (context) => getTitle(context.outputPath, context.content);
-}
-
-function toc(_: string, rawArgs: string[]): Macro {
-  const { root, includeLatent } = parseTocArgs(rawArgs);
-  return (context) =>
-    htmlToc(context.globalInfo.orderedEntries, context.outputPath, {
-      root,
-      includeLatent,
-    });
 }
 
 function next(): Macro {
