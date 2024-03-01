@@ -7,12 +7,13 @@ import { diff } from "../../lib/sets.js";
 import { line } from "../../lib/strings.js";
 export function OrderFile(path, contents) {
     const dir = ensureTrailingSlash(dirname(path));
+    const specified = contents.split("!unspecified")[0];
     const self = {
         type: "order",
         outputPath: path,
-        filenames: contents
-            .split("!unspecified")[0]
+        filenames: specified
             .split("\n")
+            .filter(not(isComment))
             .filter(not(isBlank))
             .map((f) => basename(f.replace(/\.md$/, ".html").trim())),
         render,
@@ -27,10 +28,7 @@ export function OrderFile(path, contents) {
         unspecified.delete("index.html");
         return [
             self.outputPath,
-            buffer(self.filenames
-                .filter((name) => name !== "index.html")
-                .map(line)
-                .join("") +
+            buffer(specified +
                 (unspecified.size
                     ? "\n!unspecified\n" + [...unspecified].sort().map(line).join("")
                     : "")),
@@ -39,4 +37,7 @@ export function OrderFile(path, contents) {
 }
 export function isOrderFile(path) {
     return basename(path) === "order.txt";
+}
+function isComment(line) {
+    return /^\s*(\/\/|#)/.test(line);
 }

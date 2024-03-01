@@ -16,12 +16,13 @@ export type OrderFile = {
 
 export function OrderFile(path: string, contents: string): OrderFile {
   const dir = ensureTrailingSlash(dirname(path));
+  const specified = contents.split("!unspecified")[0];
   const self: OrderFile = {
     type: "order",
     outputPath: path,
-    filenames: contents
-      .split("!unspecified")[0]
+    filenames: specified
       .split("\n")
+      .filter(not(isComment))
       .filter(not(isBlank))
       .map((f) => basename(f.replace(/\.md$/, ".html").trim())),
     render,
@@ -40,10 +41,7 @@ export function OrderFile(path: string, contents: string): OrderFile {
     return [
       self.outputPath,
       buffer(
-        self.filenames
-          .filter((name) => name !== "index.html")
-          .map(line)
-          .join("") +
+        specified +
           (unspecified.size
             ? "\n!unspecified\n" + [...unspecified].sort().map(line).join("")
             : "")
@@ -54,4 +52,8 @@ export function OrderFile(path: string, contents: string): OrderFile {
 
 export function isOrderFile(path: string): boolean {
   return basename(path) === "order.txt";
+}
+
+function isComment(line: string) {
+  return /^\s*(\/\/|#)/.test(line);
 }

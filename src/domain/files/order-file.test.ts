@@ -70,48 +70,6 @@ test("OrderFile", {
     expect(orderFile.filenames, equals, ["a.html", "b"]);
   },
 
-  "removes index.html (which has no effect) when rendering"() {
-    const orderFile = OrderFile(
-      "/order.txt",
-      trimMargin`
-      a
-      index.html
-      b
-    `
-    );
-    const globalProjectInfo = {
-      index: {},
-      template: "",
-      orderedLinkables: [
-        { path: "/a", title: "" },
-        { path: "/b", title: "" },
-        { path: "/index.html", title: "" },
-      ],
-    };
-    expect(String(orderFile.render(globalProjectInfo)[1]), equals, "a\nb\n");
-  },
-
-  "removes index.md (which has no effect) when rendering"() {
-    const orderFile = OrderFile(
-      "/order.txt",
-      trimMargin`
-      a
-      index.md
-      b
-    `
-    );
-    const globalProjectInfo = {
-      index: {},
-      template: "",
-      orderedLinkables: [
-        { path: "/a", title: "" },
-        { path: "/b", title: "" },
-        { path: "/index.html", title: "" },
-      ],
-    };
-    expect(String(orderFile.render(globalProjectInfo)[1]), equals, "a\nb\n");
-  },
-
   "does not list index.html in the !unspecified section"() {
     const orderFile = OrderFile("/order.txt", "");
     const globalProjectInfo = {
