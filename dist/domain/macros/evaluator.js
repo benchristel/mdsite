@@ -5,6 +5,7 @@ import { title as getTitle } from "../files/title.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { toc } from "./toc.js";
+import { link } from "./link.js";
 export const expandAll = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
 }, "expandAll");
@@ -26,6 +27,7 @@ const macroConstructors = {
     up,
     home,
     breadcrumb,
+    link,
     macro,
 };
 function UndefinedMacro(macroStr) {

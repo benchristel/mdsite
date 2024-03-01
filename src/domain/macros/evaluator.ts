@@ -7,6 +7,7 @@ import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
 import { parseTocArgs, toc } from "./toc.js";
+import { link } from "./link.js";
 
 export const expandAll = curry(
   (context: EvaluationContext, htmlTemplate: string): string => {
@@ -36,6 +37,7 @@ const macroConstructors: Record<string, MacroConstructor> = {
   up,
   home,
   breadcrumb,
+  link,
   macro,
 };
 
