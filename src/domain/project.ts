@@ -8,10 +8,6 @@ import { addSyntheticFiles } from "./synthetic-files.js";
 import type { Linkable, ProjectGlobalInfo } from "./project-global-info.js";
 import { Entry, sortEntries } from "./order.js";
 
-export function buildProject(files: FileSet, template: string): FileSet {
-  return new Project(files, template).build();
-}
-
 export class Project implements ProjectGlobalInfo {
   files: ProjectFileSet;
   template: string;

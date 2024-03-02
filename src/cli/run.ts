@@ -1,4 +1,4 @@
-import { buildProject } from "../domain/project.js";
+import { Project } from "../domain/project.js";
 import { listDeep, writeDeep } from "../lib/files.js";
 import { parseArgs, BuildArgs, OrderArgs } from "./args.js";
 import { intoObject } from "../lib/objects.js";
@@ -25,7 +25,7 @@ async function build(args: BuildArgs) {
     readTemplateFile(args.templateFile),
   ] as const;
   return Promise.all(inputs)
-    .then(([content, template]) => buildProject(content, template))
+    .then(([content, template]) => new Project(content, template).build())
     .then((output) => writeDeep(args.outputDir, output));
 }
 
@@ -33,7 +33,7 @@ async function order(args: OrderArgs) {
   const { inputDir } = args;
 
   const input = await readFilesFromInputDirectory(inputDir);
-  const output = buildProject(input, "");
+  const output = new Project(input, "").build();
   const orderFiles = Object.entries(output)
     .filter(([path]) => isOrderFile(path))
     .reduce(intoObject, {});
