@@ -33,7 +33,7 @@ test("{{link}}", {
     expect(
       link("", ["/link-to-me.html"])(context),
       equals,
-      `<a href="/link-to-me.html">link-to-me.html</a>`
+      `<a href="/link-to-me.html">/link-to-me.html</a>`
     );
   },
 
@@ -49,7 +49,7 @@ test("{{link}}", {
     expect(
       link("", ["link-to-me"])(context),
       equals,
-      `<a href="/a/b/link-to-me.html">link-to-me.html</a>`
+      `<a href="/a/b/link-to-me.html">link-to-me</a>`
     );
   },
 

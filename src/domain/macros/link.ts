@@ -25,5 +25,5 @@ function abstractLink(
   const target = targets[0];
   return target == null
     ? { classes: ` class="mdsite-broken-link"`, href: "#", title: search }
-    : { classes: "", href: target.path, title: target.title };
+    : { classes: "", href: target.path, title: search };
 }
