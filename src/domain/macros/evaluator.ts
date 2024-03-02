@@ -2,11 +2,10 @@ import { curry } from "@benchristel/taste";
 import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
 import { title as getTitle } from "../files/title.js";
-import { htmlToc } from "../toc.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
-import { parseTocArgs, toc } from "./toc.js";
+import { toc } from "./toc.js";
 import { link } from "./link.js";
 
 export const expandAll = curry(

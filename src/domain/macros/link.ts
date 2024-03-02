@@ -1,16 +1,17 @@
 import { EvaluationContext, Macro } from "./types.js";
 
 export function link(_: string, args: string[]): Macro {
-  const search = args[0];
+  const [search, customTitle] = args;
   return (context) => {
-    const { classes, href, title } = abstractLink(search, context);
+    const { classes, href, title } = abstractLink(search, context, customTitle);
     return `<a${classes} href="${href}">${title}</a>`;
   };
 }
 
 function abstractLink(
   search: string,
-  context: EvaluationContext
+  context: EvaluationContext,
+  customTitle?: string
 ): { classes: string; href: string; title: string } {
   const targets = context.globalInfo.orderedLinkables.filter(({ path }) =>
     path.includes(search)
@@ -25,5 +26,5 @@ function abstractLink(
   const target = targets[0];
   return target == null
     ? { classes: ` class="mdsite-broken-link"`, href: "#", title: search }
-    : { classes: "", href: target.path, title: search };
+    : { classes: "", href: target.path, title: customTitle ?? search };
 }

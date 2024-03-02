@@ -69,4 +69,34 @@ test("{{link}}", {
       `<a class="mdsite-broken-link" href="#">link-to-me (ambiguous link)</a>`
     );
   },
+
+  "uses the provided title"() {
+    const project = new Project({
+      "/link-to-me.html": buffer(""),
+    });
+    const context: EvaluationContext = {
+      globalInfo: project,
+      content: "content is not used here",
+      outputPath: "/foo.html",
+    };
+    expect(
+      link("", ["link-to-me", "The Title"])(context),
+      equals,
+      `<a href="/link-to-me.html">The Title</a>`
+    );
+  },
+
+  "always uses the default title for a broken link"() {
+    const project = new Project({});
+    const context: EvaluationContext = {
+      globalInfo: project,
+      content: "content is not used here",
+      outputPath: "/foo.html",
+    };
+    expect(
+      link("", ["link-to-me", "The Title"])(context),
+      equals,
+      `<a class="mdsite-broken-link" href="#">link-to-me</a>`
+    );
+  },
 });
