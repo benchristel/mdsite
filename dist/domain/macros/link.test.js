@@ -21,7 +21,7 @@ test("{{link}}", {
             content: "content is not used here",
             outputPath: "/foo.html",
         };
-        expect(link("", ["/link-to-me.html"])(context), equals, `<a href="/link-to-me.html">link-to-me.html</a>`);
+        expect(link("", ["/link-to-me.html"])(context), equals, `<a href="/link-to-me.html">/link-to-me.html</a>`);
     },
     "resolves a partial path"() {
         const project = new Project({
@@ -32,7 +32,7 @@ test("{{link}}", {
             content: "content is not used here",
             outputPath: "/foo.html",
         };
-        expect(link("", ["link-to-me"])(context), equals, `<a href="/a/b/link-to-me.html">link-to-me.html</a>`);
+        expect(link("", ["link-to-me"])(context), equals, `<a href="/a/b/link-to-me.html">link-to-me</a>`);
     },
     "creates a broken link for an ambiguous path"() {
         const project = new Project({
@@ -45,5 +45,25 @@ test("{{link}}", {
             outputPath: "/foo.html",
         };
         expect(link("", ["link-to-me"])(context), equals, `<a class="mdsite-broken-link" href="#">link-to-me (ambiguous link)</a>`);
+    },
+    "uses the provided title"() {
+        const project = new Project({
+            "/link-to-me.html": buffer(""),
+        });
+        const context = {
+            globalInfo: project,
+            content: "content is not used here",
+            outputPath: "/foo.html",
+        };
+        expect(link("", ["link-to-me", "The Title"])(context), equals, `<a href="/link-to-me.html">The Title</a>`);
+    },
+    "always uses the default title for a broken link"() {
+        const project = new Project({});
+        const context = {
+            globalInfo: project,
+            content: "content is not used here",
+            outputPath: "/foo.html",
+        };
+        expect(link("", ["link-to-me", "The Title"])(context), equals, `<a class="mdsite-broken-link" href="#">link-to-me</a>`);
     },
 });

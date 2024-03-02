@@ -14,9 +14,6 @@ import { mapEntries } from "../lib/objects.js";
 import { pathAndBufferToProjectFile, } from "./files/project-file-set.js";
 import { addSyntheticFiles } from "./synthetic-files.js";
 import { sortEntries } from "./order.js";
-export function buildProject(files, template) {
-    return new Project(files, template).build();
-}
 export class Project {
     constructor(files, template = "dummy template") {
         _Project_orderedLinkables.set(this, void 0);

@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { buildProject } from "../domain/project.js";
+import { Project } from "../domain/project.js";
 import { listDeep, writeDeep } from "../lib/files.js";
 import { parseArgs } from "./args.js";
 import { intoObject } from "../lib/objects.js";
@@ -33,7 +33,7 @@ function build(args) {
             readTemplateFile(args.templateFile),
         ];
         return Promise.all(inputs)
-            .then(([content, template]) => buildProject(content, template))
+            .then(([content, template]) => new Project(content, template).build())
             .then((output) => writeDeep(args.outputDir, output));
     });
 }
@@ -41,7 +41,7 @@ function order(args) {
     return __awaiter(this, void 0, void 0, function* () {
         const { inputDir } = args;
         const input = yield readFilesFromInputDirectory(inputDir);
-        const output = buildProject(input, "");
+        const output = new Project(input, "").build();
         const orderFiles = Object.entries(output)
             .filter(([path]) => isOrderFile(path))
             .reduce(intoObject, {});
