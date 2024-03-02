@@ -1,6 +1,6 @@
 {
   "name": "@benchristel/mdsite",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A modern generator for old-school static sites",
   "main": "dist/main.js",
   "repository": "git@github.com:benchristel/mdsite",
