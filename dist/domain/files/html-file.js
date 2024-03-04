@@ -8,9 +8,9 @@ import { pass, pipe } from "../../lib/functional.js";
 export class HtmlFile {
     constructor(outputPath, rawHtml) {
         this.type = "html";
-        this.render = (globalInfo) => {
+        this.render = (project) => {
             const { rawHtml: content, outputPath } = this;
-            const renderedHtml = pass(globalInfo.template, pipe(expandAll({ content, globalInfo, outputPath, title: this.title }), relativizeLinks(this.outputPath)));
+            const renderedHtml = pass(project.template, pipe(expandAll({ content, globalInfo: project, outputPath, title: this.title }), relativizeLinks(this.outputPath)));
             return [this.outputPath, buffer(renderedHtml)];
         };
         this.rawHtml = rawHtml;

@@ -19,12 +19,17 @@ export class HtmlFile {
     this.title = this.getTitle();
   }
 
-  render = (globalInfo: ProjectGlobalInfo): [string, Buffer] => {
+  render = (project: ProjectGlobalInfo): [string, Buffer] => {
     const { rawHtml: content, outputPath } = this;
     const renderedHtml = pass(
-      globalInfo.template,
+      project.template,
       pipe(
-        expandAll({ content, globalInfo, outputPath, title: this.title }),
+        expandAll({
+          content,
+          globalInfo: project,
+          outputPath,
+          title: this.title,
+        }),
         relativizeLinks(this.outputPath)
       )
     );
