@@ -20,16 +20,11 @@ export class HtmlFile {
   }
 
   render = (project: ProjectGlobalInfo): [string, Buffer] => {
-    const { rawHtml: content, outputPath } = this;
+    const { rawHtml: content, outputPath, title } = this;
     const renderedHtml = pass(
       project.template,
       pipe(
-        expandAll({
-          content,
-          globalInfo: project,
-          outputPath,
-          title: this.title,
-        }),
+        expandAll({ content, globalInfo: project, outputPath, title }),
         relativizeLinks(this.outputPath)
       )
     );

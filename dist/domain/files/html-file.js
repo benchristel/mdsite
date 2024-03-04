@@ -9,8 +9,8 @@ export class HtmlFile {
     constructor(outputPath, rawHtml) {
         this.type = "html";
         this.render = (project) => {
-            const { rawHtml: content, outputPath } = this;
-            const renderedHtml = pass(project.template, pipe(expandAll({ content, globalInfo: project, outputPath, title: this.title }), relativizeLinks(this.outputPath)));
+            const { rawHtml: content, outputPath, title } = this;
+            const renderedHtml = pass(project.template, pipe(expandAll({ content, globalInfo: project, outputPath, title }), relativizeLinks(this.outputPath)));
             return [this.outputPath, buffer(renderedHtml)];
         };
         this.rawHtml = rawHtml;
