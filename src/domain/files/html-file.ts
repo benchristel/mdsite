@@ -15,8 +15,8 @@ export class HtmlFile implements HtmlFile {
 
   constructor(outputPath: string, rawHtml: string) {
     this.rawHtml = rawHtml;
-    this.title = title(outputPath, rawHtml);
     this.outputPath = outputPath;
+    this.title = this.getTitle();
   }
 
   render = (globalInfo: ProjectGlobalInfo): [string, Buffer] => {
@@ -30,6 +30,22 @@ export class HtmlFile implements HtmlFile {
     );
     return [this.outputPath, buffer(renderedHtml)];
   };
+
+  private getTitle(): string {
+    const $ = cheerio.load(this.rawHtml);
+    return text($("h1").slice(0, 1)) || this.defaultTitleFromPath();
+  }
+
+  private defaultTitleFromPath() {
+    const path = this.outputPath;
+    if (path === "/index.html") {
+      return "index.html";
+    }
+    if (basename(path) === "index.html") {
+      return basename(dirname(path));
+    }
+    return basename(path);
+  }
 }
 
 const relativizeLinks = curry((fromPath: string, html: string): string => {
@@ -38,18 +54,3 @@ const relativizeLinks = curry((fromPath: string, html: string): string => {
     (_, prefix, path) => prefix + relative(dirname(fromPath), path)
   );
 }, "relativizeLinks");
-
-function title(path: string, html: string): string {
-  const $ = cheerio.load(html);
-  return text($("h1").slice(0, 1)) || defaultTitle(path);
-}
-
-function defaultTitle(path: string) {
-  if (path === "/index.html") {
-    return "index.html";
-  }
-  if (basename(path) === "index.html") {
-    return basename(dirname(path));
-  }
-  return basename(path);
-}
