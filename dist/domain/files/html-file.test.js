@@ -35,6 +35,32 @@ test("HtmlFile", {
         expect(String(rendered), is, `<p><code>&lt;a href=&quot;/baz/kludge.html&quot;&gt;&lt;/a&gt;</code></p>`);
     },
 });
+test("HtmlFile.title", {
+    "extracts the title from an h1 tag"() {
+        expect(new HtmlFile("", "<h1>foo</h1>").title, is, "foo");
+    },
+    "extracts the title from an h1 tag with an id"() {
+        expect(new HtmlFile("", `<h1 id="the-id">foo</h1>`).title, is, "foo");
+    },
+    "extracts the title from an h1 tag with child tags"() {
+        expect(new HtmlFile("", `<h1><code>foo</code></h1>`).title, is, "foo");
+    },
+    "uses the title from the first h1 tag if there are several"() {
+        expect(new HtmlFile("", `<h1>the title</h1><h1>not this</h1>`).title, is, "the title");
+    },
+    "defaults to the filename if there is no h1"() {
+        expect(new HtmlFile("dir/file.html", `<p>whoa</p>`).title, is, "file.html");
+    },
+    "defaults to the filename if the h1 is empty"() {
+        expect(new HtmlFile("file.html", `<h1></h1>`).title, is, "file.html");
+    },
+    "defaults to the name of the containing directory if the filename is index.html"() {
+        expect(new HtmlFile("stuff/index.html", "").title, is, "stuff");
+    },
+    "defaults to index.html for the root index"() {
+        expect(new HtmlFile("/index.html", "").title, is, "index.html");
+    },
+});
 test("replaceMarkdownHrefs", {
     "converts a .md link to a .html link"() {
         expect(replaceMarkdownHrefs(`<a href="foo/bar.md">link</a>`), equals, `<a href="foo/bar.html">link</a>`);

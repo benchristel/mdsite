@@ -1,7 +1,6 @@
 import { curry } from "@benchristel/taste";
 import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
-import { title as getTitle } from "../files/title.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { toc } from "./toc.js";
@@ -41,7 +40,7 @@ function content() {
     return (context) => context.content.replace(macros, evaluate(context));
 }
 function title() {
-    return (context) => getTitle(context.outputPath, context.content);
+    return (context) => context.title;
 }
 function next() {
     return (context) => nextLink(context.globalInfo, context.outputPath);

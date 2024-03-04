@@ -1,7 +1,8 @@
-import { buffer } from "../../lib/buffer.js";
-import { title } from "./title.js";
+import { basename, dirname, relative } from "path";
+import * as cheerio from "cheerio";
+import { text } from "cheerio";
 import { curry } from "@benchristel/taste";
-import { dirname, relative } from "path";
+import { buffer } from "../../lib/buffer.js";
 import { expandAll } from "../macros/index.js";
 import { pass, pipe } from "../../lib/functional.js";
 export class HtmlFile {
@@ -9,7 +10,7 @@ export class HtmlFile {
         this.type = "html";
         this.render = (globalInfo) => {
             const { rawHtml: content, outputPath } = this;
-            const renderedHtml = pass(globalInfo.template, pipe(expandAll({ content, globalInfo, outputPath }), relativizeLinks(this.outputPath)));
+            const renderedHtml = pass(globalInfo.template, pipe(expandAll({ content, globalInfo, outputPath, title: this.title }), relativizeLinks(this.outputPath)));
             return [this.outputPath, buffer(renderedHtml)];
         };
         this.rawHtml = rawHtml;
@@ -20,3 +21,16 @@ export class HtmlFile {
 const relativizeLinks = curry((fromPath, html) => {
     return html.replace(/((?:href|src)=")(\/[^"]+)/g, (_, prefix, path) => prefix + relative(dirname(fromPath), path));
 }, "relativizeLinks");
+function title(path, html) {
+    const $ = cheerio.load(html);
+    return text($("h1").slice(0, 1)) || defaultTitle(path);
+}
+function defaultTitle(path) {
+    if (path === "/index.html") {
+        return "index.html";
+    }
+    if (basename(path) === "index.html") {
+        return basename(dirname(path));
+    }
+    return basename(path);
+}

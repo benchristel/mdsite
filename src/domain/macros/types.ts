@@ -5,6 +5,7 @@ export type Macro = (context: EvaluationContext) => string;
 export type EvaluationContext = {
   outputPath: string;
   content: string;
+  title: string;
   globalInfo: ProjectGlobalInfo;
 };
 

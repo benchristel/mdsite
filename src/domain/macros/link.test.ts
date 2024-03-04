@@ -8,8 +8,8 @@ test("{{link}}", {
   "creates a broken link given a file that does not exist"() {
     const project = new Project({});
     const context: EvaluationContext = {
+      ...contextDummies,
       globalInfo: project,
-      content: "content is not used here",
       outputPath: "/foo.html",
     };
 
@@ -25,8 +25,8 @@ test("{{link}}", {
       "/link-to-me.html": buffer(""),
     });
     const context: EvaluationContext = {
+      ...contextDummies,
       globalInfo: project,
-      content: "content is not used here",
       outputPath: "/foo.html",
     };
 
@@ -42,8 +42,8 @@ test("{{link}}", {
       "/a/b/link-to-me.html": buffer(""),
     });
     const context: EvaluationContext = {
+      ...contextDummies,
       globalInfo: project,
-      content: "content is not used here",
       outputPath: "/foo.html",
     };
     expect(
@@ -59,8 +59,8 @@ test("{{link}}", {
       "/c/d/link-to-me.html": buffer(""),
     });
     const context: EvaluationContext = {
+      ...contextDummies,
       globalInfo: project,
-      content: "content is not used here",
       outputPath: "/foo.html",
     };
     expect(
@@ -75,8 +75,8 @@ test("{{link}}", {
       "/link-to-me.html": buffer(""),
     });
     const context: EvaluationContext = {
+      ...contextDummies,
       globalInfo: project,
-      content: "content is not used here",
       outputPath: "/foo.html",
     };
     expect(
@@ -89,8 +89,8 @@ test("{{link}}", {
   "always uses the default title for a broken link"() {
     const project = new Project({});
     const context: EvaluationContext = {
+      ...contextDummies,
       globalInfo: project,
-      content: "content is not used here",
       outputPath: "/foo.html",
     };
     expect(
@@ -100,3 +100,8 @@ test("{{link}}", {
     );
   },
 });
+
+const contextDummies = {
+  content: "content is not used here",
+  title: "title is not used here",
+};

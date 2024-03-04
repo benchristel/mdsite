@@ -18,8 +18,12 @@ test("expandAll", {
 
   "expands multiple macros"() {
     const htmlTemplate = "{{title}} {{content}} {{title}}";
-    const context = { ...dummyContext, content: "<h1>hello</h1>" };
-    expect(expandAll(context, htmlTemplate), is, "hello <h1>hello</h1> hello");
+    const context = {
+      ...dummyContext,
+      content: "<p>goodbye</p>",
+      title: "hello",
+    };
+    expect(expandAll(context, htmlTemplate), is, "hello <p>goodbye</p> hello");
   },
 
   "is curried"() {
@@ -52,31 +56,11 @@ test("evaluating macros", {
     });
   },
 
-  "gets {{title}} from an <h1> element"() {
+  "gets {{title}} from the context"() {
     mockLogger(() => {
-      const context = { ...dummyContext, content: "<h1>The Title</h1>" };
+      const context = { ...dummyContext, title: "The Title" };
       const result = evaluate(context)("{{title}}");
       expect(result, equals, "The Title");
-    });
-  },
-
-  "defaults {{title}} to the filename"() {
-    mockLogger(() => {
-      const context = { ...dummyContext, outputPath: "/foo/bar.html" };
-      const result = evaluate(context)("{{title}}");
-      expect(result, equals, "bar.html");
-    });
-  },
-
-  "evaluates {{title}} in the content"() {
-    mockLogger(() => {
-      const context = {
-        ...dummyContext,
-        content: "hello {{title}}",
-        outputPath: "/foo/bar.html",
-      };
-      const result = evaluate(context)("{{content}}");
-      expect(result, equals, "hello bar.html");
     });
   },
 
@@ -96,5 +80,6 @@ test("evaluating macros", {
 const dummyContext = {
   outputPath: "",
   content: "",
+  title: "",
   globalInfo: new Project({}),
 };

@@ -1,7 +1,6 @@
 import { curry } from "@benchristel/taste";
 import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
-import { title as getTitle } from "../files/title.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
@@ -55,7 +54,7 @@ function content(): Macro {
 }
 
 function title(): Macro {
-  return (context) => getTitle(context.outputPath, context.content);
+  return (context) => context.title;
 }
 
 function next(): Macro {
