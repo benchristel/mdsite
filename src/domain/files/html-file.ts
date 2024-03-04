@@ -7,7 +7,7 @@ import type { ProjectGlobalInfo } from "../project-global-info.js";
 import { expandAll } from "../macros/index.js";
 import { pass, pipe } from "../../lib/functional.js";
 
-export class HtmlFile implements HtmlFile {
+export class HtmlFile {
   readonly type = "html";
   readonly rawHtml: string;
   readonly title: string;
