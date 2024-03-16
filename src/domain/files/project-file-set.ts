@@ -9,7 +9,7 @@ export type ProjectFile = OpaqueFile | HtmlFile | OrderFile;
 
 export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   if (path.endsWith(".md")) {
-    return MarkdownFile(path, contents.toString());
+    return new MarkdownFile(path, contents.toString());
   } else if (path.endsWith(".html")) {
     return new HtmlFile(path, contents.toString());
   } else if (path.endsWith("/order.txt")) {

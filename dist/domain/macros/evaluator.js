@@ -5,6 +5,7 @@ import { homeLink, nextLink, prevLink, upLink } from "../links.js";
 import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { toc } from "./toc.js";
 import { link } from "./link.js";
+import { inputpath } from "./inputpath.js";
 export const expandAll = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
 }, "expandAll");
@@ -28,6 +29,7 @@ const macroConstructors = {
     breadcrumb,
     link,
     macro,
+    inputpath,
 };
 function UndefinedMacro(macroStr) {
     const [name] = getTokens(macroStr);

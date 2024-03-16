@@ -30,7 +30,7 @@ test("HtmlFile", {
     },
     "leaves links in code tags alone"() {
         const project = new Project({}, "{{content}}");
-        const file = MarkdownFile("/foo/bar.md", '`<a href="/baz/kludge.html"></a>`');
+        const file = new MarkdownFile("/foo/bar.md", '`<a href="/baz/kludge.html"></a>`');
         const [_, rendered] = file.render(project);
         expect(String(rendered), is, `<p><code>&lt;a href=&quot;/baz/kludge.html&quot;&gt;&lt;/a&gt;</code></p>`);
     },

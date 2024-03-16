@@ -67,7 +67,7 @@ test("HtmlFile", {
 
   "leaves links in code tags alone"() {
     const project = new Project({}, "{{content}}");
-    const file = MarkdownFile(
+    const file = new MarkdownFile(
       "/foo/bar.md",
       '`<a href="/baz/kludge.html"></a>`'
     );

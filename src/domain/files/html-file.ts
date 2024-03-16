@@ -12,19 +12,27 @@ export class HtmlFile {
   readonly rawHtml: string;
   readonly title: string;
   readonly outputPath: string;
+  readonly inputPath: string;
 
   constructor(outputPath: string, rawHtml: string) {
     this.rawHtml = rawHtml;
     this.outputPath = outputPath;
+    this.inputPath = outputPath;
     this.title = this.getTitle();
   }
 
   render = (project: ProjectGlobalInfo): [string, Buffer] => {
-    const { rawHtml: content, outputPath, title } = this;
+    const { rawHtml: content, outputPath, inputPath, title } = this;
     const renderedHtml = pass(
       project.template,
       pipe(
-        expandAll({ content, globalInfo: project, outputPath, title }),
+        expandAll({
+          content,
+          globalInfo: project,
+          outputPath,
+          inputPath,
+          title,
+        }),
         relativizeLinks(this.outputPath)
       )
     );

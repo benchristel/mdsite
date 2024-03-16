@@ -104,4 +104,5 @@ test("{{link}}", {
 const contextDummies = {
   content: "content is not used here",
   title: "title is not used here",
+  inputPath: "inputPath is not used here",
 };

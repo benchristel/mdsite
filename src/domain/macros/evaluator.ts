@@ -6,6 +6,7 @@ import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { EvaluationContext, Macro, MacroConstructor } from "./types.js";
 import { toc } from "./toc.js";
 import { link } from "./link.js";
+import { inputpath } from "./inputpath.js";
 
 export const expandAll = curry(
   (context: EvaluationContext, htmlTemplate: string): string => {
@@ -37,6 +38,7 @@ const macroConstructors: Record<string, MacroConstructor> = {
   breadcrumb,
   link,
   macro,
+  inputpath,
 };
 
 function UndefinedMacro(macroStr: string): Macro {

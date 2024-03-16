@@ -61,6 +61,7 @@ test("evaluating macros", {
 });
 const dummyContext = {
     outputPath: "",
+    inputPath: "",
     content: "",
     title: "",
     globalInfo: new Project({}),
