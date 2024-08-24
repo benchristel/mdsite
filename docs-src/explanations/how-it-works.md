@@ -101,3 +101,10 @@ To populate your INPUTDIR with `order.txt` files, you can run
 
 Running `mdsite order` won't mess with the filenames you've listed
 manually, and won't affect the overall order of the pages on your site.
+
+## Markdown rendering
+
+`mdsite` uses [Marked](https://marked.js.org) to convert Markdown to HTML. The following extensions are included:
+
+- [marked-footnote](https://www.npmjs.com/package/marked-footnote)
+- [marked-gfm-heading-id](https://www.npmjs.com/package/marked-gfm-heading-id)
