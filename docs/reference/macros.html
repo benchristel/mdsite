@@ -25,6 +25,7 @@
 <li><a href="#macro-up"><code>{{up}}</code></a></li>
 <li><a href="#macro-home"><code>{{home}}</code></a></li>
 <li><a href="#macro-breadcrumb"><code>{{breadcrumb}}</code></a></li>
+<li><a href="#macro-inputpath"><code>{{inputpath}}</code></a></li>
 <li><a href="#macro-macro"><code>{{macro ...args}}</code></a></li>
 </ul>
 <h2 id="macro-content"><code>{{content}}</code></h2>
@@ -52,6 +53,9 @@ reuses the <code>{{title}}</code> logic internally to generate the titles of nav
 <p>Generates a link to the root index page, <code>/index.html</code>.</p>
 <h2 id="macro-breadcrumb"><code>{{breadcrumb}}</code></h2>
 <p>Generates a breadcrumb that links to all ancestors of the current page.</p>
+<h2 id="macro-inputpath"><code>{{inputpath}}</code></h2>
+<p>Expands to the path of the source file within <code>INPUTDIR</code>. The path begins with a slash, e.g. <code>/foo/index.md</code>.</p>
+<p>This comes in handy, e.g. if you want each page to link to its source file on GitHub.</p>
 <h2 id="macro-macro-args"><code>{{macro ...args}}</code></h2>
 <p>Expands to the literal <code>...args</code>. For example,
 <code>{{macro foo bar}}</code> expands to <code>{{foo bar}}</code>. Quotes are preserved,

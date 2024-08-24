@@ -8,6 +8,7 @@
 - [`{{macro up}}`](#macro-up)
 - [`{{macro home}}`](#macro-home)
 - [`{{macro breadcrumb}}`](#macro-breadcrumb)
+- [`{{macro inputpath}}`](#macro-inputpath)
 - [`{{macro macro ...args}}`](#macro-macro)
 
 ## `{{macro content}}`
@@ -56,6 +57,12 @@ Generates a link to the root index page, `/index.html`.
 ## `{{macro breadcrumb}}`
 
 Generates a breadcrumb that links to all ancestors of the current page.
+
+## `{{macro inputpath}}`
+
+Expands to the path of the source file within `INPUTDIR`. The path begins with a slash, e.g. `/foo/index.md`.
+
+This comes in handy, e.g. if you want each page to link to its source file on GitHub.
 
 ## `{{macro macro ...args}}`
 

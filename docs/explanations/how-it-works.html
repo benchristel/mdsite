@@ -60,7 +60,11 @@ set of <code>order.txt</code> files (see below).</li>
 <li><code>{{up}}</code> creates a link that goes one level up in the hierarchy. If used on a &quot;leaf&quot; page,
 it goes to the sibling <code>./index.html</code> file; if used on an index page, it goes to <code>../index.html</code>.</li>
 <li><code>{{home}}</code> links to the root <code>/index.html</code> file.</li>
+<li><code>{{breadcrumb}}</code> links to ancestor <code>index.html</code> files.</li>
+<li><code>{{inputpath}}</code> outputs the source path of the current file.</li>
+<li><code>{{macro ...args}}</code> outputs <code>{{macro}}</code> notation with literal double curly braces. Useful if you&#39;re writing documentation for <code>mdsite</code>.</li>
 </ul>
+<p>For more details, see <a href="../reference/macros.html">the page on macros</a>.</p>
 <p>You can use most of these macros anywhere—in your template file, or in HTML or markdown content.
 The exception to this is <code>{{content}}</code>, which should only be used in the template file.</p>
 <p>All of the generated links are relative, making it safe to deploy your site to

@@ -52,6 +52,11 @@ The available macros are:
 - `{{macro up}}` creates a link that goes one level up in the hierarchy. If used on a "leaf" page,
   it goes to the sibling `./index.html` file; if used on an index page, it goes to `../index.html`.
 - `{{macro home}}` links to the root `/index.html` file.
+- `{{macro breadcrumb}}` links to ancestor `index.html` files.
+- `{{macro inputpath}}` outputs the source path of the current file.
+- `{{macro macro ...args}}` outputs `{{macro macro}}` notation with literal double curly braces. Useful if you're writing documentation for `mdsite`.
+
+For more details, see {{link reference/macros "the page on macros"}}.
 
 You can use most of these macros anywhere—in your template file, or in HTML or markdown content.
 The exception to this is `{{macro content}}`, which should only be used in the template file.
