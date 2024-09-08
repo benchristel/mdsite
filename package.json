@@ -12,6 +12,7 @@
     "@types/marked": "^4.0.8",
     "@types/node": "^18.15.11",
     "glob": "^10.3.10",
+    "http-server": "^14.1.1",
     "husky": "^8.0.3",
     "prettier": "^2.8.7",
     "typescript": "^5.0.4"
@@ -28,13 +29,14 @@
     "yargs-parser": "^21.1.1"
   },
   "scripts": {
+    "build": "node_modules/.bin/tsc",
     "docs": "./mdsite -i docs-src",
     "format": "node_modules/.bin/prettier --write .",
     "order": "./mdsite order -i docs-src",
-    "serve": "http-server -p 3000 docs",
+    "serve": "node_modules/.bin/http-server -p 3000 -c-1 docs",
     "setup": "yarn install; yarn run husky install",
     "test": "bun src/test.ts",
-    "ts": "yarn tsc --watch --noEmit"
+    "ts": "node_modules/.bin/tsc --watch --noEmit"
   },
   "type": "module"
 }
