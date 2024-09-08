@@ -53,3 +53,15 @@ After installing, you should be able to run `mdsite` anywhere.
 ## Documentation
 
 See [benchristel.github.io/mdsite](https://benchristel.github.io/mdsite).
+
+## Development
+
+### TODO
+
+- Bug: `.md` extensions shouldn't be replaced with `.html` in external link URLs
+- Change `template.html` convention to `_template.html`, `order.txt` to `_order.txt`, to avoid conflicting
+  with first-party files, and to make these special files more visible in an explorer/tree view.
+- Allow raw HTML: if file starts with `<html` or `<!doctype` (case-insensitive), don't templatize it.
+- Authors should be able to customize the home URL and link text on a `{{breadcrumb}}`. E.g. `{{breadcrumb --home-url /hello.html --home-text "🛖"}}`
+- Authors should have some way to use different templates or different CSS files per page/subtree
+  - Proposal 1: `_template.html` per directory, applies to .md files within that directory.
