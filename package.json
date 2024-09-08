@@ -34,7 +34,7 @@
     "format": "node_modules/.bin/prettier --write .",
     "order": "./mdsite order -i docs-src",
     "serve": "node_modules/.bin/http-server -p 3000 -c-1 docs",
-    "setup": "yarn install; yarn run husky install",
+    "preinstall": "yarn run husky install",
     "test": "bun src/test.ts",
     "ts": "node_modules/.bin/tsc --watch --noEmit"
   },
