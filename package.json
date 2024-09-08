@@ -36,7 +36,9 @@
     "serve": "node_modules/.bin/http-server -p 3000 -c-1 docs",
     "preinstall": "yarn run husky install",
     "test": "bun src/test.ts",
-    "ts": "node_modules/.bin/tsc --watch --noEmit"
+    "ts": "node_modules/.bin/tsc --watch --noEmit",
+    "verify": "bun src/test.ts && node_modules/.bin/tsc --noEmit",
+    "preversion": "yarn run verify && yarn run build && yarn run order && yarn run docs"
   },
   "type": "module"
 }
