@@ -1,4 +1,9 @@
 {
+  "files.exclude": {
+    "dist": true,
+    "docs": true,
+  },
+
   "emeraldwalk.runonsave": {
     "commands": [
       {
