@@ -142,4 +142,32 @@ test("replaceMarkdownHrefs", {
       `
     );
   },
+
+  "does not mess with https external links"() {
+    const externalLink = `<a href="https://github.com/benchristel/mdsite/README.md">docs</a>`;
+    expect(replaceMarkdownHrefs(externalLink), equals, externalLink);
+  },
+
+  "does not mess with http external links"() {
+    const externalLink = `<a href="http://example.com/test.md">docs</a>`;
+    expect(replaceMarkdownHrefs(externalLink), equals, externalLink);
+  },
+
+  "isn't fooled by a file named 'http'"() {
+    const externalLink = `<a href="http.md">docs</a>`;
+    expect(
+      replaceMarkdownHrefs(externalLink),
+      equals,
+      `<a href="http.html">docs</a>`
+    );
+  },
+
+  "isn't fooled by a directory named 'http:'"() {
+    const externalLink = `<a href="./http://foo.md">docs</a>`;
+    expect(
+      replaceMarkdownHrefs(externalLink),
+      equals,
+      `<a href="./http://foo.html">docs</a>`
+    );
+  },
 });

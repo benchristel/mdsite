@@ -14,5 +14,13 @@ export class MarkdownFile extends HtmlFile {
 }
 
 export function replaceMarkdownHrefs(html: string): string {
-  return html.replace(/(<a[^>]+href="[^"]+\.)md(")/g, "$1html$2");
+  return html.replace(
+    /(<a[^>]+href="([^"]+)\.)md(")/g,
+    (match, before, url, after) => {
+      if (url.match(/^https?:/)) {
+        return match;
+      }
+      return before + "html" + after;
+    }
+  );
 }
