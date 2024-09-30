@@ -3,6 +3,7 @@ import { HtmlFile } from "./files/html-file.js";
 import { basename, dirname, join } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
 import { OrderFile } from "./files/order-file.js";
+import { OutputPath } from "./output-path.js";
 
 type Rank = Array<string | number>;
 
@@ -30,7 +31,11 @@ function latentEntries(files: ProjectFileSet): Array<Entry> {
     for (const filename of filenames) {
       const path = join(dirname(orderFilePath), filename);
       if (isLatent(path, projectFilePaths)) {
-        ret.push({ type: "latent-entry", path, title: filename });
+        ret.push({
+          type: "latent-entry",
+          path: OutputPath.of(path),
+          title: filename,
+        });
       }
     }
   }
@@ -47,11 +52,11 @@ export function isLatent(path: string, files: string[]): boolean {
 
 export type Entry = {
   type: "html" | "latent-entry";
-  path: string;
+  path: OutputPath;
   title: string;
 };
 
-export function sortHtmlFiles(files: ProjectFileSet): Array<string> {
+export function sortHtmlFiles(files: ProjectFileSet): Array<OutputPath> {
   return Object.values(files)
     .filter((f): f is HtmlFile => f.type === "html")
     .map((f) => [f, orderTxtRank(f, files)] as const)
@@ -60,10 +65,10 @@ export function sortHtmlFiles(files: ProjectFileSet): Array<string> {
 }
 
 export function orderTxtRank(
-  f: { outputPath: string },
+  f: { outputPath: OutputPath },
   files: ProjectFileSet
 ): Rank {
-  let d = f.outputPath;
+  let d = f.outputPath.toString();
 
   const rank: Rank = [];
   do {

@@ -1,4 +1,5 @@
 import { Entry } from "./order.js";
+import type { OutputPath } from "./output-path.js";
 
 export interface ProjectGlobalInfo {
   orderedEntries: Array<Entry>;
@@ -18,6 +19,6 @@ export interface ProjectGlobalInfo {
 }
 
 export type Linkable = {
-  path: string;
+  path: OutputPath;
   title: string;
 };

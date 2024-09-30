@@ -49,7 +49,7 @@ export function indexLinkables(linkables: Linkable[]): {
 } {
   const index: Record<string, number> = {};
   linkables.forEach((linkable, i) => {
-    index[linkable.path] = i;
+    index[linkable.path.toString()] = i;
   });
   return {
     orderedLinkables: linkables,

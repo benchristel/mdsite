@@ -3,12 +3,15 @@ import { contains } from "../lib/strings.js";
 import { htmlBreadcrumb } from "./breadcrumbs.js";
 import { Project } from "./project.js";
 import { buffer } from "../lib/buffer.js";
+import { OutputPath } from "./output-path.js";
+
+const of = OutputPath.of;
 
 test("htmlBreadcrumb", {
   "is empty on the top-level index page"() {
     const project = new Project({});
     expect(
-      htmlBreadcrumb("/index.html", project),
+      htmlBreadcrumb(of("/index.html"), project),
       is,
       `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"></nav>`
     );
@@ -20,7 +23,7 @@ test("htmlBreadcrumb", {
       "/leaf.html": buffer(""),
     });
     expect(
-      htmlBreadcrumb("/leaf.html", project),
+      htmlBreadcrumb(of("/leaf.html"), project),
       contains,
       `<a href="index.html">The Index Page</a>`
     );
@@ -33,7 +36,7 @@ test("htmlBreadcrumb", {
       "/tree/leaf.html": buffer(""),
     });
     expect(
-      htmlBreadcrumb("/tree/leaf.html", project),
+      htmlBreadcrumb(of("/tree/leaf.html"), project),
       contains,
       `<a href="../index.html">The Index Page</a>` +
         `<a href="index.html">A Nice Tree</a>`

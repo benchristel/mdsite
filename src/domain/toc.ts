@@ -3,6 +3,7 @@ import { dirname, relative } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
 import { Entry } from "./order.js";
 import { unreachable } from "../lib/unreachable.js";
+import type { OutputPath } from "./output-path.js";
 
 export type TreeOfContents = Array<Node>;
 
@@ -10,36 +11,36 @@ export type Node = Branch | Leaf | Bud;
 
 export type Branch = {
   type: "branch";
-  path: string;
+  path: OutputPath;
   title: string;
   contents: TreeOfContents;
 };
 
 export type Leaf = {
   type: "leaf";
-  path: string;
+  path: OutputPath;
   title: string;
 };
 
 export type Bud = {
   // a latent leaf
   type: "bud";
-  path: string;
+  path: OutputPath;
   title: string;
 };
 
 export function branch(
-  params: { path: string; title: string },
+  params: { path: OutputPath; title: string },
   ...contents: TreeOfContents
 ): Branch {
   return { type: "branch", contents, ...params };
 }
 
-export function leaf(params: { path: string; title: string }): Leaf {
+export function leaf(params: { path: OutputPath; title: string }): Leaf {
   return { type: "leaf", ...params };
 }
 
-export function bud({ path, title }: { path: string; title: string }): Bud {
+export function bud({ path, title }: { path: OutputPath; title: string }): Bud {
   return { type: "bud", path, title };
 }
 
@@ -58,20 +59,23 @@ export function toc(
     .filter((e) => e.type !== "latent-entry" || includeLatent)
     .filter(
       ({ path }) =>
-        path.startsWith(root) &&
-        path.endsWith(".html") &&
-        path !== root + "index.html" &&
-        !contains("/", removeSuffix(removePrefix(path, root), "/index.html"))
+        path.isIn(root) &&
+        path.isHtml() &&
+        path.toString() !== root + "index.html" &&
+        !contains(
+          "/",
+          removeSuffix(removePrefix(path.toString(), root), "/index.html")
+        )
     )
     .map(
       ({ type, path, title }): Node =>
         type === "latent-entry"
           ? bud({ path, title })
-          : path.endsWith("/index.html")
+          : path.isIndexHtml()
           ? branch(
               { path, title },
               ...toc(entries, {
-                root: removeSuffix(path, "index.html"),
+                root: removeSuffix(path.toString(), "index.html"),
                 includeLatent,
               })
             )
@@ -81,10 +85,10 @@ export function toc(
 
 export function htmlToc(
   entries: Entry[],
-  linkOrigin: string,
+  linkOrigin: OutputPath,
   options: TocOptions = {}
 ): string {
-  const { root = dirname(linkOrigin), includeLatent = false } = options;
+  const { root = linkOrigin.dirname(), includeLatent = false } = options;
   const theToc = toc(entries, { root, includeLatent });
   if (theToc.length === 0) {
     return "";
@@ -93,16 +97,17 @@ export function htmlToc(
   return htmlForToc(theToc, linkOrigin);
 }
 
-function htmlForToc(toc: TreeOfContents, linkOrigin: string): string {
+function htmlForToc(toc: TreeOfContents, linkOrigin: OutputPath): string {
   return (
     "<ul>" + toc.map((node) => htmlTocNode(node, linkOrigin)).join("") + "</ul>"
   );
 }
 
-function htmlTocNode(node: Node, linkOrigin: string): string {
-  const relativePath = relative(dirname(linkOrigin), node.path);
-  const cssClass =
-    linkOrigin === node.path ? ` class="mdsite-current-file"` : "";
+function htmlTocNode(node: Node, linkOrigin: OutputPath): string {
+  const relativePath = linkOrigin.relativePathOf(node.path.toString());
+  const cssClass = node.path.is(linkOrigin)
+    ? ` class="mdsite-current-file"`
+    : "";
 
   switch (node.type) {
     case "branch":

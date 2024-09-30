@@ -3,6 +3,9 @@ import { buffer } from "../../lib/buffer.js";
 import { EvaluationContext } from "./types.js";
 import { Project } from "../project";
 import { link } from "./link.js";
+import { OutputPath } from "../output-path.js";
+
+const of = OutputPath.of;
 
 test("{{link}}", {
   "creates a broken link given a file that does not exist"() {
@@ -10,7 +13,7 @@ test("{{link}}", {
     const context: EvaluationContext = {
       ...contextDummies,
       globalInfo: project,
-      outputPath: "/foo.html",
+      outputPath: of("/foo.html"),
     };
 
     expect(
@@ -27,7 +30,7 @@ test("{{link}}", {
     const context: EvaluationContext = {
       ...contextDummies,
       globalInfo: project,
-      outputPath: "/foo.html",
+      outputPath: of("/foo.html"),
     };
 
     expect(
@@ -44,7 +47,7 @@ test("{{link}}", {
     const context: EvaluationContext = {
       ...contextDummies,
       globalInfo: project,
-      outputPath: "/foo.html",
+      outputPath: of("/foo.html"),
     };
     expect(
       link("", ["link-to-me"])(context),
@@ -61,7 +64,7 @@ test("{{link}}", {
     const context: EvaluationContext = {
       ...contextDummies,
       globalInfo: project,
-      outputPath: "/foo.html",
+      outputPath: of("/foo.html"),
     };
     expect(
       link("", ["link-to-me"])(context),
@@ -77,7 +80,7 @@ test("{{link}}", {
     const context: EvaluationContext = {
       ...contextDummies,
       globalInfo: project,
-      outputPath: "/foo.html",
+      outputPath: of("/foo.html"),
     };
     expect(
       link("", ["link-to-me", "The Title"])(context),
@@ -91,7 +94,7 @@ test("{{link}}", {
     const context: EvaluationContext = {
       ...contextDummies,
       globalInfo: project,
-      outputPath: "/foo.html",
+      outputPath: of("/foo.html"),
     };
     expect(
       link("", ["link-to-me", "The Title"])(context),

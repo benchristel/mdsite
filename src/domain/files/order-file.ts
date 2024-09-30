@@ -32,8 +32,8 @@ export function OrderFile(path: string, contents: string): OrderFile {
   function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
     const extantEntries = globalInfo.orderedLinkables
       .map((l) => l.path)
-      .filter((path) => path.startsWith(dir))
-      .map((p) => p.slice(dir.length).replace(/\/.*/, ""));
+      .filter((path) => path.isIn(dir))
+      .map((p) => p.toString().slice(dir.length).replace(/\/.*/, ""));
 
     const unspecified = diff(new Set(extantEntries), new Set(self.filenames));
     unspecified.delete("index.html");

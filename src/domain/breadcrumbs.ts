@@ -1,12 +1,13 @@
 import { parentOf, relativeLink } from "./links.js";
+import { OutputPath } from "./output-path.js";
 import { ProjectGlobalInfo } from "./project-global-info.js";
 
 export function htmlBreadcrumb(
-  outputPath: string,
+  outputPath: OutputPath,
   globalInfo: ProjectGlobalInfo
 ): string {
   const crumbs = [];
-  let path = outputPath;
+  let path = outputPath.toString();
   while (path !== "/index.html") {
     path = parentOf(path);
     crumbs.push(htmlCrumb(outputPath, path, globalInfo));
@@ -17,7 +18,7 @@ export function htmlBreadcrumb(
 }
 
 function htmlCrumb(
-  from: string,
+  from: OutputPath,
   to: string,
   globalInfo: ProjectGlobalInfo
 ): string {

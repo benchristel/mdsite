@@ -2,6 +2,9 @@ import { test, expect, is, equals } from "@benchristel/taste";
 import { mockLogger } from "../../lib/logger.js";
 import { evaluate, expandAll } from "./evaluator.js";
 import { Project } from "../project.js";
+import { OutputPath } from "../output-path.js";
+
+const of = OutputPath.of;
 
 test("expandAll", {
   "does nothing to the empty string"() {
@@ -37,7 +40,7 @@ test("expandAll", {
 test("evaluating macros", {
   "logs a warning if the macro is unrecognized"() {
     const { warnings } = mockLogger(() => {
-      const context = { ...dummyContext, outputPath: "/my/file.html" };
+      const context = { ...dummyContext, outputPath: of("/my/file.html") };
       evaluate(context)("{{foo}}");
     });
 
@@ -69,7 +72,7 @@ test("evaluating macros", {
       const context = {
         ...dummyContext,
         content: "{{macro foo bar}}",
-        outputPath: "/foo/bar.html",
+        outputPath: of("/foo/bar.html"),
       };
       const result = evaluate(context)("{{content}}");
       expect(result, equals, "{{foo bar}}");
@@ -78,7 +81,7 @@ test("evaluating macros", {
 });
 
 const dummyContext = {
-  outputPath: "",
+  outputPath: OutputPath.of("/"),
   inputPath: "",
   content: "",
   title: "",

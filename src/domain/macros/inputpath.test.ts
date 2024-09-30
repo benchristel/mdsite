@@ -2,6 +2,7 @@ import { test, expect, is } from "@benchristel/taste";
 import { EvaluationContext } from "./types";
 import { Project } from "../project";
 import { inputpath } from "./inputpath";
+import { OutputPath } from "../output-path";
 
 test("inputpath", {
   "expands to the inputPath of the current file"() {
@@ -19,5 +20,5 @@ test("inputpath", {
 const contextDummies = {
   content: "content is not used here",
   title: "title is not used here",
-  outputPath: "outputPath is not used here",
+  outputPath: OutputPath.of("/outputPath is not used here"),
 };

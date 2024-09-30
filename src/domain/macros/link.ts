@@ -14,7 +14,7 @@ function abstractLink(
   customTitle?: string
 ): { classes: string; href: string; title: string } {
   const targets = context.globalInfo.orderedLinkables.filter(({ path }) =>
-    path.includes(search)
+    path.toString().includes(search)
   );
   if (targets.length > 1) {
     return {
@@ -26,5 +26,9 @@ function abstractLink(
   const target = targets[0];
   return target == null
     ? { classes: ` class="mdsite-broken-link"`, href: "#", title: search }
-    : { classes: "", href: target.path, title: customTitle ?? search };
+    : {
+        classes: "",
+        href: target.path.toString(),
+        title: customTitle ?? search,
+      };
 }

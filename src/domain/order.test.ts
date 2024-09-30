@@ -8,6 +8,7 @@ import {
   sortHtmlFiles,
   titleForOutputPath,
 } from "./order.js";
+import { OutputPath } from "./output-path.js";
 
 test("orderTxtRank", {
   "is [index, Infinity, <title>, <filename>] given /index.html"() {
@@ -146,7 +147,7 @@ test("sortHtmlFiles", {
     const files = {
       "": new HtmlFile("/foo.html", ""),
     };
-    expect(sortHtmlFiles(files), equals, ["/foo.html"]);
+    expect(sortHtmlFiles(files), equals, [OutputPath.of("/foo.html")]);
   },
 
   "returns an empty array given no files"() {
@@ -158,7 +159,7 @@ test("sortHtmlFiles", {
     const files = {
       "/foo/bar.new html": new HtmlFile("/foo/bar.html", ""),
     };
-    expect(sortHtmlFiles(files), equals, ["/foo/bar.html"]);
+    expect(sortHtmlFiles(files), equals, [OutputPath.of("/foo/bar.html")]);
   },
 
   "orders files by filename in the absence of titles or order.txt files"() {
@@ -169,10 +170,10 @@ test("sortHtmlFiles", {
       "/bbb.html": new HtmlFile("/bbb.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
-      "/aaa.html",
-      "/bbb.html",
-      "/ccc.html",
-      "/ddd.html",
+      OutputPath.of("/aaa.html"),
+      OutputPath.of("/bbb.html"),
+      OutputPath.of("/ccc.html"),
+      OutputPath.of("/ddd.html"),
     ]);
   },
 
@@ -183,9 +184,9 @@ test("sortHtmlFiles", {
       "/bbb.html": new HtmlFile("/bbb.html", "<h1>B</h1>"),
     };
     expect(sortHtmlFiles(files), equals, [
-      "/aaa/index.html",
-      "/aaa/zzz.html",
-      "/bbb.html",
+      OutputPath.of("/aaa/index.html"),
+      OutputPath.of("/aaa/zzz.html"),
+      OutputPath.of("/bbb.html"),
     ]);
   },
 
@@ -197,10 +198,10 @@ test("sortHtmlFiles", {
       "/two.html": new HtmlFile("/two.html", "<h1>2</h1>"),
     };
     expect(sortHtmlFiles(files), equals, [
-      "/one.html",
-      "/two.html",
-      "/three.html",
-      "/four.html",
+      OutputPath.of("/one.html"),
+      OutputPath.of("/two.html"),
+      OutputPath.of("/three.html"),
+      OutputPath.of("/four.html"),
     ]);
   },
 
@@ -221,10 +222,10 @@ test("sortHtmlFiles", {
       "/two.html": new HtmlFile("/two.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
-      "/one.html",
-      "/two.html",
-      "/three.html",
-      "/four.html",
+      OutputPath.of("/one.html"),
+      OutputPath.of("/two.html"),
+      OutputPath.of("/three.html"),
+      OutputPath.of("/four.html"),
     ]);
   },
 
@@ -265,14 +266,14 @@ test("sortHtmlFiles", {
       "/aaa/two.html": new HtmlFile("/aaa/two.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
-      "/aaa/one.html",
-      "/aaa/two.html",
-      "/aaa/three.html",
-      "/aaa/four.html",
-      "/bbb/one.html",
-      "/bbb/two.html",
-      "/bbb/three.html",
-      "/bbb/four.html",
+      OutputPath.of("/aaa/one.html"),
+      OutputPath.of("/aaa/two.html"),
+      OutputPath.of("/aaa/three.html"),
+      OutputPath.of("/aaa/four.html"),
+      OutputPath.of("/bbb/one.html"),
+      OutputPath.of("/bbb/two.html"),
+      OutputPath.of("/bbb/three.html"),
+      OutputPath.of("/bbb/four.html"),
     ]);
   },
 
@@ -306,11 +307,11 @@ test("sortHtmlFiles", {
       "/index.html": new HtmlFile("/index.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
-      "/index.html",
-      "/aaa/index.html",
-      "/aaa/one.html",
-      "/bbb/index.html",
-      "/bbb/one.html",
+      OutputPath.of("/index.html"),
+      OutputPath.of("/aaa/index.html"),
+      OutputPath.of("/aaa/one.html"),
+      OutputPath.of("/bbb/index.html"),
+      OutputPath.of("/bbb/one.html"),
     ]);
   },
 });

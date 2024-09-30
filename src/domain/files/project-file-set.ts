@@ -24,5 +24,5 @@ export function pathAndBufferToProjectFile([srcPath, srcContents]: [
   Buffer
 ]): [string, ProjectFile] {
   const projectFile = ProjectFile(srcPath, srcContents);
-  return [projectFile.outputPath, projectFile];
+  return [projectFile.outputPath.toString(), projectFile];
 }

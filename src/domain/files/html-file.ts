@@ -6,18 +6,19 @@ import { buffer } from "../../lib/buffer.js";
 import type { ProjectGlobalInfo } from "../project-global-info.js";
 import { expandAll } from "../macros/index.js";
 import { pass, pipe } from "../../lib/functional.js";
+import { OutputPath } from "../output-path.js";
 
 export class HtmlFile {
   readonly type = "html";
   readonly rawHtml: string;
   readonly title: string;
-  readonly outputPath: string;
+  readonly outputPath: OutputPath;
   readonly inputPath: string;
 
   constructor(outputPath: string, rawHtml: string) {
     this.rawHtml = rawHtml;
-    this.outputPath = outputPath;
-    this.inputPath = outputPath;
+    this.outputPath = OutputPath.of(outputPath);
+    this.inputPath = outputPath.toString();
     this.title = this.getTitle();
   }
 
@@ -36,7 +37,7 @@ export class HtmlFile {
         relativizeLinks(this.outputPath)
       )
     );
-    return [this.outputPath, buffer(renderedHtml)];
+    return [this.outputPath.toString(), buffer(renderedHtml)];
   };
 
   private getTitle(): string {
@@ -46,19 +47,20 @@ export class HtmlFile {
 
   private defaultTitleFromPath() {
     const path = this.outputPath;
-    if (path === "/index.html") {
+    if (path.is("/index.html")) {
       return "index.html";
     }
-    if (basename(path) === "index.html") {
-      return basename(dirname(path));
+    if (path.basename() === "index.html") {
+      // TODO: move to parentDir() method on OutputPath?
+      return basename(path.dirname());
     }
-    return basename(path);
+    return path.basename();
   }
 }
 
-const relativizeLinks = curry((fromPath: string, html: string): string => {
+const relativizeLinks = curry((fromPath: OutputPath, html: string): string => {
   return html.replace(
     /((?:href|src)=")(\/[^"]+)/g,
-    (_, prefix, path) => prefix + relative(dirname(fromPath), path)
+    (_, prefix, path) => prefix + relative(dirname(fromPath.toString()), path)
   );
 }, "relativizeLinks");
