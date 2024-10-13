@@ -1,4 +1,4 @@
-import { normalize, dirname, basename, relative } from "path";
+import { normalize, dirname, basename, relative, join } from "path";
 import { isRelative } from "../lib/paths";
 
 export class OutputPath {
@@ -14,6 +14,10 @@ export class OutputPath {
     } else {
       return other.is(this.string);
     }
+  }
+
+  isNot(other: string | OutputPath): boolean {
+    return !this.is(other);
   }
 
   isHtml(): boolean {
@@ -44,12 +48,27 @@ export class OutputPath {
     return this.string.startsWith(directory);
   }
 
+  parentIndexPath(): OutputPath {
+    return OutputPath.of(this.parentPathStr());
+  }
+
   relativePathOf(other: string | OutputPath): string {
     const otherStr = other.toString();
     if (isRelative(otherStr)) {
       return otherStr;
     }
     return relative(this.dirname(), otherStr);
+  }
+
+  private parentPathStr() {
+    let path = this.string;
+    if (path === "/index.html") {
+      return "/index.html";
+    } else if (path.endsWith("/index.html")) {
+      return join(dirname(dirname(path)), "index.html");
+    } else {
+      return join(dirname(path), "index.html");
+    }
   }
 
   static of(inputPath: string): OutputPath {

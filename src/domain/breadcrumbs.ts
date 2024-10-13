@@ -7,9 +7,9 @@ export function htmlBreadcrumb(
   globalInfo: ProjectGlobalInfo
 ): string {
   const crumbs = [];
-  let path = outputPath.toString();
-  while (path !== "/index.html") {
-    path = parentOf(path);
+  let path = outputPath;
+  while (path.isNot("/index.html")) {
+    path = path.parentIndexPath();
     crumbs.push(htmlCrumb(outputPath, path, globalInfo));
   }
   return `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb">${crumbs

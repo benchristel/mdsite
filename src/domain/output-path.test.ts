@@ -1,4 +1,4 @@
-import { test, expect, is } from "@benchristel/taste";
+import { test, expect, is, equals } from "@benchristel/taste";
 import { OutputPath } from "./output-path";
 
 test("the OutputPath of an HTML file", {
@@ -28,6 +28,35 @@ test("the OutputPath of an HTML file", {
     const path = OutputPath.of("/foo/bar/baz.html");
     expect(path.relativePathOf("../index.html"), is, "../index.html");
     expect(path.relativePathOf("index.html"), is, "index.html");
+  },
+});
+
+test("OutputPath.parentIndexFile()", {
+  "points up"() {
+    const path = OutputPath.of("/foo/bar/baz.html");
+    expect(
+      path.parentIndexPath(),
+      equals,
+      OutputPath.of("/foo/bar/index.html")
+    );
+    expect(
+      path.parentIndexPath().parentIndexPath(),
+      equals,
+      OutputPath.of("/foo/index.html")
+    );
+    expect(
+      path.parentIndexPath().parentIndexPath().parentIndexPath(),
+      equals,
+      OutputPath.of("/index.html")
+    );
+  },
+
+  "points back to the original path if it's /index.html"() {
+    expect(
+      OutputPath.of("/index.html").parentIndexPath(),
+      equals,
+      OutputPath.of("/index.html")
+    );
   },
 });
 
