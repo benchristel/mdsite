@@ -53,7 +53,11 @@ reuses the <code>{{title}}</code> logic internally to generate the titles of nav
 <p>Generates a link to the root index page, <code>/index.html</code>.</p>
 <h2 id="macro-breadcrumb"><code>{{breadcrumb}}</code></h2>
 <p>Generates a breadcrumb that links to all ancestors of the current page.</p>
-<h2 id="macro-inputpath"><code>{{inputpath}}</code></h2>
+<p>By default, the breadcrumb is wrapped in a <code>&lt;nav&gt;</code> element like the following:</p>
+<pre><code class="hljs language-html"><span class="hljs-tag">&lt;<span class="hljs-name">nav</span> <span class="hljs-attr">aria-label</span>=<span class="hljs-string">&quot;Breadcrumb&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;mdsite-breadcrumb&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">nav</span>&gt;</span>
+</code></pre><p>If you specify the <code>--no-nav</code> flag, this wrapper is omitted.</p>
+<pre><code>{{breadcrumb --no-nav}}
+</code></pre><h2 id="macro-inputpath"><code>{{inputpath}}</code></h2>
 <p>Expands to the path of the source file within <code>INPUTDIR</code>. The path begins with a slash, e.g. <code>/foo/index.md</code>.</p>
 <p>This comes in handy, e.g. if you want each page to link to its source file on GitHub.</p>
 <h2 id="macro-macro-args"><code>{{macro ...args}}</code></h2>

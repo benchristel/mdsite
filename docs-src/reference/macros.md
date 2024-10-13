@@ -58,6 +58,18 @@ Generates a link to the root index page, `/index.html`.
 
 Generates a breadcrumb that links to all ancestors of the current page.
 
+By default, the breadcrumb is wrapped in a `<nav>` element like the following:
+
+```html
+<nav aria-label="Breadcrumb" class="mdsite-breadcrumb"></nav>
+```
+
+If you specify the `--no-nav` flag, this wrapper is omitted.
+
+```
+{{macro breadcrumb --no-nav}}
+```
+
 ## `{{macro inputpath}}`
 
 Expands to the path of the source file within `INPUTDIR`. The path begins with a slash, e.g. `/foo/index.md`.
