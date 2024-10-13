@@ -1,4 +1,4 @@
-import { parentOf, relativeLink } from "./links.js";
+import { relativeLink } from "./links.js";
 import { OutputPath } from "./output-path.js";
 import { ProjectGlobalInfo } from "./project-global-info.js";
 
@@ -10,7 +10,7 @@ export function htmlBreadcrumb(
   let path = outputPath;
   while (path.isNot("/index.html")) {
     path = path.parentIndexPath();
-    crumbs.push(htmlCrumb(outputPath, path, globalInfo));
+    crumbs.push(htmlCrumb(outputPath, path.toString(), globalInfo));
   }
   return `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb">${crumbs
     .reverse()

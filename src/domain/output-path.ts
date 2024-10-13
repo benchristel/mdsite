@@ -72,8 +72,6 @@ export class OutputPath {
   }
 
   static of(inputPath: string): OutputPath {
-    return new OutputPath(normalize(inputPath.replace(mdExtension, ".html")));
+    return new OutputPath(normalize(inputPath.replace(/\.md$/, ".html")));
   }
 }
-
-const mdExtension = /\.md$/;
