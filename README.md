@@ -58,7 +58,6 @@ See [benchristel.github.io/mdsite](https://benchristel.github.io/mdsite).
 
 ### TODO
 
-- Bug: `.md` extensions shouldn't be replaced with `.html` in external link URLs
 - Change `template.html` convention to `_template.html`, `order.txt` to `_order.txt`, to avoid conflicting
   with first-party files, and to make these special files more visible in an explorer/tree view.
 - Allow raw HTML: if file starts with `<html` or `<!doctype` (case-insensitive), don't templatize it.
