@@ -1,5 +1,5 @@
 import { normalize, dirname, basename, relative, join } from "path";
-import { isRelative } from "../lib/paths";
+import { isRelative } from "../lib/paths.js";
 
 export class OutputPath {
   private constructor(private string: string) {}
