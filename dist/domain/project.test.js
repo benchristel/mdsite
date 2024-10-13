@@ -4,6 +4,8 @@ import { contains } from "../lib/strings.js";
 import { buffer } from "../lib/buffer.js";
 import { valuesToStrings } from "../lib/objects.js";
 import { Project, indexLinkables } from "./project.js";
+import { OutputPath } from "./output-path.js";
+const of = OutputPath.of;
 test("Project.build()", {
     "converts a markdown file to an HTML file"() {
         const project = new Project({
@@ -43,7 +45,7 @@ test("Project", {
         const files = {};
         const project = new Project(files);
         expect(project.orderedLinkables, equals, [
-            { path: "/index.html", title: "Homepage" },
+            { path: of("/index.html"), title: "Homepage" },
         ]);
         expect(project.index, equals, {
             "/index.html": 0,
@@ -55,8 +57,8 @@ test("Project", {
         };
         const project = new Project(files);
         expect(project.orderedLinkables, equals, [
-            { path: "/index.html", title: "Homepage" },
-            { path: "/a.html", title: "a.html" },
+            { path: of("/index.html"), title: "Homepage" },
+            { path: of("/a.html"), title: "a.html" },
         ]);
         expect(project.index, equals, { "/index.html": 0, "/a.html": 1 });
     },
@@ -73,11 +75,11 @@ test("Project", {
         };
         const project = new Project(files);
         expect(project.orderedLinkables, equals, [
-            { path: "/index.html", title: "Homepage" },
-            { path: "/a.html", title: "a.html" },
-            { path: "/b.html", title: "b.html" },
-            { path: "/c.html", title: "c.html" },
-            { path: "/d.html", title: "d.html" },
+            { path: of("/index.html"), title: "Homepage" },
+            { path: of("/a.html"), title: "a.html" },
+            { path: of("/b.html"), title: "b.html" },
+            { path: of("/c.html"), title: "c.html" },
+            { path: of("/d.html"), title: "d.html" },
         ]);
         expect(project.index, equals, {
             "/index.html": 0,

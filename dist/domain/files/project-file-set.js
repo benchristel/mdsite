@@ -18,5 +18,5 @@ export function ProjectFile(path, contents) {
 }
 export function pathAndBufferToProjectFile([srcPath, srcContents]) {
     const projectFile = ProjectFile(srcPath, srcContents);
-    return [projectFile.outputPath, projectFile];
+    return [projectFile.outputPath.toString(), projectFile];
 }

@@ -44,7 +44,7 @@ _Project_orderedLinkables = new WeakMap(), _Project_index = new WeakMap();
 export function indexLinkables(linkables) {
     const index = {};
     linkables.forEach((linkable, i) => {
-        index[linkable.path] = i;
+        index[linkable.path.toString()] = i;
     });
     return {
         orderedLinkables: linkables,

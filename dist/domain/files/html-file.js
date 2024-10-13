@@ -5,6 +5,7 @@ import { curry } from "@benchristel/taste";
 import { buffer } from "../../lib/buffer.js";
 import { expandAll } from "../macros/index.js";
 import { pass, pipe } from "../../lib/functional.js";
+import { OutputPath } from "../output-path.js";
 export class HtmlFile {
     constructor(outputPath, rawHtml) {
         this.type = "html";
@@ -17,11 +18,11 @@ export class HtmlFile {
                 inputPath,
                 title,
             }), relativizeLinks(this.outputPath)));
-            return [this.outputPath, buffer(renderedHtml)];
+            return [this.outputPath.toString(), buffer(renderedHtml)];
         };
         this.rawHtml = rawHtml;
-        this.outputPath = outputPath;
-        this.inputPath = outputPath;
+        this.outputPath = OutputPath.of(outputPath);
+        this.inputPath = outputPath.toString();
         this.title = this.getTitle();
     }
     getTitle() {
@@ -30,15 +31,16 @@ export class HtmlFile {
     }
     defaultTitleFromPath() {
         const path = this.outputPath;
-        if (path === "/index.html") {
+        if (path.is("/index.html")) {
             return "index.html";
         }
-        if (basename(path) === "index.html") {
-            return basename(dirname(path));
+        if (path.basename() === "index.html") {
+            // TODO: move to parentDir() method on OutputPath?
+            return basename(path.dirname());
         }
-        return basename(path);
+        return path.basename();
     }
 }
 const relativizeLinks = curry((fromPath, html) => {
-    return html.replace(/((?:href|src)=")(\/[^"]+)/g, (_, prefix, path) => prefix + relative(dirname(fromPath), path));
+    return html.replace(/((?:href|src)=")(\/[^"]+)/g, (_, prefix, path) => prefix + relative(dirname(fromPath.toString()), path));
 }, "relativizeLinks");

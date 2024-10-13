@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { join, relative, dirname } from "path";
 import * as fs from "fs/promises";
-export function listDeep(dir, root = dir) {
-    return __awaiter(this, void 0, void 0, function* () {
+export function listDeep(dir_1) {
+    return __awaiter(this, arguments, void 0, function* (dir, root = dir) {
         let fileSet = {};
         const entries = yield fs.readdir(dir, { withFileTypes: true });
         const promises = entries.map((entry) => {

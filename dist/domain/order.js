@@ -1,5 +1,6 @@
 import { basename, dirname, join } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
+import { OutputPath } from "./output-path.js";
 export function sortEntries(files) {
     return Object.values(files)
         .filter((f) => f.type === "html")
@@ -20,7 +21,11 @@ function latentEntries(files) {
         for (const filename of filenames) {
             const path = join(dirname(orderFilePath), filename);
             if (isLatent(path, projectFilePaths)) {
-                ret.push({ type: "latent-entry", path, title: filename });
+                ret.push({
+                    type: "latent-entry",
+                    path: OutputPath.of(path),
+                    title: filename,
+                });
             }
         }
     }
@@ -38,7 +43,7 @@ export function sortHtmlFiles(files) {
         .map(([f]) => f.outputPath);
 }
 export function orderTxtRank(f, files) {
-    let d = f.outputPath;
+    let d = f.outputPath.toString();
     const rank = [];
     do {
         let filename = basename(d);

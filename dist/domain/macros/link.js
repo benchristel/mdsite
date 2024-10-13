@@ -6,7 +6,7 @@ export function link(_, args) {
     };
 }
 function abstractLink(search, context, customTitle) {
-    const targets = context.globalInfo.orderedLinkables.filter(({ path }) => path.includes(search));
+    const targets = context.globalInfo.orderedLinkables.filter(({ path }) => path.toString().includes(search));
     if (targets.length > 1) {
         return {
             classes: ` class="mdsite-broken-link"`,
@@ -17,5 +17,9 @@ function abstractLink(search, context, customTitle) {
     const target = targets[0];
     return target == null
         ? { classes: ` class="mdsite-broken-link"`, href: "#", title: search }
-        : { classes: "", href: target.path, title: customTitle !== null && customTitle !== void 0 ? customTitle : search };
+        : {
+            classes: "",
+            href: target.path.toString(),
+            title: customTitle !== null && customTitle !== void 0 ? customTitle : search,
+        };
 }

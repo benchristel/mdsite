@@ -4,3 +4,6 @@ export function ensureTrailingSlash(path) {
     else
         return path;
 }
+export function isRelative(path) {
+    return !path.startsWith("/");
+}

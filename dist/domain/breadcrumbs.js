@@ -1,14 +1,15 @@
-import { parentOf, relativeLink } from "./links.js";
-export function htmlBreadcrumb(outputPath, globalInfo) {
+import { relativeLink } from "./links.js";
+export function htmlBreadcrumb(outputPath, globalInfo, options = {}) {
+    const wrap = options.omitNavWrapper
+        ? (s) => s
+        : (s) => `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb">${s}</nav>`;
     const crumbs = [];
     let path = outputPath;
-    while (path !== "/index.html") {
-        path = parentOf(path);
-        crumbs.push(htmlCrumb(outputPath, path, globalInfo));
+    while (path.hasParent()) {
+        path = path.parentIndexPath();
+        crumbs.push(htmlCrumb(outputPath, path.toString(), globalInfo));
     }
-    return `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb">${crumbs
-        .reverse()
-        .join("")}</nav>`;
+    return wrap(crumbs.reverse().join(""));
 }
 function htmlCrumb(from, to, globalInfo) {
     return relativeLink(from, to, globalInfo.orderedLinkables[globalInfo.index[to]].title);

@@ -2,10 +2,10 @@ import { curry } from "@benchristel/taste";
 import { macros, getTokens } from "./parser.js";
 import Logger from "../../lib/logger.js";
 import { homeLink, nextLink, prevLink, upLink } from "../links.js";
-import { htmlBreadcrumb } from "../breadcrumbs.js";
 import { toc } from "./toc.js";
 import { link } from "./link.js";
 import { inputpath } from "./inputpath.js";
+import { breadcrumb } from "./breadcrumb.js";
 export const expandAll = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
 }, "expandAll");
@@ -55,9 +55,6 @@ function up() {
 }
 function home() {
     return (context) => homeLink(context.outputPath);
-}
-function breadcrumb() {
-    return (context) => htmlBreadcrumb(context.outputPath, context.globalInfo);
 }
 function macro(macroStr) {
     return () => macroStr.replace(/{{\s*macro\s+(.*)/, "{{$1");

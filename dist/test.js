@@ -1,5 +1,5 @@
 import { glob } from "glob";
-import "./cli/run";
+import "./cli/run.js";
 import "./domain/macros/index.js";
 import { getAllTests, runTests, formatTestResultsAsText, } from "@benchristel/taste";
 glob(`${__dirname}/**/*.test.ts`)
