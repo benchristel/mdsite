@@ -143,6 +143,22 @@ test("replaceMarkdownHrefs", {
     );
   },
 
+  "converts an .md link with a hash"() {
+    expect(
+      replaceMarkdownHrefs(`<a href="foo/bar.md#blah">link</a>`),
+      equals,
+      `<a href="foo/bar.html#blah">link</a>`
+    );
+  },
+
+  "does not convert an .md extension inside a hash"() {
+    expect(
+      replaceMarkdownHrefs(`<a href="foo/bar.html#blah.md">link</a>`),
+      equals,
+      `<a href="foo/bar.html#blah.md">link</a>`
+    );
+  },
+
   "does not mess with https external links"() {
     const externalLink = `<a href="https://github.com/benchristel/mdsite/README.md">docs</a>`;
     expect(replaceMarkdownHrefs(externalLink), equals, externalLink);
