@@ -16,8 +16,8 @@ export class OutputPath {
     }
   }
 
-  isNot(other: string | OutputPath): boolean {
-    return !this.is(other);
+  hasParent(): boolean {
+    return this.string !== "/index.html";
   }
 
   isHtml(): boolean {

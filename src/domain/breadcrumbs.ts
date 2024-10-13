@@ -8,7 +8,7 @@ export function htmlBreadcrumb(
 ): string {
   const crumbs = [];
   let path = outputPath;
-  while (path.isNot("/index.html")) {
+  while (path.hasParent()) {
     path = path.parentIndexPath();
     crumbs.push(htmlCrumb(outputPath, path.toString(), globalInfo));
   }
