@@ -4,17 +4,22 @@ import { ProjectGlobalInfo } from "./project-global-info.js";
 
 export function htmlBreadcrumb(
   outputPath: OutputPath,
-  globalInfo: ProjectGlobalInfo
+  globalInfo: ProjectGlobalInfo,
+  options: { omitNavWrapper?: boolean } = {}
 ): string {
+  const wrap = options.omitNavWrapper
+    ? (s: string) => s
+    : (s: string) =>
+        `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb">${s}</nav>`;
+
   const crumbs = [];
   let path = outputPath;
   while (path.hasParent()) {
     path = path.parentIndexPath();
     crumbs.push(htmlCrumb(outputPath, path.toString(), globalInfo));
   }
-  return `<nav aria-label="Breadcrumb" class="mdsite-breadcrumb">${crumbs
-    .reverse()
-    .join("")}</nav>`;
+
+  return wrap(crumbs.reverse().join(""));
 }
 
 function htmlCrumb(

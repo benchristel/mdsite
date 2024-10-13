@@ -1,6 +1,6 @@
 import { glob } from "glob";
 
-import "./cli/run";
+import "./cli/run.js";
 import "./domain/macros/index.js";
 
 import {
