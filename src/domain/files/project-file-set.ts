@@ -13,7 +13,7 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   } else if (path.endsWith(".html")) {
     return new HtmlFile(path, contents.toString());
   } else if (path.endsWith("/order.txt")) {
-    return OrderFile(path, contents.toString());
+    return new OrderFile(path, contents.toString());
   } else {
     return OpaqueFile(path, contents);
   }

@@ -43,7 +43,7 @@ test("orderTxtRank", {
 
   "gives a file listed first in order.txt an index of 0"() {
     const files = {
-      "/order.txt": OrderFile("/order.txt", "foo.html"),
+      "/order.txt": new OrderFile("/order.txt", "foo.html"),
       "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
@@ -54,7 +54,7 @@ test("orderTxtRank", {
 
   "gives a file listed second in order.txt an index of 1"() {
     const files = {
-      "/order.txt": OrderFile("/order.txt", "a.html\nfoo.html"),
+      "/order.txt": new OrderFile("/order.txt", "a.html\nfoo.html"),
       "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
@@ -65,7 +65,7 @@ test("orderTxtRank", {
 
   "gives a file not listed in order.txt an index of Infinity"() {
     const files = {
-      "/order.txt": OrderFile("/order.txt", ""),
+      "/order.txt": new OrderFile("/order.txt", ""),
       "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
@@ -207,7 +207,7 @@ test("sortHtmlFiles", {
 
   "obeys order.txt"() {
     const files = {
-      "/order.txt": OrderFile(
+      "/order.txt": new OrderFile(
         "/order.txt",
         trimMargin`
         one.html
@@ -231,14 +231,14 @@ test("sortHtmlFiles", {
 
   "obeys order.txt in different directories"() {
     const files = {
-      "/order.txt": OrderFile(
+      "/order.txt": new OrderFile(
         "/order.txt",
         trimMargin`
         aaa
         bbb
       `
       ),
-      "/bbb/order.txt": OrderFile(
+      "/bbb/order.txt": new OrderFile(
         "/bbb/order.txt",
         trimMargin`
         one.html
@@ -247,7 +247,7 @@ test("sortHtmlFiles", {
         four.html
       `
       ),
-      "/aaa/order.txt": OrderFile(
+      "/aaa/order.txt": new OrderFile(
         "/aaa/order.txt",
         trimMargin`
         one.html
@@ -279,21 +279,21 @@ test("sortHtmlFiles", {
 
   "puts index.html first no matter what"() {
     const files = {
-      "/order.txt": OrderFile(
+      "/order.txt": new OrderFile(
         "/order.txt",
         trimMargin`
           aaa
           bbb
         `
       ),
-      "/bbb/order.txt": OrderFile(
+      "/bbb/order.txt": new OrderFile(
         "/bbb/order.txt",
         trimMargin`
           one.html
           index.html
         `
       ),
-      "/aaa/order.txt": OrderFile(
+      "/aaa/order.txt": new OrderFile(
         "/aaa/order.txt",
         trimMargin`
           one.html

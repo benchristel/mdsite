@@ -7,14 +7,7 @@ import type { ProjectGlobalInfo } from "../project-global-info.js";
 import { diff } from "../../lib/sets.js";
 import { line } from "../../lib/strings.js";
 
-export type OrderFile = {
-  type: "order";
-  filenames: Array<string>;
-  outputPath: string;
-  render: (globalInfo: ProjectGlobalInfo) => [string, Buffer];
-};
-
-export class OrderFile2 {
+export class OrderFile {
   readonly type = "order";
   // TODO: make outputPath an OutputPath
   readonly outputPath: string;
@@ -52,10 +45,6 @@ export class OrderFile2 {
       ),
     ];
   }
-}
-
-export function OrderFile(path: string, contents: string): OrderFile {
-  return new OrderFile2(path, contents);
 }
 
 export function isOrderFile(path: string): boolean {

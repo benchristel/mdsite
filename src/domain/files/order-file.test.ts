@@ -6,22 +6,22 @@ import { buffer } from "../../lib/buffer.js";
 
 test("OrderFile", {
   "parses a blank file"() {
-    const orderFile = OrderFile("/order.txt", "");
+    const orderFile = new OrderFile("/order.txt", "");
     expect(orderFile.filenames, equals, []);
   },
 
   "parses a file with one filename"() {
-    const orderFile = OrderFile("", "foo.html");
+    const orderFile = new OrderFile("", "foo.html");
     expect(orderFile.filenames, equals, ["foo.html"]);
   },
 
   "converts .md filenames to .html"() {
-    const orderFile = OrderFile("", "foo.md");
+    const orderFile = new OrderFile("", "foo.md");
     expect(orderFile.filenames, equals, ["foo.html"]);
   },
 
   "ignores files below the '!unspecified' line"() {
-    const orderFile = OrderFile(
+    const orderFile = new OrderFile(
       "",
       trimMargin`
       in.html
@@ -33,7 +33,7 @@ test("OrderFile", {
   },
 
   "handles input that starts with '!unspecified'"() {
-    const orderFile = OrderFile(
+    const orderFile = new OrderFile(
       "",
       trimMargin`
       !unspecified
@@ -44,7 +44,7 @@ test("OrderFile", {
   },
 
   "ignores blank lines"() {
-    const orderFile = OrderFile(
+    const orderFile = new OrderFile(
       "",
       trimMargin`
       a.html
@@ -57,12 +57,12 @@ test("OrderFile", {
   },
 
   "trims space from each line"() {
-    const orderFile = OrderFile("", "  a.html  ");
+    const orderFile = new OrderFile("", "  a.html  ");
     expect(orderFile.filenames, equals, ["a.html"]);
   },
 
   "ignores leading/trailing slashes"() {
-    const orderFile = OrderFile(
+    const orderFile = new OrderFile(
       "",
       trimMargin`
       /a.html
@@ -73,7 +73,7 @@ test("OrderFile", {
   },
 
   "does not list index.html in the !unspecified section"() {
-    const orderFile = OrderFile("/order.txt", "");
+    const orderFile = new OrderFile("/order.txt", "");
     const project = new Project({
       "/a.html": buffer(""),
       "/b.html": buffer(""),
