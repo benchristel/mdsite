@@ -1,13 +1,13 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { HtmlFile } from "./html-file.js";
+import { TemplatizedHtmlFile } from "./templatized-html-file.js";
 import { MarkdownFile, replaceMarkdownHrefs } from "./markdown-file.js";
 import { trimMargin } from "../../testing/formatting.js";
 import { Project } from "../project.js";
 
-test("HtmlFile", {
+test("TemplatizedHtmlFile", {
   "replaces absolute hrefs with relative ones"() {
     const project = new Project({}, "{{content}}");
-    const file = new HtmlFile(
+    const file = new TemplatizedHtmlFile(
       "/foo/bar.html",
       `<a href="/baz/kludge.html"></a>`
     );
@@ -19,7 +19,7 @@ test("HtmlFile", {
 
   "relativizes multiple hrefs"() {
     const project = new Project({}, "{{content}}");
-    const file = new HtmlFile(
+    const file = new TemplatizedHtmlFile(
       "/foo/bar.html",
       `<a href="/a/b.html"></a><a href="/foo/d.html"></a>`
     );
@@ -38,7 +38,7 @@ test("HtmlFile", {
       {},
       `<link rel="stylesheet" href="/assets/style.css">`
     );
-    const file = new HtmlFile("/foo/bar.html", "");
+    const file = new TemplatizedHtmlFile("/foo/bar.html", "");
 
     const [_, rendered] = file.render(project);
 
@@ -54,7 +54,7 @@ test("HtmlFile", {
       {},
       `<script type="module" src="/js/main.js"></script>`
     );
-    const file = new HtmlFile("/foo/bar.html", "");
+    const file = new TemplatizedHtmlFile("/foo/bar.html", "");
 
     const [_, rendered] = file.render(project);
 
@@ -82,41 +82,57 @@ test("HtmlFile", {
   },
 });
 
-test("HtmlFile.title", {
+test("TemplatizedHtmlFile.title", {
   "extracts the title from an h1 tag"() {
-    expect(new HtmlFile("", "<h1>foo</h1>").title, is, "foo");
+    expect(new TemplatizedHtmlFile("", "<h1>foo</h1>").title, is, "foo");
   },
 
   "extracts the title from an h1 tag with an id"() {
-    expect(new HtmlFile("", `<h1 id="the-id">foo</h1>`).title, is, "foo");
+    expect(
+      new TemplatizedHtmlFile("", `<h1 id="the-id">foo</h1>`).title,
+      is,
+      "foo"
+    );
   },
 
   "extracts the title from an h1 tag with child tags"() {
-    expect(new HtmlFile("", `<h1><code>foo</code></h1>`).title, is, "foo");
+    expect(
+      new TemplatizedHtmlFile("", `<h1><code>foo</code></h1>`).title,
+      is,
+      "foo"
+    );
   },
 
   "uses the title from the first h1 tag if there are several"() {
     expect(
-      new HtmlFile("", `<h1>the title</h1><h1>not this</h1>`).title,
+      new TemplatizedHtmlFile("", `<h1>the title</h1><h1>not this</h1>`).title,
       is,
       "the title"
     );
   },
 
   "defaults to the filename if there is no h1"() {
-    expect(new HtmlFile("dir/file.html", `<p>whoa</p>`).title, is, "file.html");
+    expect(
+      new TemplatizedHtmlFile("dir/file.html", `<p>whoa</p>`).title,
+      is,
+      "file.html"
+    );
   },
 
   "defaults to the filename if the h1 is empty"() {
-    expect(new HtmlFile("file.html", `<h1></h1>`).title, is, "file.html");
+    expect(
+      new TemplatizedHtmlFile("file.html", `<h1></h1>`).title,
+      is,
+      "file.html"
+    );
   },
 
   "defaults to the name of the containing directory if the filename is index.html"() {
-    expect(new HtmlFile("stuff/index.html", "").title, is, "stuff");
+    expect(new TemplatizedHtmlFile("stuff/index.html", "").title, is, "stuff");
   },
 
   "defaults to index.html for the root index"() {
-    expect(new HtmlFile("/index.html", "").title, is, "index.html");
+    expect(new TemplatizedHtmlFile("/index.html", "").title, is, "index.html");
   },
 });
 

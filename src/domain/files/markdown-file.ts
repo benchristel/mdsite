@@ -1,8 +1,8 @@
 import { htmlFromMarkdown } from "../../lib/markdown.js";
 import { removeSuffix } from "../../lib/strings.js";
-import { HtmlFile } from "./html-file.js";
+import { TemplatizedHtmlFile } from "./templatized-html-file.js";
 
-export class MarkdownFile extends HtmlFile {
+export class MarkdownFile extends TemplatizedHtmlFile {
   readonly inputPath: string;
 
   constructor(path: string, markdown: string) {

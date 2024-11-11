@@ -8,7 +8,7 @@ import { expandAllMacros } from "../macros/index.js";
 import { pass, pipe } from "../../lib/functional.js";
 import { OutputPath } from "../output-path.js";
 
-export class HtmlFile {
+export class TemplatizedHtmlFile {
   readonly type = "html";
   readonly rawHtml: string;
   readonly title: string;

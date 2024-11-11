@@ -1,5 +1,5 @@
 import { test, expect, is, equals } from "@benchristel/taste";
-import { HtmlFile } from "./files/html-file.js";
+import { TemplatizedHtmlFile } from "./files/templatized-html-file.js";
 import { OrderFile } from "./files/order-file.js";
 import { trimMargin } from "../testing/formatting.js";
 import {
@@ -13,7 +13,7 @@ import { OutputPath } from "./output-path.js";
 test("orderTxtRank", {
   "is [index, Infinity, <title>, <filename>] given /index.html"() {
     const files = {
-      "/index.html": new HtmlFile("/index.html", "<h1>Hi</h1>"),
+      "/index.html": new TemplatizedHtmlFile("/index.html", "<h1>Hi</h1>"),
     };
 
     const rank = orderTxtRank(files["/index.html"], files);
@@ -23,7 +23,7 @@ test("orderTxtRank", {
 
   "is [not-index, Infinity, <title>, <filename>] given a non-index file"() {
     const files = {
-      "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
     const rank = orderTxtRank(files["/foo.html"], files);
@@ -33,7 +33,7 @@ test("orderTxtRank", {
 
   "defaults the title if the file contains none"() {
     const files = {
-      "/foo.html": new HtmlFile("/foo.html", "no title here"),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", "no title here"),
     };
 
     const rank = orderTxtRank(files["/foo.html"], files);
@@ -44,7 +44,7 @@ test("orderTxtRank", {
   "gives a file listed first in order.txt an index of 0"() {
     const files = {
       "/order.txt": new OrderFile("/order.txt", "foo.html"),
-      "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
     const rank = orderTxtRank(files["/foo.html"], files);
@@ -55,7 +55,7 @@ test("orderTxtRank", {
   "gives a file listed second in order.txt an index of 1"() {
     const files = {
       "/order.txt": new OrderFile("/order.txt", "a.html\nfoo.html"),
-      "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
     const rank = orderTxtRank(files["/foo.html"], files);
@@ -66,7 +66,7 @@ test("orderTxtRank", {
   "gives a file not listed in order.txt an index of Infinity"() {
     const files = {
       "/order.txt": new OrderFile("/order.txt", ""),
-      "/foo.html": new HtmlFile("/foo.html", "<h1>Foo</h1>"),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", "<h1>Foo</h1>"),
     };
 
     const rank = orderTxtRank(files["/foo.html"], files);
@@ -76,7 +76,7 @@ test("orderTxtRank", {
 
   "ranks files by parent directory first"() {
     const files = {
-      "/a/foo.html": new HtmlFile("/a/foo.html", "<h1>Foo</h1>"),
+      "/a/foo.html": new TemplatizedHtmlFile("/a/foo.html", "<h1>Foo</h1>"),
     };
 
     const rank = orderTxtRank(files["/a/foo.html"], files);
@@ -122,21 +122,24 @@ test("titleForOutputPath", {
 
   "returns the title of an HTML file with no <h1>"() {
     const files = {
-      "/foo.html": new HtmlFile("/foo.html", ""),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", ""),
     };
     expect(titleForOutputPath("/foo.html", files), is, "foo.html");
   },
 
   "returns the title of an HTML file with an <h1>"() {
     const files = {
-      "/foo.html": new HtmlFile("/foo.html", "<h1>The Title</h1>"),
+      "/foo.html": new TemplatizedHtmlFile("/foo.html", "<h1>The Title</h1>"),
     };
     expect(titleForOutputPath("/foo.html", files), is, "The Title");
   },
 
   "returns the title of an index file given its directory"() {
     const files = {
-      "/index.html": new HtmlFile("/index.html", "<h1>The Title</h1>"),
+      "/index.html": new TemplatizedHtmlFile(
+        "/index.html",
+        "<h1>The Title</h1>"
+      ),
     };
     expect(titleForOutputPath("/", files), is, "The Title");
   },
@@ -145,7 +148,7 @@ test("titleForOutputPath", {
 test("sortHtmlFiles", {
   "gets the output path of one file"() {
     const files = {
-      "": new HtmlFile("/foo.html", ""),
+      "": new TemplatizedHtmlFile("/foo.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [OutputPath.of("/foo.html")]);
   },
@@ -157,17 +160,17 @@ test("sortHtmlFiles", {
 
   "returns a lone path"() {
     const files = {
-      "/foo/bar.new html": new HtmlFile("/foo/bar.html", ""),
+      "/foo/bar.new html": new TemplatizedHtmlFile("/foo/bar.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [OutputPath.of("/foo/bar.html")]);
   },
 
   "orders files by filename in the absence of titles or order.txt files"() {
     const files = {
-      "/ddd.html": new HtmlFile("/ddd.html", ""),
-      "/aaa.html": new HtmlFile("/aaa.html", ""),
-      "/ccc.html": new HtmlFile("/ccc.html", ""),
-      "/bbb.html": new HtmlFile("/bbb.html", ""),
+      "/ddd.html": new TemplatizedHtmlFile("/ddd.html", ""),
+      "/aaa.html": new TemplatizedHtmlFile("/aaa.html", ""),
+      "/ccc.html": new TemplatizedHtmlFile("/ccc.html", ""),
+      "/bbb.html": new TemplatizedHtmlFile("/bbb.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
       OutputPath.of("/aaa.html"),
@@ -179,9 +182,12 @@ test("sortHtmlFiles", {
 
   "keeps siblings together"() {
     const files = {
-      "/aaa/index.html": new HtmlFile("/aaa/index.html", "<h1>A</h1>"),
-      "/aaa/zzz.html": new HtmlFile("/aaa/zzz.html", "<h1>Z</h1>"),
-      "/bbb.html": new HtmlFile("/bbb.html", "<h1>B</h1>"),
+      "/aaa/index.html": new TemplatizedHtmlFile(
+        "/aaa/index.html",
+        "<h1>A</h1>"
+      ),
+      "/aaa/zzz.html": new TemplatizedHtmlFile("/aaa/zzz.html", "<h1>Z</h1>"),
+      "/bbb.html": new TemplatizedHtmlFile("/bbb.html", "<h1>B</h1>"),
     };
     expect(sortHtmlFiles(files), equals, [
       OutputPath.of("/aaa/index.html"),
@@ -192,10 +198,10 @@ test("sortHtmlFiles", {
 
   "orders files by title in the absence of order.txt files"() {
     const files = {
-      "/three.html": new HtmlFile("/three.html", "<h1>3</h1>"),
-      "/one.html": new HtmlFile("/one.html", "<h1>1</h1>"),
-      "/four.html": new HtmlFile("/four.html", "<h1>4</h1>"),
-      "/two.html": new HtmlFile("/two.html", "<h1>2</h1>"),
+      "/three.html": new TemplatizedHtmlFile("/three.html", "<h1>3</h1>"),
+      "/one.html": new TemplatizedHtmlFile("/one.html", "<h1>1</h1>"),
+      "/four.html": new TemplatizedHtmlFile("/four.html", "<h1>4</h1>"),
+      "/two.html": new TemplatizedHtmlFile("/two.html", "<h1>2</h1>"),
     };
     expect(sortHtmlFiles(files), equals, [
       OutputPath.of("/one.html"),
@@ -216,10 +222,10 @@ test("sortHtmlFiles", {
         four.html
       `
       ),
-      "/three.html": new HtmlFile("/three.html", ""),
-      "/one.html": new HtmlFile("/one.html", ""),
-      "/four.html": new HtmlFile("/four.html", ""),
-      "/two.html": new HtmlFile("/two.html", ""),
+      "/three.html": new TemplatizedHtmlFile("/three.html", ""),
+      "/one.html": new TemplatizedHtmlFile("/one.html", ""),
+      "/four.html": new TemplatizedHtmlFile("/four.html", ""),
+      "/two.html": new TemplatizedHtmlFile("/two.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
       OutputPath.of("/one.html"),
@@ -256,14 +262,14 @@ test("sortHtmlFiles", {
         four.html
       `
       ),
-      "/bbb/three.html": new HtmlFile("/bbb/three.html", ""),
-      "/bbb/one.html": new HtmlFile("/bbb/one.html", ""),
-      "/bbb/four.html": new HtmlFile("/bbb/four.html", ""),
-      "/bbb/two.html": new HtmlFile("/bbb/two.html", ""),
-      "/aaa/three.html": new HtmlFile("/aaa/three.html", ""),
-      "/aaa/one.html": new HtmlFile("/aaa/one.html", ""),
-      "/aaa/four.html": new HtmlFile("/aaa/four.html", ""),
-      "/aaa/two.html": new HtmlFile("/aaa/two.html", ""),
+      "/bbb/three.html": new TemplatizedHtmlFile("/bbb/three.html", ""),
+      "/bbb/one.html": new TemplatizedHtmlFile("/bbb/one.html", ""),
+      "/bbb/four.html": new TemplatizedHtmlFile("/bbb/four.html", ""),
+      "/bbb/two.html": new TemplatizedHtmlFile("/bbb/two.html", ""),
+      "/aaa/three.html": new TemplatizedHtmlFile("/aaa/three.html", ""),
+      "/aaa/one.html": new TemplatizedHtmlFile("/aaa/one.html", ""),
+      "/aaa/four.html": new TemplatizedHtmlFile("/aaa/four.html", ""),
+      "/aaa/two.html": new TemplatizedHtmlFile("/aaa/two.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
       OutputPath.of("/aaa/one.html"),
@@ -300,11 +306,11 @@ test("sortHtmlFiles", {
           index.html
         `
       ),
-      "/bbb/one.html": new HtmlFile("/bbb/one.html", ""),
-      "/aaa/one.html": new HtmlFile("/aaa/one.html", ""),
-      "/bbb/index.html": new HtmlFile("/bbb/index.html", ""),
-      "/aaa/index.html": new HtmlFile("/aaa/index.html", ""),
-      "/index.html": new HtmlFile("/index.html", ""),
+      "/bbb/one.html": new TemplatizedHtmlFile("/bbb/one.html", ""),
+      "/aaa/one.html": new TemplatizedHtmlFile("/aaa/one.html", ""),
+      "/bbb/index.html": new TemplatizedHtmlFile("/bbb/index.html", ""),
+      "/aaa/index.html": new TemplatizedHtmlFile("/aaa/index.html", ""),
+      "/index.html": new TemplatizedHtmlFile("/index.html", ""),
     };
     expect(sortHtmlFiles(files), equals, [
       OutputPath.of("/index.html"),

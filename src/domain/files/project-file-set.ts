@@ -1,17 +1,17 @@
 import { OpaqueFile } from "./opaque-file.js";
-import { HtmlFile } from "./html-file.js";
+import { TemplatizedHtmlFile } from "./templatized-html-file.js";
 import { OrderFile } from "./order-file.js";
 import { MarkdownFile } from "./markdown-file.js";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
-export type ProjectFile = OpaqueFile | HtmlFile | OrderFile;
+export type ProjectFile = OpaqueFile | TemplatizedHtmlFile | OrderFile;
 
 export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   if (path.endsWith(".md")) {
     return new MarkdownFile(path, contents.toString());
   } else if (path.endsWith(".html")) {
-    return new HtmlFile(path, contents.toString());
+    return new TemplatizedHtmlFile(path, contents.toString());
   } else if (path.endsWith("/order.txt")) {
     return new OrderFile(path, contents.toString());
   } else {

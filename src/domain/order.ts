@@ -1,5 +1,5 @@
 import { ProjectFileSet } from "./files/project-file-set.js";
-import { HtmlFile } from "./files/html-file.js";
+import { TemplatizedHtmlFile } from "./files/templatized-html-file.js";
 import { basename, dirname, join } from "path";
 import { ensureTrailingSlash } from "../lib/paths.js";
 import { OrderFile } from "./files/order-file.js";
@@ -9,7 +9,7 @@ type Rank = Array<string | number>;
 
 export function sortEntries(files: ProjectFileSet): Array<Entry> {
   return Object.values(files)
-    .filter((f): f is HtmlFile => f.type === "html")
+    .filter((f): f is TemplatizedHtmlFile => f.type === "html")
     .map(toEntry)
     .concat(latentEntries(files))
     .map((f) => [f, orderTxtRank({ outputPath: f.path }, files)] as const)
@@ -17,7 +17,7 @@ export function sortEntries(files: ProjectFileSet): Array<Entry> {
     .map(([f]) => f);
 }
 
-function toEntry(f: HtmlFile): Entry {
+function toEntry(f: TemplatizedHtmlFile): Entry {
   return { type: "html", path: f.outputPath, title: f.title };
 }
 
@@ -58,7 +58,7 @@ export type Entry = {
 
 export function sortHtmlFiles(files: ProjectFileSet): Array<OutputPath> {
   return Object.values(files)
-    .filter((f): f is HtmlFile => f.type === "html")
+    .filter((f): f is TemplatizedHtmlFile => f.type === "html")
     .map((f) => [f, orderTxtRank(f, files)] as const)
     .sort(([_, rankA], [__, rankB]) => byRank(rankA, rankB))
     .map(([f]) => f.outputPath);
