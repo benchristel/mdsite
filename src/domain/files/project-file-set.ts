@@ -8,14 +8,15 @@ export type ProjectFileSet = Record<string, ProjectFile>;
 export type ProjectFile = OpaqueFile | TemplatizedHtmlFile | OrderFile;
 
 export function ProjectFile(path: string, contents: Buffer): ProjectFile {
-  if (path.endsWith(".md")) {
-    return new MarkdownFile(path, contents.toString());
-  } else if (path.endsWith(".html")) {
-    return new TemplatizedHtmlFile(path, contents.toString());
-  } else if (path.endsWith("/order.txt")) {
-    return new OrderFile(path, contents.toString());
-  } else {
-    return OpaqueFile(path, contents);
+  switch (true) {
+    case path.endsWith(".md"):
+      return new MarkdownFile(path, contents.toString());
+    case path.endsWith(".html"):
+      return new TemplatizedHtmlFile(path, contents.toString());
+    case path.endsWith("/order.txt"):
+      return new OrderFile(path, contents.toString());
+    default:
+      return OpaqueFile(path, contents);
   }
 }
 
