@@ -34,10 +34,10 @@ export class HtmlFile {
           inputPath,
           title,
         }),
-        relativizeLinks(this.outputPath)
+        relativizeLinks(outputPath)
       )
     );
-    return [this.outputPath.toString(), buffer(renderedHtml)];
+    return [outputPath.toString(), buffer(renderedHtml)];
   };
 
   private getTitle(): string {
