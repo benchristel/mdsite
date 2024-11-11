@@ -9,14 +9,26 @@ export type ProjectFile = OpaqueFile | TemplatizedHtmlFile | OrderFile;
 
 export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   switch (true) {
-    case path.endsWith(".md"):
+    case isMarkdown():
       return new MarkdownFile(path, contents.toString());
-    case path.endsWith(".html"):
+    case isTemplatizedHtml():
       return new TemplatizedHtmlFile(path, contents.toString());
-    case path.endsWith("/order.txt"):
+    case isOrderTxt():
       return new OrderFile(path, contents.toString());
     default:
       return OpaqueFile(path, contents);
+  }
+
+  function isMarkdown() {
+    return path.endsWith(".md");
+  }
+
+  function isTemplatizedHtml() {
+    return path.endsWith(".html");
+  }
+
+  function isOrderTxt() {
+    return path.endsWith("/order.txt");
   }
 }
 
