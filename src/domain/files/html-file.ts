@@ -4,7 +4,7 @@ import { text } from "cheerio";
 import { curry } from "@benchristel/taste";
 import { buffer } from "../../lib/buffer.js";
 import type { ProjectGlobalInfo } from "../project-global-info.js";
-import { expandAll } from "../macros/index.js";
+import { expandAllMacros } from "../macros/index.js";
 import { pass, pipe } from "../../lib/functional.js";
 import { OutputPath } from "../output-path.js";
 
@@ -27,7 +27,7 @@ export class HtmlFile {
     const renderedHtml = pass(
       project.template,
       pipe(
-        expandAll({
+        expandAllMacros({
           content,
           globalInfo: project,
           outputPath,

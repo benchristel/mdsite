@@ -8,11 +8,11 @@ import { link } from "./link.js";
 import { inputpath } from "./inputpath.js";
 import { breadcrumb } from "./breadcrumb.js";
 
-export const expandAll = curry(
+export const expandAllMacros = curry(
   (context: EvaluationContext, htmlTemplate: string): string => {
     return htmlTemplate.replace(macros, evaluate(context));
   },
-  "expandAll"
+  "expandAllMacros"
 );
 
 export function evaluate(
