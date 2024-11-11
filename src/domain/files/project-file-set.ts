@@ -2,6 +2,7 @@ import { OpaqueFile } from "./opaque-file.js";
 import { TemplatizedHtmlFile } from "./templatized-html-file.js";
 import { OrderFile } from "./order-file.js";
 import { MarkdownFile } from "./markdown-file.js";
+import { MonolithicHtmlFile } from "./monolithic-html-file.js";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
@@ -13,6 +14,8 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
       return new MarkdownFile(path, contents.toString());
     case isTemplatizedHtml():
       return new TemplatizedHtmlFile(path, contents.toString());
+    case isHtml():
+      return new MonolithicHtmlFile(path, contents.toString());
     case isOrderTxt():
       return new OrderFile(path, contents.toString());
     default:
@@ -24,6 +27,10 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   }
 
   function isTemplatizedHtml() {
+    return isHtml() && !monolithicHtml.test(contents.toString());
+  }
+
+  function isHtml() {
     return path.endsWith(".html");
   }
 
@@ -31,6 +38,8 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
     return path.endsWith("/order.txt");
   }
 }
+
+const monolithicHtml = /^\s*<(!doctype|html)/i;
 
 export function pathAndBufferToProjectFile([srcPath, srcContents]: [
   string,

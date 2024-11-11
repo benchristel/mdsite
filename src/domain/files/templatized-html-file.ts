@@ -34,7 +34,7 @@ export class TemplatizedHtmlFile {
           inputPath,
           title,
         }),
-        relativizeLinks(outputPath)
+        this.relativizeLinks
       )
     );
     return [outputPath.toString(), buffer(renderedHtml)];
@@ -56,11 +56,12 @@ export class TemplatizedHtmlFile {
     }
     return path.basename();
   }
-}
 
-const relativizeLinks = curry((fromPath: OutputPath, html: string): string => {
-  return html.replace(
-    /((?:href|src)=")(\/[^"]+)/g,
-    (_, prefix, path) => prefix + relative(dirname(fromPath.toString()), path)
-  );
-}, "relativizeLinks");
+  protected relativizeLinks = (html: string) => {
+    const fromPath = this.outputPath;
+    return html.replace(
+      /((?:href|src)=")(\/[^"]+)/g,
+      (_, prefix, path) => prefix + relative(dirname(fromPath.toString()), path)
+    );
+  };
+}
