@@ -14,40 +14,48 @@ export type OrderFile = {
   render: (globalInfo: ProjectGlobalInfo) => [string, Buffer];
 };
 
-export function OrderFile(path: string, contents: string): OrderFile {
-  const dir = ensureTrailingSlash(dirname(path));
-  const specified = contents.split("!unspecified")[0];
-  const self: OrderFile = {
-    type: "order",
-    outputPath: path,
-    filenames: specified
+export class OrderFile2 {
+  readonly type = "order";
+  // TODO: make outputPath an OutputPath
+  readonly outputPath: string;
+  readonly filenames: string[];
+  private readonly dir: string;
+  private readonly specified: string;
+
+  constructor(path: string, contents: string) {
+    this.specified = contents.split("!unspecified")[0];
+    this.outputPath = path;
+    this.filenames = this.specified
       .split("\n")
       .filter(not(isComment))
       .filter(not(isBlank))
-      .map((f) => basename(f.replace(/\.md$/, ".html").trim())),
-    render,
-  };
-  return self;
+      .map((f) => basename(f.replace(/\.md$/, ".html").trim()));
+    this.dir = ensureTrailingSlash(dirname(path));
+  }
 
-  function render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
+  render(globalInfo: ProjectGlobalInfo): [string, Buffer] {
     const extantEntries = globalInfo.orderedLinkables
       .map((l) => l.path)
-      .filter((path) => path.isIn(dir))
-      .map((p) => p.toString().slice(dir.length).replace(/\/.*/, ""));
+      .filter((path) => path.isIn(this.dir))
+      .map((p) => p.toString().slice(this.dir.length).replace(/\/.*/, ""));
 
-    const unspecified = diff(new Set(extantEntries), new Set(self.filenames));
+    const unspecified = diff(new Set(extantEntries), new Set(this.filenames));
     unspecified.delete("index.html");
 
     return [
-      self.outputPath,
+      this.outputPath,
       buffer(
-        specified +
+        this.specified +
           (unspecified.size
             ? "\n!unspecified\n" + [...unspecified].sort().map(line).join("")
             : "")
       ),
     ];
   }
+}
+
+export function OrderFile(path: string, contents: string): OrderFile {
+  return new OrderFile2(path, contents);
 }
 
 export function isOrderFile(path: string): boolean {
