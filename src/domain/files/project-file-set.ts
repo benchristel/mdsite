@@ -1,8 +1,9 @@
 import { OpaqueFile } from "./opaque-file.js";
 import { TemplatizedHtmlFile } from "./templatized-html-file.js";
 import { OrderFile } from "./order-file.js";
-import { MarkdownFile } from "./markdown-file.js";
+import { TemplatizedMarkdownFile } from "./markdown-file.js";
 import { MonolithicHtmlFile } from "./monolithic-html-file.js";
+import { MonolithicMarkdownFile } from "./monolithic-markdown-file.js";
 
 export type ProjectFileSet = Record<string, ProjectFile>;
 
@@ -10,8 +11,10 @@ export type ProjectFile = OpaqueFile | TemplatizedHtmlFile | OrderFile;
 
 export function ProjectFile(path: string, contents: Buffer): ProjectFile {
   switch (true) {
+    case isTemplatizedMarkdown():
+      return new TemplatizedMarkdownFile(path, contents.toString());
     case isMarkdown():
-      return new MarkdownFile(path, contents.toString());
+      return new MonolithicMarkdownFile(path, contents.toString());
     case isTemplatizedHtml():
       return new TemplatizedHtmlFile(path, contents.toString());
     case isHtml():
@@ -20,6 +23,10 @@ export function ProjectFile(path: string, contents: Buffer): ProjectFile {
       return new OrderFile(path, contents.toString());
     default:
       return OpaqueFile(path, contents);
+  }
+
+  function isTemplatizedMarkdown() {
+    return isMarkdown() && !monolithicHtml.test(contents.toString());
   }
 
   function isMarkdown() {

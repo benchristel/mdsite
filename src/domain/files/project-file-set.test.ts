@@ -4,6 +4,8 @@ import { TemplatizedHtmlFile } from "./templatized-html-file";
 import { buffer } from "../../lib/buffer";
 import { OrderFile } from "./order-file";
 import { MonolithicHtmlFile } from "./monolithic-html-file";
+import { TemplatizedMarkdownFile } from "./markdown-file";
+import { MonolithicMarkdownFile } from "./monolithic-markdown-file";
 
 test("ProjectFile", {
   "creates an HTML file given an .html path"() {
@@ -39,6 +41,16 @@ test("ProjectFile", {
   "creates a monolithic (no-template) HTML file given content starting with whitespace"() {
     const file = ProjectFile("/foo.html", buffer("  \n\t<HTML>"));
     expect(file, isInstanceOf, MonolithicHtmlFile);
+  },
+
+  "creates a templatized markdown file"() {
+    const file = ProjectFile("/foo.md", buffer("hello"));
+    expect(file, isInstanceOf, TemplatizedMarkdownFile);
+  },
+
+  "creates a monolithic markdown file when content is wrapped in an HTML document"() {
+    const file = ProjectFile("/foo.md", buffer("<html>hello</html>"));
+    expect(file, isInstanceOf, MonolithicMarkdownFile);
   },
 
   "creates an Order file given an order.txt path"() {
