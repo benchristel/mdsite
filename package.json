@@ -30,14 +30,16 @@
   },
   "scripts": {
     "build": "node_modules/.bin/tsc",
+    "build:release": "yarn run verify && yarn run build && yarn run order && yarn run docs && yarn run smoke",
     "docs": "./mdsite -i docs-src",
     "format": "node_modules/.bin/prettier --write .",
     "order": "./mdsite order -i docs-src",
     "serve": "node_modules/.bin/http-server -p 3000 -c-1 docs",
     "test": "bun src/test.ts",
     "ts": "node_modules/.bin/tsc --watch --noEmit",
+    "smoke": "node dist/main.js -i docs-src",
     "verify": "bun src/test.ts && node_modules/.bin/tsc --noEmit",
-    "preversion": "yarn run verify && yarn run build && yarn run order && yarn run docs"
+    "preversion": "yarn run build:release"
   },
   "type": "module"
 }

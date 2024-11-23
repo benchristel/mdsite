@@ -73,5 +73,19 @@ yarn test     # run unit tests
 yarn serve    # start dev server
 yarn ts       # start typechecker
 yarn verify   # run all checks
-yarn version  # cut a release
+```
+
+### Releasing
+
+```bash
+# 1. build
+yarn build:release
+
+# 2. manually check that docs look okay
+
+# 3. commit
+git add dist docs; git commit -m "Build for release"
+
+# 4. tag new version
+yarn version
 ```
