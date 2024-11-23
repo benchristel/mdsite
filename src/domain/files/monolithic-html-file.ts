@@ -1,8 +1,8 @@
-import { buffer } from "../../lib/buffer";
-import { pass, pipe } from "../../lib/functional";
-import { expandAllMacros } from "../macros";
-import { ProjectGlobalInfo } from "../project-global-info";
-import { TemplatizedHtmlFile } from "./templatized-html-file";
+import { buffer } from "../../lib/buffer.js";
+import { pass, pipe } from "../../lib/functional.js";
+import { expandAllMacros } from "../macros/index.js";
+import { ProjectGlobalInfo } from "../project-global-info.js";
+import { TemplatizedHtmlFile } from "./templatized-html-file.js";
 
 export class MonolithicHtmlFile extends TemplatizedHtmlFile {
   render = (project: ProjectGlobalInfo): [string, Buffer] => {
