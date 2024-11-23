@@ -1,1 +1,1 @@
-export { expandAll } from "./evaluator.js";
+export { expandAllMacros } from "./evaluator.js";

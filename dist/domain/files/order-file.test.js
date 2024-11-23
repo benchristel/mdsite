@@ -5,19 +5,19 @@ import { Project } from "../project.js";
 import { buffer } from "../../lib/buffer.js";
 test("OrderFile", {
     "parses a blank file"() {
-        const orderFile = OrderFile("/order.txt", "");
+        const orderFile = new OrderFile("/order.txt", "");
         expect(orderFile.filenames, equals, []);
     },
     "parses a file with one filename"() {
-        const orderFile = OrderFile("", "foo.html");
+        const orderFile = new OrderFile("", "foo.html");
         expect(orderFile.filenames, equals, ["foo.html"]);
     },
     "converts .md filenames to .html"() {
-        const orderFile = OrderFile("", "foo.md");
+        const orderFile = new OrderFile("", "foo.md");
         expect(orderFile.filenames, equals, ["foo.html"]);
     },
     "ignores files below the '!unspecified' line"() {
-        const orderFile = OrderFile("", trimMargin `
+        const orderFile = new OrderFile("", trimMargin `
       in.html
       !unspecified
       out.html
@@ -25,14 +25,14 @@ test("OrderFile", {
         expect(orderFile.filenames, equals, ["in.html"]);
     },
     "handles input that starts with '!unspecified'"() {
-        const orderFile = OrderFile("", trimMargin `
+        const orderFile = new OrderFile("", trimMargin `
       !unspecified
       out.html
     `);
         expect(orderFile.filenames, equals, []);
     },
     "ignores blank lines"() {
-        const orderFile = OrderFile("", trimMargin `
+        const orderFile = new OrderFile("", trimMargin `
       a.html
       
       b.html
@@ -41,18 +41,18 @@ test("OrderFile", {
         expect(orderFile.filenames, equals, ["a.html", "b.html"]);
     },
     "trims space from each line"() {
-        const orderFile = OrderFile("", "  a.html  ");
+        const orderFile = new OrderFile("", "  a.html  ");
         expect(orderFile.filenames, equals, ["a.html"]);
     },
     "ignores leading/trailing slashes"() {
-        const orderFile = OrderFile("", trimMargin `
+        const orderFile = new OrderFile("", trimMargin `
       /a.html
       b/
     `);
         expect(orderFile.filenames, equals, ["a.html", "b"]);
     },
     "does not list index.html in the !unspecified section"() {
-        const orderFile = OrderFile("/order.txt", "");
+        const orderFile = new OrderFile("/order.txt", "");
         const project = new Project({
             "/a.html": buffer(""),
             "/b.html": buffer(""),

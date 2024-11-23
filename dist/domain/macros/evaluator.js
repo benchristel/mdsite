@@ -6,9 +6,9 @@ import { toc } from "./toc.js";
 import { link } from "./link.js";
 import { inputpath } from "./inputpath.js";
 import { breadcrumb } from "./breadcrumb.js";
-export const expandAll = curry((context, htmlTemplate) => {
+export const expandAllMacros = curry((context, htmlTemplate) => {
     return htmlTemplate.replace(macros, evaluate(context));
-}, "expandAll");
+}, "expandAllMacros");
 export function evaluate(context) {
     return (macroStr) => compileMacro(macroStr)(context);
 }

@@ -1,7 +1,7 @@
 import { htmlFromMarkdown } from "../../lib/markdown.js";
 import { removeSuffix } from "../../lib/strings.js";
-import { HtmlFile } from "./html-file.js";
-export class MarkdownFile extends HtmlFile {
+import { TemplatizedHtmlFile } from "./templatized-html-file.js";
+export class TemplatizedMarkdownFile extends TemplatizedHtmlFile {
     constructor(path, markdown) {
         const rawHtml = replaceMarkdownHrefs(htmlFromMarkdown(markdown).trim());
         const htmlPath = removeSuffix(path, ".md") + ".html";

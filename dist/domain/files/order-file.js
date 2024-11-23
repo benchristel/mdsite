@@ -5,30 +5,28 @@ import { ensureTrailingSlash } from "../../lib/paths.js";
 import { isBlank } from "../../testing/formatting.js";
 import { diff } from "../../lib/sets.js";
 import { line } from "../../lib/strings.js";
-export function OrderFile(path, contents) {
-    const dir = ensureTrailingSlash(dirname(path));
-    const specified = contents.split("!unspecified")[0];
-    const self = {
-        type: "order",
-        outputPath: path,
-        filenames: specified
+export class OrderFile {
+    constructor(path, contents) {
+        this.type = "order";
+        this.specified = contents.split("!unspecified")[0];
+        this.outputPath = path;
+        this.filenames = this.specified
             .split("\n")
             .filter(not(isComment))
             .filter(not(isBlank))
-            .map((f) => basename(f.replace(/\.md$/, ".html").trim())),
-        render,
-    };
-    return self;
-    function render(globalInfo) {
+            .map((f) => basename(f.replace(/\.md$/, ".html").trim()));
+        this.dir = ensureTrailingSlash(dirname(path));
+    }
+    render(globalInfo) {
         const extantEntries = globalInfo.orderedLinkables
             .map((l) => l.path)
-            .filter((path) => path.isIn(dir))
-            .map((p) => p.toString().slice(dir.length).replace(/\/.*/, ""));
-        const unspecified = diff(new Set(extantEntries), new Set(self.filenames));
+            .filter((path) => path.isIn(this.dir))
+            .map((p) => p.toString().slice(this.dir.length).replace(/\/.*/, ""));
+        const unspecified = diff(new Set(extantEntries), new Set(this.filenames));
         unspecified.delete("index.html");
         return [
-            self.outputPath,
-            buffer(specified +
+            this.outputPath,
+            buffer(this.specified +
                 (unspecified.size
                     ? "\n!unspecified\n" + [...unspecified].sort().map(line).join("")
                     : "")),
